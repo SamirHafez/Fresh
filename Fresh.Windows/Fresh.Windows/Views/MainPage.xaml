@@ -1,0 +1,21 @@
+﻿<controls:PageBase
+    x:Class="Fresh.Windows.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Fresh.Windows.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Fresh.Windows.Controls"
+    xmlns:prism="using:Microsoft.Practices.Prism.Mvvm"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    xmlns:designTime="using:Fresh.Windows.DesignTime"
+    mc:Ignorable="d">
+
+    <d:Page.DataContext>
+        <designTime:MainPageViewModel/>
+    </d:Page.DataContext>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    </Grid>
+</controls:PageBase>
