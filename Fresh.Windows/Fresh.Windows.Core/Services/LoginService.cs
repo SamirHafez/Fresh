@@ -10,11 +10,13 @@ namespace Fresh.Windows.Core.Services
 
         private readonly IStorageService storageService;
         private readonly ITraktService traktService;
+        private readonly IConfigurationService configurationService;
 
-        public LoginService(IStorageService storageService, ITraktService traktService)
+        public LoginService(IStorageService storageService, ITraktService traktService, IConfigurationService configurationService)
         {
             this.storageService = storageService;
             this.traktService = traktService;
+            this.configurationService = configurationService;
         }
 
         public async Task LoginAsync(string username, string password)
@@ -25,6 +27,7 @@ namespace Fresh.Windows.Core.Services
             try
             {
                 dynamic settings = await traktService.GetSettings(username, password);
+                configurationService.Username = settings["username"].Value;
                 storageService.Save("user", settings);
             }
             catch (Exception exception)
@@ -38,9 +41,17 @@ namespace Fresh.Windows.Core.Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> SilentLoginAsync()
+        public async Task<bool> SilentLoginAsync()
         {
-            return storageService.HasKey("user");
+            var hasKey = await storageService.HasKey("user");
+
+            if (hasKey)
+            {
+                dynamic settings = await storageService.Get<dynamic>("user");
+                configurationService.Username = settings["username"].Value;
+            }
+
+            return hasKey;
         }
     }
 }

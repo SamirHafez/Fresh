@@ -14,16 +14,18 @@ namespace Fresh.Windows.ViewModels
     {
         private readonly ITraktService traktService;
         private readonly IStorageService storageService;
+        private readonly IConfigurationService configurationService;
 
-        public MainPageViewModel(ITraktService traktService, IStorageService storageService)
+        public MainPageViewModel(ITraktService traktService, IStorageService storageService, IConfigurationService configurationService)
         {
             this.traktService = traktService;
             this.storageService = storageService;
+            this.configurationService = configurationService;
         }
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
-            var username = navigationParameter as string;
+            var username = configurationService.Username;
 
             if (string.IsNullOrWhiteSpace(username))
                 throw new ArgumentException("Username not provided.");
