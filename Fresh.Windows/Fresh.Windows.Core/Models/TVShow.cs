@@ -101,6 +101,6 @@ namespace Fresh.Windows.Core.Models
         public Ratings Ratings { get; set; }
         public Stats Stats { get; set; }
         public People People { get; set; }
-        public IList<string> genres { get; set; }
+        public IList<string> Genres { get; set; }
     }
 }
