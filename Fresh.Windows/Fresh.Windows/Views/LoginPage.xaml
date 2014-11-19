@@ -20,11 +20,11 @@
             <FadeInThemeAnimation SpeedRatio=".7" TargetName="spGreet"></FadeInThemeAnimation>
         </Storyboard>
     </controls:PageBase.Resources>
-    <Page.Transitions>
+    <controls:PageBase.Transitions>
         <TransitionCollection>
             <EntranceThemeTransition></EntranceThemeTransition>
         </TransitionCollection>
-    </Page.Transitions>
+    </controls:PageBase.Transitions>
 
     <d:Page.DataContext>
         <designTime:LoginPageViewModel/>

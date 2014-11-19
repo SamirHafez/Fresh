@@ -9,11 +9,9 @@ namespace Fresh.Windows.DesignTime
         {
             Username = "DesignUser";
             Password = "DesignPass";
-            LoginRunning = false;
         }
 
         public string Username { get; set; }
-        public string Password { get; set; } 
-        public bool LoginRunning { get; set; }
+        public string Password { get; set; }
     }
 }

@@ -25,9 +25,6 @@ namespace Fresh.Windows.ViewModels
         string password = default(string);
         public string Password { get { return password; } set { SetProperty(ref password, value); } }
 
-        bool loginRunning = default(bool);
-        public bool LoginRunning { get { return loginRunning; } set { SetProperty(ref loginRunning, value); } }
-
         public DelegateCommand LoginCommand
         {
             get
@@ -38,20 +35,14 @@ namespace Fresh.Windows.ViewModels
 
         private async void Login()
         {
-            LoginRunning = true;
-
             try
             {
                 await loginService.LoginAsync(Username, Password);
-                navigationService.Navigate(App.Experience.Main.ToString(), null);
+                navigationService.Navigate(App.Experience.Main.ToString(), Username);
             }
             catch (Exception exception)
             {
                 await new MessageDialog(exception.Message, "Error").ShowAsync();
-            }
-            finally
-            {
-                LoginRunning = false;
             }
         }
     }

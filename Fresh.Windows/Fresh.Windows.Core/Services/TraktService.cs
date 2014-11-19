@@ -5,6 +5,8 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.Core;
+using Fresh.Windows.Core.Models;
+using System.Collections.Generic;
 
 namespace Fresh.Windows.Core.Services
 {
@@ -93,6 +95,15 @@ namespace Fresh.Windows.Core.Services
         public TraktService(string apiKey)
         {
             this.apiKey = apiKey;
+        }
+
+        public Task<IList<TVShow>> GetCollection(string username)
+        {
+            return new TraktIO<IList<TVShow>>(apiKey).
+                ForPath("user/library/shows/collection.json").
+                WithParameters(new { username }).
+                Extended().
+                Execute();
         }
 
         public Task<dynamic> GetSettings(string username, string password)

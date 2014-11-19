@@ -108,8 +108,11 @@
     <Compile Include="Controls\PageBase.cs" />
     <Compile Include="DesignTime\LoginPageViewModel.cs" />
     <Compile Include="DesignTime\MainPageViewModel.cs" />
+    <Compile Include="DesignTime\TVShowViewModel.cs" />
     <Compile Include="Interfaces\ILoginPageViewModel.cs" />
     <Compile Include="Interfaces\IMainPageViewModel.cs" />
+    <Compile Include="Interfaces\ITVShowViewModel.cs" />
+    <Compile Include="ViewModels\TVShowViewModel.cs" />
     <Compile Include="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>

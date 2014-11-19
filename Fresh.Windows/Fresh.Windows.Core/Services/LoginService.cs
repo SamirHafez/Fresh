@@ -6,6 +6,8 @@ namespace Fresh.Windows.Core.Services
 {
     public class LoginService : ILoginService
     {
+        public event EventHandler StateChanged;
+
         private readonly IStorageService storageService;
         private readonly ITraktService traktService;
 
@@ -16,7 +18,10 @@ namespace Fresh.Windows.Core.Services
         }
 
         public async Task LoginAsync(string username, string password)
-        { 
+        {
+            if (StateChanged != null)
+                StateChanged(this, EventArgs.Empty);
+
             try
             {
                 dynamic settings = await traktService.GetSettings(username, password);
