@@ -5,12 +5,16 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using Windows.UI.Xaml.Navigation;
 using Fresh.Windows.Core.Services.Interfaces;
+using Fresh.Windows.Models;
+using System.Linq;
 
 namespace Fresh.Windows.ViewModels
 {
     public class TVShowPageViewModel : ViewModel, ITVShowPageViewModel
     {
         private readonly ITraktService traktService;
+
+        private const int TOP_EPISODE_COUNT = 5;
 
         public TVShowPageViewModel(ITraktService traktService)
         {
@@ -21,7 +25,19 @@ namespace Fresh.Windows.ViewModels
         {
             var showId = navigationParameter as string;
 
-            var fullShow = await traktService.GetShow(showId);
+            var fullShow = TVShow.FromTrakt(await traktService.GetShow(showId, extended: true));
+
+            Update(fullShow);
+        }
+
+        private void Update(TVShow fullShow)
+        {
+            Title = fullShow.Title;
+            Year = fullShow.Year;
+            Network = fullShow.Network;
+            Overview = fullShow.Overview;
+            Images = new Images { Poster = fullShow.Images.Poster, Banner = fullShow.Images.Banner, Fanart = fullShow.Images.Fanart };
+            TopEpisodes = new ObservableCollection<Episode>(fullShow.Episodes.Take(TOP_EPISODE_COUNT));
         }
 
         string title = default(string);
@@ -81,11 +97,11 @@ namespace Fresh.Windows.ViewModels
         ObservableCollection<Actor> actors = default(ObservableCollection<Actor>);
         public ObservableCollection<Actor> Actors { get { return actors; } set { SetProperty(ref actors, value); } }
 
-        ObservableCollection<TopWatcher> top_watchers = default(ObservableCollection<TopWatcher>);
-        public ObservableCollection<TopWatcher> Top_watchers { get { return top_watchers; } set { SetProperty(ref top_watchers, value); } }
+        ObservableCollection<TopWatcher> topWatchers = default(ObservableCollection<TopWatcher>);
+        public ObservableCollection<TopWatcher> TopWatchers { get { return topWatchers; } set { SetProperty(ref topWatchers, value); } }
 
-        ObservableCollection<IEpisodePageViewModel> episodes = default(ObservableCollection<IEpisodePageViewModel>);
-        public ObservableCollection<IEpisodePageViewModel> Episodes { get { return episodes; } set { SetProperty(ref episodes, value); } }
+        ObservableCollection<Episode> topEpisodes = default(ObservableCollection<Episode>);
+        public ObservableCollection<Episode> TopEpisodes { get { return topEpisodes; } set { SetProperty(ref topEpisodes, value); } }
 
         ObservableCollection<string> genres = default(ObservableCollection<string>);
         public ObservableCollection<string> Genres { get { return genres; } set { SetProperty(ref genres, value); } } 

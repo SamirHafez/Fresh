@@ -51,9 +51,9 @@ namespace Fresh.Windows.Core.Services
             return this;
         }
 
-        public TraktIO<T> Extended()
+        public TraktIO<T> Extended(bool extended = true)
         {
-            this.extended = true;
+            this.extended = extended;
             return this;
         }
 
@@ -97,12 +97,12 @@ namespace Fresh.Windows.Core.Services
             this.apiKey = apiKey;
         }
 
-        public Task<IList<TVShow>> GetCollection(string username)
+        public Task<IList<TraktTVShow>> GetCollection(string username, bool extended = false)
         {
-            return new TraktIO<IList<TVShow>>(apiKey).
+            return new TraktIO<IList<TraktTVShow>>(apiKey).
                 ForPath("user/library/shows/collection.json").
                 WithParameters(new { username }).
-                Extended().
+                Extended(extended).
                 Execute();
         }
 
@@ -119,11 +119,12 @@ namespace Fresh.Windows.Core.Services
                 Execute();
         }
 
-        public Task<TVShow> GetShow(string showId)
+        public Task<TraktTVShow> GetShow(string showId, bool extended = false)
         {
-            return new TraktIO<TVShow>(apiKey).
+            return new TraktIO<TraktTVShow>(apiKey).
                 ForPath("show/summary.json").
                 WithParameters(new { username = showId }).
+                Extended(extended).
                 Execute();
         }
     }

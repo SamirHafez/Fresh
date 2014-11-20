@@ -38,7 +38,9 @@
     <TargetPlatform Include="Windows, Version=8.1" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\TVShow.cs" />
+    <Compile Include="Models\TraktEpisode.cs" />
+    <Compile Include="Models\TraktSeason.cs" />
+    <Compile Include="Models\TraktTVShow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FreshConfigurationService.cs" />
     <Compile Include="Services\Interfaces\IConfigurationService.cs" />

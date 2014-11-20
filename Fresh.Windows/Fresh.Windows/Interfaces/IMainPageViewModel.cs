@@ -1,9 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿using Fresh.Windows.Models;
+using System.Collections.ObjectModel;
 
 namespace Fresh.Windows.Interfaces
 {
     public interface IMainPageViewModel
     {
-        ObservableCollection<ITVShowPageViewModel> Collection { get; set; }
+        ObservableCollection<TVShow> Collection { get; set; }
     }
 }

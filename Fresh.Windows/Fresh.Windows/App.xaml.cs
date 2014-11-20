@@ -24,7 +24,6 @@ namespace Fresh.Windows
 
         protected override Task OnInitializeAsync(IActivatedEventArgs args)
         {
-            container.RegisterInstance<IUnityContainer>(container);
             container.RegisterInstance<INavigationService>(NavigationService);
             container.RegisterType<IConfigurationService, FreshConfigurationService>(new ContainerControlledLifetimeManager());
             container.RegisterType<ILoginService, LoginService>(new ContainerControlledLifetimeManager());

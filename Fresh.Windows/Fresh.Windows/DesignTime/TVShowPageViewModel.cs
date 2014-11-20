@@ -1,4 +1,5 @@
 ﻿using Fresh.Windows.Interfaces;
+using Fresh.Windows.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -36,6 +37,11 @@ namespace Fresh.Windows.DesignTime
             //    new EpisodeViewModel { Plays = 8676, Season = 5, Number = 1, Title = "No Sanctuary", Url = "http://trakt.tv/show/the-walking-dead/season/5/episode/1", First_aired = 1413172800, First_aired_iso = "2014-10-12T21:00:00-04:00", First_aired_utc = 1413162000 },
             //    new EpisodeViewModel { Plays = 8450, Season = 5, Number = 3, Title = "Four Walls and a Roof", Url = "http://trakt.tv/show/the-walking-dead/season/5/episode/3", First_aired = 1414382400, First_aired_iso = "2014-10-26T21:00:00-04:00", First_aired_utc = 1414371600 }
             //};
+            TopEpisodes = new ObservableCollection<Episode>
+            {
+                new Episode { Title = "No Sanctuary", Season = 5, Number = 1 },
+                new Episode { Title = "Four Walls and a Roof", Season = 5, Number = 3 }
+            };
 
             Ratings = new Ratings
             {
@@ -83,8 +89,8 @@ namespace Fresh.Windows.DesignTime
         public int TvrageId { get; set; }
         public DateTime LastUpdate { get; set; }
         public Images Images { get; set; }
-        public ObservableCollection<TopWatcher> Top_watchers { get; set; }
-        public ObservableCollection<IEpisodePageViewModel> Episodes { get; set; }
+        public ObservableCollection<TopWatcher> TopWatchers { get; set; }
+        public ObservableCollection<Episode> TopEpisodes { get; set; }
         public Ratings Ratings { get; set; }
         public Stats Stats { get; set; }
         public ObservableCollection<Actor> Actors { get; set; }

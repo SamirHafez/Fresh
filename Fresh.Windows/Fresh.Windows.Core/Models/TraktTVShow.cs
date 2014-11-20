@@ -2,14 +2,14 @@
 
 namespace Fresh.Windows.Core.Models
 {
-    public class Images
+    public class TraktImages
     {
         public string Poster { get; set; }
         public string Fanart { get; set; }
         public string Banner { get; set; }
     }
 
-    public class TopWatcher
+    public class TraktTopWatcher
     {
         public int Plays { get; set; }
         public string Username { get; set; }
@@ -23,19 +23,12 @@ namespace Fresh.Windows.Core.Models
         public string Url { get; set; }
     }
 
-    public class TopEpisode
+    public class TraktTopEpisode : TraktEpisode
     {
         public int Plays { get; set; }
-        public int Season { get; set; }
-        public int Number { get; set; }
-        public string Title { get; set; }
-        public string Url { get; set; }
-        public long First_aired { get; set; }
-        public string First_aired_iso { get; set; }
-        public long First_aired_utc { get; set; }
     }
 
-    public class Ratings
+    public class TraktRatings
     {
         public int Percentage { get; set; }
         public int Votes { get; set; }
@@ -43,7 +36,7 @@ namespace Fresh.Windows.Core.Models
         public int Hated { get; set; }
     }
 
-    public class Stats
+    public class TraktStats
     {
         public int Watchers { get; set; }
         public int Plays { get; set; }
@@ -55,24 +48,24 @@ namespace Fresh.Windows.Core.Models
         public int Collection_unique { get; set; }
     }
 
-    public class ActorImage
+    public class TraktActorImage
     {
         public string Headshot { get; set; }
     }
 
-    public class Actor
+    public class TraktActor
     {
         public string Name { get; set; }
         public string Character { get; set; }
-        public ActorImage Images { get; set; }
+        public TraktActorImage Images { get; set; }
     }
 
-    public class People
+    public class TraktPeople
     {
-        public IList<Actor> Actors { get; set; }
+        public IList<TraktActor> Actors { get; set; }
     }
 
-    public class TVShow
+    public class TraktTVShow
     {
         public string Title { get; set; }
         public int Year { get; set; }
@@ -95,12 +88,13 @@ namespace Fresh.Windows.Core.Models
         public int Tvrage_id { get; set; }
         public int Last_updated { get; set; }
         public string Poster { get; set; }
-        public Images Images { get; set; }
-        public IList<TopWatcher> Top_watchers { get; set; }
-        public IList<TopEpisode> Top_episodes { get; set; }
-        public Ratings Ratings { get; set; }
-        public Stats Stats { get; set; }
-        public People People { get; set; }
+        public TraktImages Images { get; set; }
+        public IList<TraktTopWatcher> Top_watchers { get; set; }
+        public IList<TraktTopEpisode> Top_episodes { get; set; }
+        public TraktRatings Ratings { get; set; }
+        public TraktStats Stats { get; set; }
+        public TraktPeople People { get; set; }
         public IList<string> Genres { get; set; }
+        public IList<TraktSeason> Seasons { get; set; }
     }
 }

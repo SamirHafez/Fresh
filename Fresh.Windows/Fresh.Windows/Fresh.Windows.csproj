@@ -115,6 +115,8 @@
     <Compile Include="Interfaces\ILoginPageViewModel.cs" />
     <Compile Include="Interfaces\IMainPageViewModel.cs" />
     <Compile Include="Interfaces\ITVShowPageViewModel.cs" />
+    <Compile Include="Models\Episode.cs" />
+    <Compile Include="Models\TVShow.cs" />
     <Compile Include="ViewModels\EpisodePageViewModel.cs" />
     <Compile Include="ViewModels\TVShowPageViewModel.cs" />
     <Compile Include="Views\LoginPage.xaml.cs">

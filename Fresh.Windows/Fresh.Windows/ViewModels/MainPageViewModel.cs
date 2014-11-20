@@ -1,5 +1,6 @@
 ﻿using Fresh.Windows.Core.Services.Interfaces;
 using Fresh.Windows.Interfaces;
+using Fresh.Windows.Models;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.Mvvm.Interfaces;
@@ -33,31 +34,30 @@ namespace Fresh.Windows.ViewModels
             if (string.IsNullOrWhiteSpace(username))
                 throw new ArgumentException("Username not provided.");
 
-            Collection = new ObservableCollection<ITVShowPageViewModel>(
+            Collection = new ObservableCollection<TVShow>(
                 await storageService.HasKey("collection") ?
-                    await storageService.Get<IList<TVShowPageViewModel>>("collection") :
-                    (await traktService.GetCollection(username)).Select(s => new TVShowPageViewModel(traktService) { Title = s.Title, Year = s.Year })
+                    await storageService.Get<IList<TVShow>>("collection") :
+                    (await traktService.GetCollection(username)).Select(TVShow.FromTrakt)
             );
 
             if (!await storageService.HasKey("collection"))
                 await storageService.Save("collection", Collection);
         }
 
-        ObservableCollection<ITVShowPageViewModel> collection = default(ObservableCollection<ITVShowPageViewModel>);
-        public ObservableCollection<ITVShowPageViewModel> Collection { get { return collection; } set { SetProperty(ref collection, value); } }
+        ObservableCollection<TVShow> collection = default(ObservableCollection<TVShow>);
+        public ObservableCollection<TVShow> Collection { get { return collection; } set { SetProperty(ref collection, value); } }
 
-        public DelegateCommand<TVShowPageViewModel> EnterShowCommand
+        public DelegateCommand<TVShow> EnterShowCommand
         {
             get
             {
-                return new DelegateCommand<TVShowPageViewModel>(EnterShow,
-                    show => show != null);
+                return new DelegateCommand<TVShow>(EnterShow);
             }
         }
 
-        private void EnterShow(TVShowPageViewModel show)
+        private void EnterShow(TVShow show)
         {
-            navigationService.Navigate(App.Experience.TVShow.ToString(), show.Url.Substring(show.Url.LastIndexOf("/") + 1));
+            navigationService.Navigate(App.Experience.TVShow.ToString(), show.Id);
         }
     }
 }
