@@ -1,41 +1,36 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 
 namespace Fresh.Windows.Interfaces
 {
-    public interface ITVShowViewModel
+    public interface ITVShowPageViewModel
     {
         string Title { get; set; }
         int Year { get; set; }
         string Url { get; set; }
-        int First_aired { get; set; }
-        string First_aired_iso { get; set; }
-        int First_aired_utc { get; set; }
+        DateTime FirstAired { get; set; }
         string Country { get; set; }
         string Overview { get; set; }
-        int Runtime { get; set; }
+        TimeSpan Runtime { get; set; }
         string Status { get; set; }
         string Network { get; set; }
-        string Air_day { get; set; }
-        string Air_day_utc { get; set; }
-        string Air_time { get; set; }
-        string Air_time_utc { get; set; }
-        string Certification { get; set; }
-        string Imdb_id { get; set; }
-        int Tvdb_id { get; set; }
-        int Tvrage_id { get; set; }
-        int Last_updated { get; set; }
-        string Poster { get; set; }
+        DayOfWeek AirDay { get; set; }
+        TimeSpan AirTime { get; set; }
+        string ImdbId { get; set; }
+        int TvdbId { get; set; }
+        int TvrageId { get; set; }
+        DateTime LastUpdate { get; set; }
         Images Images { get; set; }
-        ObservableCollection<TopWatcher> Top_watchers { get; set; }
-        ObservableCollection<TopEpisode> Top_episodes { get; set; }
         Ratings Ratings { get; set; }
         Stats Stats { get; set; }
-        People People { get; set; }
+
         ObservableCollection<string> Genres { get; set; }
+        ObservableCollection<IEpisodePageViewModel> Episodes { get; set; }
+        ObservableCollection<Actor> Actors { get; set; }
+        ObservableCollection<TopWatcher> Top_watchers { get; set; }
     }
 
-        public class Images
+    public class Images
     {
         public string Poster { get; set; }
         public string Fanart { get; set; }
@@ -54,18 +49,6 @@ namespace Fresh.Windows.Interfaces
         public long Joined { get; set; }
         public string Avatar { get; set; }
         public string Url { get; set; }
-    }
-
-    public class TopEpisode
-    {
-        public int Plays { get; set; }
-        public int Season { get; set; }
-        public int Number { get; set; }
-        public string Title { get; set; }
-        public string Url { get; set; }
-        public long First_aired { get; set; }
-        public string First_aired_iso { get; set; }
-        public long First_aired_utc { get; set; }
     }
 
     public class Ratings
@@ -88,20 +71,10 @@ namespace Fresh.Windows.Interfaces
         public int Collection_unique { get; set; }
     }
 
-    public class ActorImage
-    {
-        public string Headshot { get; set; }
-    }
-
     public class Actor
     {
         public string Name { get; set; }
         public string Character { get; set; }
-        public ActorImage Images { get; set; }
-    }
-
-    public class People
-    {
-        public IList<Actor> Actors { get; set; }
+        public string Image { get; set; }
     }
 }

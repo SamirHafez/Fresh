@@ -9,6 +9,7 @@
     xmlns:prism="using:Microsoft.Practices.Prism.Mvvm"
     prism:ViewModelLocator.AutoWireViewModel="True"
     xmlns:designTime="using:Fresh.Windows.DesignTime"
+    xmlns:helpers="using:Fresh.Windows.Helpers"
     mc:Ignorable="d">
 
     <d:Page.DataContext>
@@ -25,6 +26,7 @@
             ItemsSource="{Binding Collection}"
             IsItemClickEnabled="True"
             SelectionMode="None"
+            helpers:ItemClickCommand.Command="{Binding EnterShowCommand}"
             IsSwipeEnabled="false">
             <GridView.ItemTemplate>
                 <DataTemplate>

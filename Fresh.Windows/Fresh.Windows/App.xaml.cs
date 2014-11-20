@@ -11,7 +11,7 @@ namespace Fresh.Windows
 {
     sealed partial class App : MvvmAppBase
     {
-        public enum Experience { Main, Login };
+        public enum Experience { Main, Login, TVShow };
 
         private readonly UnityContainer container = new UnityContainer();
 
@@ -24,6 +24,7 @@ namespace Fresh.Windows
 
         protected override Task OnInitializeAsync(IActivatedEventArgs args)
         {
+            container.RegisterInstance<IUnityContainer>(container);
             container.RegisterInstance<INavigationService>(NavigationService);
             container.RegisterType<IConfigurationService, FreshConfigurationService>(new ContainerControlledLifetimeManager());
             container.RegisterType<ILoginService, LoginService>(new ContainerControlledLifetimeManager());

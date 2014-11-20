@@ -1,12 +1,13 @@
-﻿using System.Collections.ObjectModel;
+﻿using Fresh.Windows.Core.Services.Interfaces;
 using Fresh.Windows.Interfaces;
+using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
-using Fresh.Windows.Core.Services.Interfaces;
-using System.Collections.Generic;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.Practices.Prism.Mvvm.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using Fresh.Windows.Core.Models;
+using Windows.UI.Xaml.Navigation;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -14,12 +15,14 @@ namespace Fresh.Windows.ViewModels
     {
         private readonly ITraktService traktService;
         private readonly IStorageService storageService;
+        private readonly INavigationService navigationService;
         private readonly IConfigurationService configurationService;
 
-        public MainPageViewModel(ITraktService traktService, IStorageService storageService, IConfigurationService configurationService)
+        public MainPageViewModel(ITraktService traktService, IStorageService storageService, INavigationService navigationService, IConfigurationService configurationService)
         {
             this.traktService = traktService;
             this.storageService = storageService;
+            this.navigationService = navigationService;
             this.configurationService = configurationService;
         }
 
@@ -30,22 +33,31 @@ namespace Fresh.Windows.ViewModels
             if (string.IsNullOrWhiteSpace(username))
                 throw new ArgumentException("Username not provided.");
 
-            var shows = await storageService.HasKey("collection") ?
-                await storageService.Get<IList<TVShow>>("collection") :
-                await traktService.GetCollection(username);
-
-            Collection = new ObservableCollection<ITVShowViewModel>(shows.Select(s => new TVShowViewModel
-            {
-                Title = s.Title,
-                Year = s.Year,
-                Poster = s.Poster
-            }));
+            Collection = new ObservableCollection<ITVShowPageViewModel>(
+                await storageService.HasKey("collection") ?
+                    await storageService.Get<IList<TVShowPageViewModel>>("collection") :
+                    (await traktService.GetCollection(username)).Select(s => new TVShowPageViewModel(traktService) { Title = s.Title, Year = s.Year })
+            );
 
             if (!await storageService.HasKey("collection"))
-                await storageService.Save("collection", shows);
+                await storageService.Save("collection", Collection);
         }
 
-        ObservableCollection<ITVShowViewModel> collection = default(ObservableCollection<ITVShowViewModel>);
-        public ObservableCollection<ITVShowViewModel> Collection { get { return collection; } set { SetProperty(ref collection, value); } }
+        ObservableCollection<ITVShowPageViewModel> collection = default(ObservableCollection<ITVShowPageViewModel>);
+        public ObservableCollection<ITVShowPageViewModel> Collection { get { return collection; } set { SetProperty(ref collection, value); } }
+
+        public DelegateCommand<TVShowPageViewModel> EnterShowCommand
+        {
+            get
+            {
+                return new DelegateCommand<TVShowPageViewModel>(EnterShow,
+                    show => show != null);
+            }
+        }
+
+        private void EnterShow(TVShowPageViewModel show)
+        {
+            navigationService.Navigate(App.Experience.TVShow.ToString(), show.Url.Substring(show.Url.LastIndexOf("/") + 1));
+        }
     }
 }

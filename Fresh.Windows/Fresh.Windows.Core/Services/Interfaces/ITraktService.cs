@@ -9,5 +9,7 @@ namespace Fresh.Windows.Core.Services.Interfaces
         Task<dynamic> GetSettings(string username, string password);
 
         Task<IList<TVShow>> GetCollection(string username);
+
+        Task<TVShow> GetShow(string showId);
     }
 }

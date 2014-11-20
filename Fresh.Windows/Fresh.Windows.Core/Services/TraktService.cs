@@ -118,5 +118,13 @@ namespace Fresh.Windows.Core.Services
                 Select(content => content["profile"]).
                 Execute();
         }
+
+        public Task<TVShow> GetShow(string showId)
+        {
+            return new TraktIO<TVShow>(apiKey).
+                ForPath("show/summary.json").
+                WithParameters(new { username = showId }).
+                Execute();
+        }
     }
 }
