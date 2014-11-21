@@ -26,7 +26,7 @@ namespace Fresh.Windows.Models
         public DateTime LastUpdate { get; set; }
         public Images Images { get; set; }
         public IList<TopWatcher> Top_watchers { get; set; }
-        public IList<Episode> Episodes { get; set; }
+        public IList<Season> Seasons { get; set; }
         public Ratings Ratings { get; set; }
         public Stats Stats { get; set; }
         public IList<Actor> Actors { get; set; }
@@ -53,13 +53,23 @@ namespace Fresh.Windows.Models
                 TvrageId = trakt.Tvrage_id,
                 LastUpdate = new DateTime(trakt.Last_updated),
                 Images = new Images { Poster = trakt.Images.Poster, Banner = trakt.Images.Banner, Fanart = trakt.Images.Fanart },
-                //Top_watchers = trakt.Top_watchers,
-                Episodes = trakt.Seasons != null ?
-                    trakt.Seasons.SelectMany(s => s.Episodes).Select(Episode.FromTrakt).ToList() : 
-                    trakt.Top_episodes.Select(Episode.FromTrakt).ToList(),
-                //Ratings = trakt.Ratings,
-                //Stats = trakt.Stats,
-                //Actors = trakt.People.Actors,
+                Seasons = trakt.Seasons.Select(Season.FromTrakt).ToList(),
+                Ratings = trakt.Ratings != null ? new Ratings
+                {
+                    Percentage = trakt.Ratings.Percentage,
+                    Loved = trakt.Ratings.Loved,
+                    Hated = trakt.Ratings.Hated,
+                    Votes = trakt.Ratings.Votes
+                } : null,
+                Stats = trakt.Stats != null ? new Stats
+                {
+                    Plays = trakt.Stats.Plays,
+                    Collection = trakt.Stats.Collection,
+                    Watchers = trakt.Stats.Watchers
+                } : null,
+                Actors = trakt.People == null || trakt.People.Actors == null ?
+                    null :
+                    trakt.People.Actors.Select(a => new Actor { Name = a.Name, Character = a.Character, Image = a.Images.Headshot }).ToList(),
                 Genres = trakt.Genres
             };
         }

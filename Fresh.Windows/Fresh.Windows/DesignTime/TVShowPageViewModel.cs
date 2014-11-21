@@ -21,9 +21,6 @@ namespace Fresh.Windows.DesignTime
             Network = "AMC";
             AirDay = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), "Sunday", ignoreCase: true);
             AirTime = DateTime.ParseExact("6:00pm", "h:mmtt", CultureInfo.InvariantCulture).TimeOfDay;
-            ImdbId = "tt1520211";
-            TvdbId = 153021;
-            TvrageId = 25056;
             LastUpdate = new DateTime(1416247798);
 
             Images = new Images
@@ -33,15 +30,20 @@ namespace Fresh.Windows.DesignTime
                 Banner = "http://slurm.trakt.us/images/banners/124.47.jpg"
             };
 
-            //Episodes = new ObservableCollection<IEpisodeViewModel> {
-            //    new EpisodeViewModel { Plays = 8676, Season = 5, Number = 1, Title = "No Sanctuary", Url = "http://trakt.tv/show/the-walking-dead/season/5/episode/1", First_aired = 1413172800, First_aired_iso = "2014-10-12T21:00:00-04:00", First_aired_utc = 1413162000 },
-            //    new EpisodeViewModel { Plays = 8450, Season = 5, Number = 3, Title = "Four Walls and a Roof", Url = "http://trakt.tv/show/the-walking-dead/season/5/episode/3", First_aired = 1414382400, First_aired_iso = "2014-10-26T21:00:00-04:00", First_aired_utc = 1414371600 }
-            //};
-            TopEpisodes = new ObservableCollection<Episode>
+            Seasons = new ObservableCollection<Season>
             {
-                new Episode { Title = "No Sanctuary", Season = 5, Number = 1 },
-                new Episode { Title = "Four Walls and a Roof", Season = 5, Number = 3 }
+                new Season
+                {
+                    Number = 5, Episodes = new ObservableCollection<Episode>
+                    {
+                        new Episode { Title = "No Sanctuary", Season = 5, Number = 1, Plays = 8476, Url = "http://trakt.tv/show/the-walking-dead/season/5/episode/1", FirstAired = new DateTime(1413172800), Screen = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg" },
+                        new Episode { Title = "Four Walls and a Roof", Season = 5, Number = 3, Plays = 8450, Url = "http://trakt.tv/show/the-walking-dead/season/5/episode/3", FirstAired = new DateTime(1414382400), Screen = "http://slurm.trakt.us/images/episodes/124-5-3.47.jpg" },
+                        new Episode { Title = "Strangers", Season = 5, Number = 2, Plays = 8324, Url = "http://trakt.tv/show/the-walking-dead/season/5/episode/2", FirstAired = new DateTime(1413770400), Screen = "http://slurm.trakt.us/images/episodes/124-5-2.47.jpg" }
+                    }
+                }
             };
+
+            TopEpisodes = new ObservableCollection<Episode>(Seasons[0].Episodes);
 
             Ratings = new Ratings
             {
@@ -84,15 +86,12 @@ namespace Fresh.Windows.DesignTime
         public string Network { get; set; }
         public DayOfWeek AirDay { get; set; }
         public TimeSpan AirTime { get; set; }
-        public string ImdbId { get; set; }
-        public int TvdbId { get; set; }
-        public int TvrageId { get; set; }
         public DateTime LastUpdate { get; set; }
         public Images Images { get; set; }
-        public ObservableCollection<TopWatcher> TopWatchers { get; set; }
-        public ObservableCollection<Episode> TopEpisodes { get; set; }
         public Ratings Ratings { get; set; }
         public Stats Stats { get; set; }
+        public ObservableCollection<Season> Seasons { get; set; }
+        public ObservableCollection<Episode> TopEpisodes { get; set; }
         public ObservableCollection<Actor> Actors { get; set; }
         public ObservableCollection<string> Genres { get; set; }
     }

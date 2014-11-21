@@ -37,7 +37,7 @@ namespace Fresh.Windows.ViewModels
             Collection = new ObservableCollection<TVShow>(
                 await storageService.HasKey("collection") ?
                     await storageService.Get<IList<TVShow>>("collection") :
-                    (await traktService.GetCollection(username)).Select(TVShow.FromTrakt)
+                    (await traktService.GetCollection(username, extended: true)).Select(TVShow.FromTrakt)
             );
 
             if (!await storageService.HasKey("collection"))

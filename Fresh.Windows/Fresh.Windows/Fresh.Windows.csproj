@@ -116,6 +116,7 @@
     <Compile Include="Interfaces\IMainPageViewModel.cs" />
     <Compile Include="Interfaces\ITVShowPageViewModel.cs" />
     <Compile Include="Models\Episode.cs" />
+    <Compile Include="Models\Season.cs" />
     <Compile Include="Models\TVShow.cs" />
     <Compile Include="ViewModels\EpisodePageViewModel.cs" />
     <Compile Include="ViewModels\TVShowPageViewModel.cs" />

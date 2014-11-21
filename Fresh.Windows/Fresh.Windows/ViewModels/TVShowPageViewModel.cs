@@ -14,7 +14,7 @@ namespace Fresh.Windows.ViewModels
     {
         private readonly ITraktService traktService;
 
-        private const int TOP_EPISODE_COUNT = 5;
+        private const int TOP_EPISODE_COUNT = 3;
 
         public TVShowPageViewModel(ITraktService traktService)
         {
@@ -36,8 +36,13 @@ namespace Fresh.Windows.ViewModels
             Year = fullShow.Year;
             Network = fullShow.Network;
             Overview = fullShow.Overview;
-            Images = new Images { Poster = fullShow.Images.Poster, Banner = fullShow.Images.Banner, Fanart = fullShow.Images.Fanart };
-            TopEpisodes = new ObservableCollection<Episode>(fullShow.Episodes.Take(TOP_EPISODE_COUNT));
+            Images = fullShow.Images;
+            FirstAired = fullShow.FirstAired;
+            Seasons = new ObservableCollection<Season>(fullShow.Seasons);
+            TopEpisodes = new ObservableCollection<Episode>(Seasons.SelectMany(s => s.Episodes).OrderByDescending(e => e.Plays).Take(TOP_EPISODE_COUNT));
+            Actors = new ObservableCollection<Actor>(fullShow.Actors);
+            Ratings = fullShow.Ratings;
+            Stats = fullShow.Stats;
         }
 
         string title = default(string);
@@ -73,15 +78,6 @@ namespace Fresh.Windows.ViewModels
         TimeSpan airTime = default(TimeSpan);
         public TimeSpan AirTime { get { return airTime; } set { SetProperty(ref airTime, value); } }
 
-        string imdbId = default(string);
-        public string ImdbId { get { return imdbId; } set { SetProperty(ref imdbId, value); } }
-
-        int tvdbId = default(int);
-        public int TvdbId { get { return tvdbId; } set { SetProperty(ref tvdbId, value); } }
-
-        int tvrageId = default(int);
-        public int TvrageId { get { return tvrageId; } set { SetProperty(ref tvrageId, value); } }
-
         DateTime lastUpdate = default(DateTime);
         public DateTime LastUpdate { get { return lastUpdate; } set { SetProperty(ref lastUpdate, value); } }
 
@@ -97,11 +93,11 @@ namespace Fresh.Windows.ViewModels
         ObservableCollection<Actor> actors = default(ObservableCollection<Actor>);
         public ObservableCollection<Actor> Actors { get { return actors; } set { SetProperty(ref actors, value); } }
 
-        ObservableCollection<TopWatcher> topWatchers = default(ObservableCollection<TopWatcher>);
-        public ObservableCollection<TopWatcher> TopWatchers { get { return topWatchers; } set { SetProperty(ref topWatchers, value); } }
-
         ObservableCollection<Episode> topEpisodes = default(ObservableCollection<Episode>);
         public ObservableCollection<Episode> TopEpisodes { get { return topEpisodes; } set { SetProperty(ref topEpisodes, value); } }
+
+        ObservableCollection<Season> seasons = default(ObservableCollection<Season>);
+        public ObservableCollection<Season> Seasons { get { return seasons; } set { SetProperty(ref seasons, value); } }
 
         ObservableCollection<string> genres = default(ObservableCollection<string>);
         public ObservableCollection<string> Genres { get { return genres; } set { SetProperty(ref genres, value); } } 

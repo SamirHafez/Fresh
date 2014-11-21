@@ -23,11 +23,6 @@ namespace Fresh.Windows.Core.Models
         public string Url { get; set; }
     }
 
-    public class TraktTopEpisode : TraktEpisode
-    {
-        public int Plays { get; set; }
-    }
-
     public class TraktRatings
     {
         public int Percentage { get; set; }
@@ -90,7 +85,7 @@ namespace Fresh.Windows.Core.Models
         public string Poster { get; set; }
         public TraktImages Images { get; set; }
         public IList<TraktTopWatcher> Top_watchers { get; set; }
-        public IList<TraktTopEpisode> Top_episodes { get; set; }
+        public IList<TraktEpisode> Top_episodes { get; set; }
         public TraktRatings Ratings { get; set; }
         public TraktStats Stats { get; set; }
         public TraktPeople People { get; set; }

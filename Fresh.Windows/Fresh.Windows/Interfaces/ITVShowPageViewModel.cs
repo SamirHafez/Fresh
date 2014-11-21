@@ -17,17 +17,14 @@ namespace Fresh.Windows.Interfaces
         string Network { get; set; }
         DayOfWeek AirDay { get; set; }
         TimeSpan AirTime { get; set; }
-        string ImdbId { get; set; }
-        int TvdbId { get; set; }
-        int TvrageId { get; set; }
         DateTime LastUpdate { get; set; }
         Images Images { get; set; }
         Ratings Ratings { get; set; }
         Stats Stats { get; set; }
 
         ObservableCollection<string> Genres { get; set; }
+        ObservableCollection<Season> Seasons { get; set; }
         ObservableCollection<Episode> TopEpisodes { get; set; }
         ObservableCollection<Actor> Actors { get; set; }
-        ObservableCollection<TopWatcher> TopWatchers { get; set; }
     }
 }
