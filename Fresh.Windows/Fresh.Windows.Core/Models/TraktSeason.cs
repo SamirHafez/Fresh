@@ -11,6 +11,8 @@ namespace Fresh.Windows.Core.Models
     public class TraktSeason
     {
         public int Season { get; set; }
+        public string Url { get; set; }
+        public string Poster { get; set; }
         public IList<TraktEpisode> Episodes { get; set; }
     }
 
@@ -32,6 +34,8 @@ namespace Fresh.Windows.Core.Models
             var season = new TraktSeason
             {
                 Season = (int)properties[0].Value,
+                Url = (string)properties[2].Value,
+                Poster = (string)properties[3].Value,
                 Episodes = new List<TraktEpisode>()
             };
 

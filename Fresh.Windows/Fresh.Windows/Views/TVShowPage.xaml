@@ -38,19 +38,7 @@
             IsSwipeEnabled="false">
                     <GridView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Height="110" Width="480" Margin="10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="110" Height="110">
-                                    <TextBlock Style="{StaticResource HeaderTextBlockStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Episodes.Count}"></TextBlock>
-                                </Border>
-                                <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="10,0,0,0">
-                                    <TextBlock Text="{Binding Number}" Style="{StaticResource TitleTextBlockStyle}" TextWrapping="NoWrap"/>
-                                    <TextBlock Text="{Binding FirstAired}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="NoWrap"/>
-                                </StackPanel>
-                            </Grid>
+                            <Image Source="{Binding Poster}" Width="350" Margin="0, 4, 14, 0" AutomationProperties.Name="{Binding Number}"/>
                         </DataTemplate>
                     </GridView.ItemTemplate>
                     <GridView.Header>
@@ -68,7 +56,7 @@
                 </GridView>
 
                 <StackPanel Orientation="Vertical" Grid.Row="1">
-                    <TextBlock Style="{StaticResource HeaderTextBlockStyle}" HorizontalAlignment="Center">top episodes</TextBlock>
+                    <TextBlock Style="{StaticResource HeaderTextBlockStyle}" HorizontalAlignment="Left">top episodes</TextBlock>
                     <Grid Height="300" Width="600">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>

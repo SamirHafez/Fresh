@@ -34,7 +34,10 @@ namespace Fresh.Windows.DesignTime
             {
                 new Season
                 {
-                    Number = 5, Episodes = new ObservableCollection<Episode>
+                    Number = 5,
+                    Url = "http://trakt.tv/show/the-walking-dead/season/5",
+                    Poster = "http://slurm.trakt.us/images/seasons/124-5.47.jpg",
+                    Episodes = new ObservableCollection<Episode>
                     {
                         new Episode { Title = "No Sanctuary", Season = 5, Number = 1, Plays = 8476, Url = "http://trakt.tv/show/the-walking-dead/season/5/episode/1", FirstAired = new DateTime(1413172800), Screen = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg" },
                         new Episode { Title = "Four Walls and a Roof", Season = 5, Number = 3, Plays = 8450, Url = "http://trakt.tv/show/the-walking-dead/season/5/episode/3", FirstAired = new DateTime(1414382400), Screen = "http://slurm.trakt.us/images/episodes/124-5-3.47.jpg" },
