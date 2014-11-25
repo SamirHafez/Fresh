@@ -34,8 +34,6 @@ namespace Fresh.Windows.Core.Models
             var season = new TraktSeason
             {
                 Season = (int)properties[0].Value,
-                Url = (string)properties[2].Value,
-                Poster = (string)properties[3].Value,
                 Episodes = new List<TraktEpisode>()
             };
 

@@ -11,7 +11,7 @@ namespace Fresh.Windows
 {
     sealed partial class App : MvvmAppBase
     {
-        public enum Experience { Main, Login, TVShow };
+        public enum Experience { Main, Login, TVShow, Season };
 
         private readonly UnityContainer container = new UnityContainer();
 
@@ -28,6 +28,7 @@ namespace Fresh.Windows
             container.RegisterType<IConfigurationService, FreshConfigurationService>(new ContainerControlledLifetimeManager());
             container.RegisterType<ILoginService, LoginService>(new ContainerControlledLifetimeManager());
             container.RegisterType<IStorageService, PCLStorageService>(new ContainerControlledLifetimeManager());
+            container.RegisterType<ICrawlerService, FreeTVCrawler>();
             container.RegisterInstance<ITraktService>(new TraktService(TRAKT_APIKEY), new ContainerControlledLifetimeManager());
 
             return Task.FromResult<object>(null);

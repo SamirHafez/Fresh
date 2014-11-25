@@ -1,5 +1,7 @@
 ﻿using Fresh.Windows.Core.Models;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace Fresh.Windows.Models
 {
@@ -15,6 +17,7 @@ namespace Fresh.Windows.Models
         public string Screen { get; set; }
         public int TvdbId { get; set; }
         public int? Plays { get; set; }
+        public IList<string> Links { get; set; }
         public DateTime FirstAired { get; set; }
         public Ratings Ratings { get; set; }
 
@@ -27,7 +30,7 @@ namespace Fresh.Windows.Models
                 Number = trakt.Number,
                 EpisodeNumber = trakt.Episode,
                 Url = trakt.Url,
-                FirstAired = new DateTime(trakt.First_aired),
+                FirstAired = DateTime.Parse(trakt.First_aired_iso, CultureInfo.InvariantCulture),
                 Overview = trakt.Overview,
                 TvdbId = trakt.Tvdb_id,
                 Screen = trakt.Screen,

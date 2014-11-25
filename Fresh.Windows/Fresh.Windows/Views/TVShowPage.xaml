@@ -6,6 +6,7 @@
     xmlns:controls="using:Fresh.Windows.Controls"
     xmlns:prism="using:Microsoft.Practices.Prism.Mvvm"
     prism:ViewModelLocator.AutoWireViewModel="True"
+    xmlns:helpers="using:Fresh.Windows.Helpers"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:designTime="using:Fresh.Windows.DesignTime"
@@ -26,7 +27,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <ScrollViewer Margin="39,0" VerticalScrollBarVisibility="Disabled" Grid.Row="1" HorizontalScrollMode="Enabled" VerticalScrollMode="Disabled" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalScrollBarVisibility="Auto">
+        <ScrollViewer Margin="39,10" VerticalScrollBarVisibility="Disabled" Grid.Row="1" HorizontalScrollMode="Enabled" VerticalScrollMode="Disabled" VerticalContentAlignment="Center" HorizontalScrollBarVisibility="Auto">
             <StackPanel Orientation="Horizontal">
                 <GridView
             AutomationProperties.AutomationId="ItemGridView"
@@ -34,18 +35,20 @@
             TabIndex="1"
             Grid.RowSpan="2"
             ItemsSource="{Binding Seasons}"
+            IsItemClickEnabled="True"
             SelectionMode="None"
+            helpers:ItemClickCommand.Command="{Binding EnterSeasonCommand}"
             IsSwipeEnabled="false">
                     <GridView.ItemTemplate>
                         <DataTemplate>
-                            <Image Source="{Binding Poster}" Width="350" Margin="0, 4, 14, 0" AutomationProperties.Name="{Binding Number}"/>
+                            <Image Source="{Binding Poster}" Width="350" Margin="0, 4, 10, 0" AutomationProperties.Name="{Binding Number}"/>
                         </DataTemplate>
                     </GridView.ItemTemplate>
                     <GridView.Header>
                         <StackPanel Width="480" Margin="0,4,14,0">
                             <TextBlock Text="{Binding Network}" Margin="0,0,0,20" Style="{StaticResource SubheaderTextBlockStyle}" MaxHeight="60"/>
                             <Image Source="{Binding Images.Poster}" Height="400" Margin="0,0,0,20" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
-                            <TextBlock Text="{Binding Overview}" Margin="0,0,0,0" Style="{StaticResource BodyTextBlockStyle}"/>
+                            <TextBlock Text="{Binding Overview}" MaxLines="5" Margin="0,0,0,0" Style="{StaticResource BodyTextBlockStyle}"/>
                         </StackPanel>
                     </GridView.Header>
                     <GridView.ItemContainerStyle>

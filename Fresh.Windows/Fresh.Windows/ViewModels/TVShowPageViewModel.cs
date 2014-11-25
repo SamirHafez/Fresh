@@ -7,27 +7,49 @@ using Windows.UI.Xaml.Navigation;
 using Fresh.Windows.Core.Services.Interfaces;
 using Fresh.Windows.Models;
 using System.Linq;
+using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Mvvm.Interfaces;
 
 namespace Fresh.Windows.ViewModels
 {
     public class TVShowPageViewModel : ViewModel, ITVShowPageViewModel
     {
         private readonly ITraktService traktService;
+        private readonly INavigationService navigationService;
+
+        private string showId;
+        private string showTitle;
 
         private const int TOP_EPISODE_COUNT = 3;
 
-        public TVShowPageViewModel(ITraktService traktService)
+        public TVShowPageViewModel(ITraktService traktService, INavigationService navigationService)
         {
             this.traktService = traktService;
+            this.navigationService = navigationService;
         }
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
-            var showId = navigationParameter as string;
+            showId = navigationParameter as string;
 
             var fullShow = TVShow.FromTrakt(await traktService.GetShow(showId, extended: true));
 
+            showTitle = fullShow.Title;
+
             Update(fullShow);
+        }
+
+        public DelegateCommand<Season> EnterSeasonCommand
+        {
+            get
+            {
+                return new DelegateCommand<Season>(EnterSeason);
+            }
+        }
+
+        private void EnterSeason(Season season)
+        {
+            navigationService.Navigate(App.Experience.Season.ToString(), new { showId, seasonNumber = season.Number, showTitle });
         }
 
         private void Update(TVShow fullShow)

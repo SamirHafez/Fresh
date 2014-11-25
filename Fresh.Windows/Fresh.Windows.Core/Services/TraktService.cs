@@ -39,7 +39,7 @@ namespace Fresh.Windows.Core.Services
             return this;
         }
 
-        public TraktIO<T> WithParameters(object parameters)
+        public TraktIO<T> WithParameters(dynamic parameters)
         {
             this.parameters = parameters;
             return this;
@@ -78,7 +78,7 @@ namespace Fresh.Windows.Core.Services
         {
             return asPost ?
                 TRAKT_API_URL + path + "/" + apiKey + (extended ? "/extended" : string.Empty) :
-                TRAKT_API_URL + path + "/" + apiKey + "/" + parameters.username + (extended ? "/extended" : string.Empty);
+                TRAKT_API_URL + path + "/" + apiKey + "/" + parameters.username + (parameters.GetType().GetProperty("season") != null ? "/" + parameters.season : "") + (extended ? "/extended" : string.Empty);
         }
 
         private HttpContent GeneratePostBody()
@@ -103,6 +103,14 @@ namespace Fresh.Windows.Core.Services
                 ForPath("user/library/shows/collection.json").
                 WithParameters(new { username }).
                 Extended(extended).
+                Execute();
+        }
+
+        public Task<IList<TraktEpisode>> GetSeason(string showId, int seasonNumber, bool extended = false)
+        {
+            return new TraktIO<IList<TraktEpisode>>(apiKey).
+                ForPath("show/season.json").
+                WithParameters(new { username = showId, season = seasonNumber }).
                 Execute();
         }
 
