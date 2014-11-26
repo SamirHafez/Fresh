@@ -1,0 +1,94 @@
+﻿<controls:PageBase
+    x:Class="Fresh.Windows.Views.SeasonPage"
+    xmlns:controls="using:Fresh.Windows.Controls"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Fresh.Windows.Views"
+    xmlns:prism="using:Microsoft.Practices.Prism.Mvvm"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    xmlns:helpers="using:Fresh.Windows.Helpers"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:designTime="using:Fresh.Windows.DesignTime"
+    mc:Ignorable="d">
+
+    <d:Page.DataContext>
+        <designTime:SeasonPageViewModel/>
+    </d:Page.DataContext>
+
+    <Grid x:Name="LayoutRoot">
+        <Grid.Background>
+            <SolidColorBrush Color="Black" Opacity=".7"></SolidColorBrush>
+        </Grid.Background>
+        <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition/>
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title Panel -->
+        <StackPanel Grid.Row="0" Margin="19,0,0,0">
+            <TextBlock Text="FRESH" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
+            <TextBlock Text="{Binding Number}" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
+        </StackPanel>
+
+        <!--TODO: Content should be placed within the following grid-->
+        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="100"></RowDefinition>
+            </Grid.RowDefinitions>
+            <ScrollViewer Grid.Row="1" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" VerticalScrollMode="Disabled">
+                <StackPanel Orientation="Horizontal">
+                    <ListView Height="100"
+            x:Name="itemListView"
+            ItemsSource="{Binding Episodes}"
+            SelectionMode="Single"
+            helpers:SelectionChangedCommand.Command="{Binding EpisodeSelectedCommand}"
+            IsSwipeEnabled="False">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"></StackPanel>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Screen}" Height="100" Margin="0, 0, 10, 0" Stretch="UniformToFill" AutomationProperties.Name="{Binding Number}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="FrameworkElement">
+                                <Setter Property="Margin" Value="0,0,0,10"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                </StackPanel>
+            </ScrollViewer>
+
+
+
+            <Grid x:Name="itemDetailGrid" Grid.Row="0" DataContext="{Binding SelectedItem, ElementName=itemListView}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30*"></RowDefinition>
+                    <RowDefinition Height="70*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30*"></ColumnDefinition>
+                        <ColumnDefinition Width="70*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Source="{Binding Screen}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
+                    <TextBlock Grid.Column="1" Margin="20" TextWrapping="WrapWholeWords" Text="{Binding Overview}"></TextBlock>
+                </Grid>
+
+                <MediaElement Grid.Row="1" AreTransportControlsEnabled="True" Source="{Binding Links[0]}" AutoPlay="False"></MediaElement>
+            </Grid>
+        </Grid>
+    </Grid>
+</controls:PageBase>

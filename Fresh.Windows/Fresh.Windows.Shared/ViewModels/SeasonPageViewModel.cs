@@ -30,7 +30,7 @@ namespace Fresh.Windows.ViewModels
             var seasonNumber = (int)parameters.seasonNumber;
             showTitle = (string)parameters.showTitle;
 
-            Number = seasonNumber; 
+            Number = seasonNumber;
 
             var episodes = (await traktService.GetSeason(showId, seasonNumber, extended: true)).Select(Episode.FromTrakt).ToList();
             Episodes = new ObservableCollection<IEpisodeViewModel>(episodes.Select(e => new EpisodeViewModel
@@ -54,7 +54,8 @@ namespace Fresh.Windows.ViewModels
 
         private async void EpisodeSelected(IEpisodeViewModel episode)
         {
-            episode.Links = new ObservableCollection<string>(await crawlerService.GetLinks(showTitle, episode.Season, episode.Number));
+            if (episode.Links.Count == 0)
+                episode.Links = new ObservableCollection<string>(await crawlerService.GetLinks(showTitle, episode.Season, episode.Number));
         }
 
         ObservableCollection<IEpisodeViewModel> episodes = default(ObservableCollection<IEpisodeViewModel>);

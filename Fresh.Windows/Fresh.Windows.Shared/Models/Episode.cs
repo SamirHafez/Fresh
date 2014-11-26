@@ -17,6 +17,7 @@ namespace Fresh.Windows.Models
         public string Screen { get; set; }
         public int TvdbId { get; set; }
         public int? Plays { get; set; }
+        public bool Seen { get; set; }
         public IList<string> Links { get; set; }
         public DateTime FirstAired { get; set; }
         public Ratings Ratings { get; set; }
@@ -30,11 +31,12 @@ namespace Fresh.Windows.Models
                 Number = trakt.Number,
                 EpisodeNumber = trakt.Episode,
                 Url = trakt.Url,
-                FirstAired = DateTime.Parse(trakt.First_aired_iso, CultureInfo.InvariantCulture),
+                FirstAired = DateTime.Parse(trakt.First_aired_iso ?? "1900-01-01", CultureInfo.InvariantCulture),
                 Overview = trakt.Overview,
                 TvdbId = trakt.Tvdb_id,
                 Screen = trakt.Screen,
                 Plays = trakt.Plays,
+                Seen = false,
                 Ratings = trakt.Ratings != null ? new Ratings
                 {
                     Percentage = trakt.Ratings.Percentage,

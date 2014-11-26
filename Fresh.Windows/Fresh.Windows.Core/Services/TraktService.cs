@@ -106,6 +106,15 @@ namespace Fresh.Windows.Core.Services
                 Execute();
         }
 
+        public Task<IList<TraktTVShow>> GetWatched(string username, bool extended = false)
+        {
+            return new TraktIO<IList<TraktTVShow>>(apiKey).
+                ForPath("user/library/shows/watched.json").
+                WithParameters(new { username }).
+                Extended(extended).
+                Execute();
+        }
+
         public Task<IList<TraktEpisode>> GetSeason(string showId, int seasonNumber, bool extended = false)
         {
             return new TraktIO<IList<TraktEpisode>>(apiKey).

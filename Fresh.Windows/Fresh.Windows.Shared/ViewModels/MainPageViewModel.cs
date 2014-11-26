@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.UI.Xaml.Navigation;
 
 namespace Fresh.Windows.ViewModels
@@ -37,11 +38,22 @@ namespace Fresh.Windows.ViewModels
             Collection = new ObservableCollection<TVShow>(
                 await storageService.HasKey("collection") ?
                     await storageService.Get<IList<TVShow>>("collection") :
-                    (await traktService.GetCollection(username, extended: true)).Select(TVShow.FromTrakt)
+                    await GetCollectionWithWatched(username)
             );
 
             if (!await storageService.HasKey("collection"))
                 await storageService.Save("collection", Collection);
+        }
+
+        private async Task<IList<TVShow>> GetCollectionWithWatched(string username)
+        {
+            var collection = await traktService.GetCollection(username, extended: true);
+
+
+
+            return (await traktService.GetCollection(username, extended: true)).
+                Select(TVShow.FromTrakt).
+                ToList();
         }
 
         ObservableCollection<TVShow> collection = default(ObservableCollection<TVShow>);
