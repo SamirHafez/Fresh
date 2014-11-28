@@ -8,7 +8,7 @@ namespace Fresh.Windows.Core.Services.Interfaces
     {
         Task<dynamic> GetSettings(string username, string password);
 
-        Task<IList<TraktTVShow>> GetCollection(string username, bool extended = false);
+        Task<IList<TraktTVShow>> GetLibrary(string username, bool extended = false);
 
         Task<IList<TraktTVShow>> GetWatched(string username, bool extended = false);
 

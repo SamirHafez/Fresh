@@ -31,7 +31,7 @@
         <!-- Title Panel -->
         <StackPanel Grid.Row="0" Margin="19,0,0,0">
             <TextBlock Text="FRESH" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
-            <TextBlock Text="collection" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
+            <TextBlock Text="library" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
         </StackPanel>
 
         <!--TODO: Content should be placed within the following grid-->
@@ -41,9 +41,8 @@
             AutomationProperties.Name="Items"
             TabIndex="1"
             Grid.RowSpan="2"
-            ItemsSource="{Binding Collection}"
+            ItemsSource="{Binding Library}"
             IsItemClickEnabled="True"
-            Padding="10"
             SelectionMode="None"
             helpers:ItemClickCommand.Command="{Binding EnterShowCommand}"
             IsSwipeEnabled="false">
@@ -53,7 +52,7 @@
                             <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}">
                                 <Image Source="{Binding Images.Poster}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
                             </Border>
-                            <StackPanel VerticalAlignment="Bottom" Background="{ThemeResource ListViewItemOverlayBackgroundThemeBrush}">
+                            <StackPanel VerticalAlignment="Bottom" Background="Green">
                                 <TextBlock Text="{Binding Title}" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" Height="20" Margin="15,0,15,0" FontWeight="SemiBold"/>
                                 <TextBlock Text="{Binding Year}" Foreground="{ThemeResource ListViewItemOverlaySecondaryForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap" Margin="15,0,15,10" FontSize="12"/>
                             </StackPanel>

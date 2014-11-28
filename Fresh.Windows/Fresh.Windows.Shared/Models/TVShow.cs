@@ -53,7 +53,7 @@ namespace Fresh.Windows.Models
                 TvrageId = trakt.Tvrage_id,
                 LastUpdate = new DateTime(trakt.Last_updated),
                 Images = new Images { Poster = trakt.Images.Poster, Banner = trakt.Images.Banner, Fanart = trakt.Images.Fanart },
-                Seasons = trakt.Seasons.Select(Season.FromTrakt).ToList(),
+                Seasons = trakt.Seasons != null ? trakt.Seasons.Select(Season.FromTrakt).ToList() : null,
                 Ratings = trakt.Ratings != null ? new Ratings
                 {
                     Percentage = trakt.Ratings.Percentage,

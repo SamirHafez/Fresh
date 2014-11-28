@@ -17,7 +17,7 @@ namespace Fresh.Windows.Models
         public string Screen { get; set; }
         public int TvdbId { get; set; }
         public int? Plays { get; set; }
-        public bool Seen { get; set; }
+        public bool Watched { get; set; }
         public IList<string> Links { get; set; }
         public DateTime FirstAired { get; set; }
         public Ratings Ratings { get; set; }
@@ -36,7 +36,7 @@ namespace Fresh.Windows.Models
                 TvdbId = trakt.Tvdb_id,
                 Screen = trakt.Screen,
                 Plays = trakt.Plays,
-                Seen = false,
+                Watched = false,
                 Ratings = trakt.Ratings != null ? new Ratings
                 {
                     Percentage = trakt.Ratings.Percentage,

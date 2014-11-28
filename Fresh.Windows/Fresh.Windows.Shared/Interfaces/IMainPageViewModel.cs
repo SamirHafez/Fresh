@@ -5,6 +5,6 @@ namespace Fresh.Windows.Interfaces
 {
     public interface IMainPageViewModel
     {
-        ObservableCollection<TVShow> Collection { get; set; }
+        ObservableCollection<TVShow> Library { get; set; }
     }
 }

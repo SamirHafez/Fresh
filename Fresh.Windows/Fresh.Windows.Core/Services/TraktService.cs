@@ -97,10 +97,10 @@ namespace Fresh.Windows.Core.Services
             this.apiKey = apiKey;
         }
 
-        public Task<IList<TraktTVShow>> GetCollection(string username, bool extended = false)
+        public Task<IList<TraktTVShow>> GetLibrary(string username, bool extended = false)
         {
             return new TraktIO<IList<TraktTVShow>>(apiKey).
-                ForPath("user/library/shows/collection.json").
+                ForPath("user/library/shows/all.json").
                 WithParameters(new { username }).
                 Extended(extended).
                 Execute();

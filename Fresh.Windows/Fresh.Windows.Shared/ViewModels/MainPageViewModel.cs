@@ -35,29 +35,18 @@ namespace Fresh.Windows.ViewModels
             if (string.IsNullOrWhiteSpace(username))
                 throw new ArgumentException("Username not provided.");
 
-            Collection = new ObservableCollection<TVShow>(
-                await storageService.HasKey("collection") ?
-                    await storageService.Get<IList<TVShow>>("collection") :
-                    await GetCollectionWithWatched(username)
+            Library = new ObservableCollection<TVShow>(
+                await storageService.HasKey("library") ?
+                    await storageService.Get<IList<TVShow>>("library") :
+                    (await traktService.GetLibrary(username, extended: true)).Select(TVShow.FromTrakt).ToList()
             );
 
-            if (!await storageService.HasKey("collection"))
-                await storageService.Save("collection", Collection);
+            if (!await storageService.HasKey("library"))
+                await storageService.Save("library", Library);
         }
 
-        private async Task<IList<TVShow>> GetCollectionWithWatched(string username)
-        {
-            var collection = await traktService.GetCollection(username, extended: true);
-
-
-
-            return (await traktService.GetCollection(username, extended: true)).
-                Select(TVShow.FromTrakt).
-                ToList();
-        }
-
-        ObservableCollection<TVShow> collection = default(ObservableCollection<TVShow>);
-        public ObservableCollection<TVShow> Collection { get { return collection; } set { SetProperty(ref collection, value); } }
+        ObservableCollection<TVShow> library = default(ObservableCollection<TVShow>);
+        public ObservableCollection<TVShow> Library { get { return library; } set { SetProperty(ref library, value); } }
 
         public DelegateCommand<TVShow> EnterShowCommand
         {
