@@ -41,17 +41,21 @@
     <Compile Include="Models\TraktEpisode.cs" />
     <Compile Include="Models\TraktSeason.cs" />
     <Compile Include="Models\TraktTVShow.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FreeTVCrawler.cs" />
-    <Compile Include="Services\FreshConfigurationService.cs" />
-    <Compile Include="Services\Interfaces\IConfigurationService.cs" />
+    <Compile Include="Configuration\FreshSession.cs" />
+    <Compile Include="Configuration\ISession.cs" />
     <Compile Include="Services\Interfaces\ICrawlerService.cs" />
     <Compile Include="Services\Interfaces\ILoginService.cs" />
     <Compile Include="Services\Interfaces\IStorageService.cs" />
     <Compile Include="Services\Interfaces\ITraktService.cs" />
     <Compile Include="Services\LoginService.cs" />
     <Compile Include="Services\PCLStorageService.cs" />
+    <Compile Include="Services\SQLiteService.cs" />
     <Compile Include="Services\TraktService.cs" />
+    <Compile Include="SQLite.cs" />
+    <Compile Include="SQLiteAsync.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack-PCL">

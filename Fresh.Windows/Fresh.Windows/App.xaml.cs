@@ -6,6 +6,7 @@ using Windows.ApplicationModel.Activation;
 using System;
 using Fresh.Windows.Core.Services.Interfaces;
 using Microsoft.Practices.Prism.Mvvm.Interfaces;
+using Fresh.Windows.Core.Configuration;
 
 namespace Fresh.Windows
 {
@@ -25,7 +26,7 @@ namespace Fresh.Windows
         protected override Task OnInitializeAsync(IActivatedEventArgs args)
         {
             container.RegisterInstance<INavigationService>(NavigationService);
-            container.RegisterType<IConfigurationService, FreshConfigurationService>(new ContainerControlledLifetimeManager());
+            container.RegisterType<ISession, FreshSession>(new ContainerControlledLifetimeManager());
             container.RegisterType<ILoginService, LoginService>(new ContainerControlledLifetimeManager());
             container.RegisterType<IStorageService, PCLStorageService>(new ContainerControlledLifetimeManager());
             container.RegisterType<ICrawlerService, FreeTVCrawler>();

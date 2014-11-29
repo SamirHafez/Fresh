@@ -29,7 +29,8 @@ namespace Fresh.Windows.ViewModels
         {
             get
             {
-                return new DelegateCommand(Login);
+                return new DelegateCommand(Login,
+                    () => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password));
             }
         }
 

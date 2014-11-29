@@ -2,6 +2,8 @@
 using Newtonsoft.Json;
 using PCLStorage;
 using System.Threading.Tasks;
+using Fresh.Windows.Core.Models;
+using System;
 
 namespace Fresh.Windows.Core.Services
 {
@@ -35,6 +37,11 @@ namespace Fresh.Windows.Core.Services
             var file = await localStorage.GetFileAsync(string.Format("{0}.json", key));
 
             return JsonConvert.DeserializeObject<T>(await file.ReadAllTextAsync());
+        }
+
+        public Task<User> GetUserAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

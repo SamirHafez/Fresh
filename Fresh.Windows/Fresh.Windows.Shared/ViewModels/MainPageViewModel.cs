@@ -1,4 +1,5 @@
-﻿using Fresh.Windows.Core.Services.Interfaces;
+﻿using Fresh.Windows.Core.Configuration;
+using Fresh.Windows.Core.Services.Interfaces;
 using Fresh.Windows.Interfaces;
 using Fresh.Windows.Models;
 using Microsoft.Practices.Prism.Commands;
@@ -8,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using Windows.UI.Xaml.Navigation;
 
 namespace Fresh.Windows.ViewModels
@@ -18,9 +18,9 @@ namespace Fresh.Windows.ViewModels
         private readonly ITraktService traktService;
         private readonly IStorageService storageService;
         private readonly INavigationService navigationService;
-        private readonly IConfigurationService configurationService;
+        private readonly ISession configurationService;
 
-        public MainPageViewModel(ITraktService traktService, IStorageService storageService, INavigationService navigationService, IConfigurationService configurationService)
+        public MainPageViewModel(ITraktService traktService, IStorageService storageService, INavigationService navigationService, ISession configurationService)
         {
             this.traktService = traktService;
             this.storageService = storageService;

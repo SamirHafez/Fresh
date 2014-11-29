@@ -1,33 +1,29 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Fresh.Windows.Core.Services.Interfaces;
+using Fresh.Windows.Core.Configuration;
 
 namespace Fresh.Windows.Core.Services
 {
     public class LoginService : ILoginService
     {
-        public event EventHandler StateChanged;
-
         private readonly IStorageService storageService;
         private readonly ITraktService traktService;
-        private readonly IConfigurationService configurationService;
+        private readonly ISession session;
 
-        public LoginService(IStorageService storageService, ITraktService traktService, IConfigurationService configurationService)
+        public LoginService(IStorageService storageService, ITraktService traktService, ISession session)
         {
             this.storageService = storageService;
             this.traktService = traktService;
-            this.configurationService = configurationService;
+            this.session = session;
         }
 
         public async Task LoginAsync(string username, string password)
         {
-            if (StateChanged != null)
-                StateChanged(this, EventArgs.Empty);
-
             try
             {
                 dynamic settings = await traktService.GetSettings(username, password);
-                configurationService.Username = settings["username"].Value;
+                session.User = settings["username"].Value;
                 storageService.Save("user", settings);
             }
             catch (Exception exception)
@@ -43,15 +39,12 @@ namespace Fresh.Windows.Core.Services
 
         public async Task<bool> SilentLoginAsync()
         {
-            var hasKey = await storageService.HasKey("user");
+            var user = await storageService.GetUserAsync();
 
-            if (hasKey)
-            {
-                dynamic settings = await storageService.Get<dynamic>("user");
-                configurationService.Username = settings["username"].Value;
-            }
+            if (user != null)
+                session.User = user;
 
-            return hasKey;
+            return user != null;
         }
     }
 }
