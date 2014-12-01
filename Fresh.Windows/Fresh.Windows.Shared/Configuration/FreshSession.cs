@@ -1,6 +1,6 @@
-﻿using Fresh.Windows.Core.Models;
+﻿using Fresh.Windows.Shared.Models;
 
-namespace Fresh.Windows.Core.Configuration
+namespace Fresh.Windows.Shared.Configuration
 {
     public class FreshSession : ISession
     {

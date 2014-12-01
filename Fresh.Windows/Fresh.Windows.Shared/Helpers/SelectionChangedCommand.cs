@@ -2,7 +2,7 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace Fresh.Windows.Helpers
+namespace Fresh.Windows.Shared.Helpers
 {
     public static class SelectionChangedCommand
     {

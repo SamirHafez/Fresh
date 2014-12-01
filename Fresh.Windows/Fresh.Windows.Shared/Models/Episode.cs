@@ -1,16 +1,24 @@
 ﻿using Fresh.Windows.Core.Models;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace Fresh.Windows.Models
+namespace Fresh.Windows.Shared.Models
 {
     public class Episode
     {
-        public int Id { get; set; }
         public string Title { get; set; }
+
+        [PrimaryKey]
         public int Season { get; set; }
+
+        [PrimaryKey]
         public int Number { get; set; }
+
+        [PrimaryKey]
+        public string ShowId { get; set; }
+
         public int EpisodeNumber { get; set; }
         public string Overview { get; set; }
         public string Url { get; set; }
@@ -20,7 +28,6 @@ namespace Fresh.Windows.Models
         public bool Watched { get; set; }
         public IList<string> Links { get; set; }
         public DateTime FirstAired { get; set; }
-        public Ratings Ratings { get; set; }
 
         public static Episode FromTrakt(TraktEpisode trakt)
         {
@@ -36,14 +43,7 @@ namespace Fresh.Windows.Models
                 TvdbId = trakt.Tvdb_id,
                 Screen = trakt.Screen,
                 Plays = trakt.Plays,
-                Watched = false,
-                Ratings = trakt.Ratings != null ? new Ratings
-                {
-                    Percentage = trakt.Ratings.Percentage,
-                    Loved = trakt.Ratings.Loved,
-                    Hated = trakt.Ratings.Hated,
-                    Votes = trakt.Ratings.Votes
-                } : null
+                Watched = false
             };
         }
     }

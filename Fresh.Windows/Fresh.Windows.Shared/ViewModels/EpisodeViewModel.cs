@@ -1,4 +1,4 @@
-﻿using Fresh.Windows.Interfaces;
+﻿using Fresh.Windows.Shared.Interfaces;
 using Microsoft.Practices.Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;

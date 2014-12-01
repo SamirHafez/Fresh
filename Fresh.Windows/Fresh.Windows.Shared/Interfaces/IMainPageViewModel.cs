@@ -1,7 +1,7 @@
-﻿using Fresh.Windows.Models;
+﻿using Fresh.Windows.Shared.Models;
 using System.Collections.ObjectModel;
 
-namespace Fresh.Windows.Interfaces
+namespace Fresh.Windows.Shared.Interfaces
 {
     public interface IMainPageViewModel
     {

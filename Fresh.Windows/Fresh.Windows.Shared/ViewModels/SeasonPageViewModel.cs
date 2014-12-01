@@ -1,6 +1,6 @@
 ﻿using Fresh.Windows.Core.Services.Interfaces;
-using Fresh.Windows.Interfaces;
-using Fresh.Windows.Models;
+using Fresh.Windows.Shared.Interfaces;
+using Fresh.Windows.Shared.Models;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
 using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace Fresh.Windows.ViewModels
 
             Number = seasonNumber;
 
-            var episodes = (await traktService.GetSeason(showId, seasonNumber, extended: true)).Select(Episode.FromTrakt).ToList();
+            var episodes = (await traktService.GetSeasonAsync(showId, seasonNumber, extended: true)).Select(Episode.FromTrakt).ToList();
             Episodes = new ObservableCollection<IEpisodeViewModel>(episodes.Select(e => new EpisodeViewModel
             {
                 Number = e.Number,

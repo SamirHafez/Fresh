@@ -1,15 +1,15 @@
 ﻿<controls:PageBase
     x:Class="Fresh.Windows.Views.SeasonPage"
-    xmlns:controls="using:Fresh.Windows.Controls"
+    xmlns:controls="using:Fresh.Windows.Shared.Controls"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Fresh.Windows.Views"
     xmlns:prism="using:Microsoft.Practices.Prism.Mvvm"
     prism:ViewModelLocator.AutoWireViewModel="True"
-    xmlns:helpers="using:Fresh.Windows.Helpers"
+    xmlns:helpers="using:Fresh.Windows.Shared.Helpers"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:designTime="using:Fresh.Windows.DesignTime"
+    xmlns:designTime="using:Fresh.Windows.Shared.DesignTime"
     mc:Ignorable="d">
 
     <d:Page.DataContext>

@@ -1,14 +1,14 @@
-﻿using Fresh.Windows.Interfaces;
-using Microsoft.Practices.Prism.Mvvm;
+﻿using Microsoft.Practices.Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using Windows.UI.Xaml.Navigation;
 using Fresh.Windows.Core.Services.Interfaces;
-using Fresh.Windows.Models;
 using System.Linq;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm.Interfaces;
+using Fresh.Windows.Shared.Interfaces;
+using Fresh.Windows.Shared.Models;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -32,7 +32,7 @@ namespace Fresh.Windows.ViewModels
         {
             showId = navigationParameter as string;
 
-            var fullShow = TVShow.FromTrakt(await traktService.GetShow(showId, extended: true));
+            var fullShow = TVShow.FromTrakt(await traktService.GetShowAsync(showId, extended: true));
 
             showTitle = fullShow.Title;
 
@@ -58,13 +58,10 @@ namespace Fresh.Windows.ViewModels
             Year = fullShow.Year;
             Network = fullShow.Network;
             Overview = fullShow.Overview;
-            Images = fullShow.Images;
+            Poster = fullShow.Poster;
             FirstAired = fullShow.FirstAired;
             Seasons = new ObservableCollection<Season>(fullShow.Seasons);
             TopEpisodes = new ObservableCollection<Episode>(Seasons.SelectMany(s => s.Episodes).OrderByDescending(e => e.Plays).Take(TOP_EPISODE_COUNT));
-            Actors = new ObservableCollection<Actor>(fullShow.Actors);
-            Ratings = fullShow.Ratings;
-            Stats = fullShow.Stats;
         }
 
         string title = default(string);
@@ -103,17 +100,8 @@ namespace Fresh.Windows.ViewModels
         DateTime lastUpdate = default(DateTime);
         public DateTime LastUpdate { get { return lastUpdate; } set { SetProperty(ref lastUpdate, value); } }
 
-        Images images = default(Images);
-        public Images Images { get { return images; } set { SetProperty(ref images, value); } }
-
-        Ratings ratings = default(Ratings);
-        public Ratings Ratings { get { return ratings; } set { SetProperty(ref ratings, value); } }
-
-        Stats stats = default(Stats);
-        public Stats Stats { get { return stats; } set { SetProperty(ref stats, value); } }
-
-        ObservableCollection<Actor> actors = default(ObservableCollection<Actor>);
-        public ObservableCollection<Actor> Actors { get { return actors; } set { SetProperty(ref actors, value); } }
+        string poster = default(string);
+        public string Poster { get { return poster; } set { SetProperty(ref poster, value); } }
 
         ObservableCollection<Episode> topEpisodes = default(ObservableCollection<Episode>);
         public ObservableCollection<Episode> TopEpisodes { get { return topEpisodes; } set { SetProperty(ref topEpisodes, value); } }

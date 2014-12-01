@@ -1,10 +1,10 @@
-﻿using Fresh.Windows.Interfaces;
-using Fresh.Windows.Models;
+﻿using Fresh.Windows.Shared.Interfaces;
+using Fresh.Windows.Shared.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
 
-namespace Fresh.Windows.DesignTime
+namespace Fresh.Windows.Shared.DesignTime
 {
     public class TVShowPageViewModel : ITVShowPageViewModel
     {
@@ -23,12 +23,7 @@ namespace Fresh.Windows.DesignTime
             AirTime = DateTime.ParseExact("6:00pm", "h:mmtt", CultureInfo.InvariantCulture).TimeOfDay;
             LastUpdate = new DateTime(1416247798);
 
-            Images = new Images
-            {
-                Poster = "http://slurm.trakt.us/images/posters/124.47.jpg",
-                Fanart = "http://slurm.trakt.us/images/fanart/124.47.jpg",
-                Banner = "http://slurm.trakt.us/images/banners/124.47.jpg"
-            };
+            Poster = "http://slurm.trakt.us/images/posters/124.47.jpg";
 
             Seasons = new ObservableCollection<Season>
             {
@@ -48,33 +43,6 @@ namespace Fresh.Windows.DesignTime
 
             TopEpisodes = new ObservableCollection<Episode>(Seasons[0].Episodes);
 
-            Ratings = new Ratings
-            {
-                Percentage = 87,
-                Votes = 23707,
-                Loved = 22579,
-                Hated = 1128
-            };
-
-            Stats = new Stats
-            {
-                Watchers = 35688,
-                Plays = 335051,
-                Scrobbles = 281024,
-                Scrobbles_unique = 22065,
-                Checkins = 54027,
-                Checkins_unique = 14465,
-                Collection = 105842,
-                Collection_unique = 7847
-            };
-
-            Actors = new ObservableCollection<Actor>
-            {
-                new Actor { Name = "Andrew Lincoln", Character = "Rick Grimes", Image = "http://slurm.trakt.us/images/avatar-large.jpg" },
-                new Actor { Name = "Sarah Wayne Callies", Character = "Lori Grimes", Image = "http://slurm.trakt.us/images/avatar-large.jpg" },
-                new Actor { Name = "Steven Yeun", Character = "Glenn", Image = "http://slurm.trakt.us/images/avatar-large.jpg" }
-            };
-
             Genres = new ObservableCollection<string> { "Drama", "Horror", "Suspense" };
         }
 
@@ -90,12 +58,9 @@ namespace Fresh.Windows.DesignTime
         public DayOfWeek AirDay { get; set; }
         public TimeSpan AirTime { get; set; }
         public DateTime LastUpdate { get; set; }
-        public Images Images { get; set; }
-        public Ratings Ratings { get; set; }
-        public Stats Stats { get; set; }
+        public string Poster { get; set; }
         public ObservableCollection<Season> Seasons { get; set; }
         public ObservableCollection<Episode> TopEpisodes { get; set; }
-        public ObservableCollection<Actor> Actors { get; set; }
         public ObservableCollection<string> Genres { get; set; }
     }
 }

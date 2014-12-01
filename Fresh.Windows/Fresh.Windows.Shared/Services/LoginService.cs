@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Fresh.Windows.Core.Services.Interfaces;
-using Fresh.Windows.Core.Configuration;
+using Fresh.Windows.Shared.Services.Interfaces;
+using Fresh.Windows.Shared.Configuration;
+using Fresh.Windows.Shared.Models;
 
-namespace Fresh.Windows.Core.Services
+namespace Fresh.Windows.Shared.Services
 {
     public class LoginService : ILoginService
     {
@@ -22,9 +24,11 @@ namespace Fresh.Windows.Core.Services
         {
             try
             {
-                dynamic settings = await traktService.GetSettings(username, password);
-                session.User = settings["username"].Value;
-                storageService.Save("user", settings);
+                dynamic settings = await traktService.GetSettingsAsync(username, password); 
+                var user = new User { Username = settings["username"].Value }; 
+                await storageService.CreateOrUpdateUserAsync(user); 
+
+                session.User = user;
             }
             catch (Exception exception)
             {

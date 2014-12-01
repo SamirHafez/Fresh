@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 
-namespace Fresh.Windows.Interfaces
+namespace Fresh.Windows.Shared.Interfaces
 {
     public interface IEpisodeViewModel
     {

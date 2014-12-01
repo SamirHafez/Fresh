@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Fresh.Windows.Core.Services.Interfaces
+namespace Fresh.Windows.Shared.Services.Interfaces
 {
     public interface ILoginService
     {

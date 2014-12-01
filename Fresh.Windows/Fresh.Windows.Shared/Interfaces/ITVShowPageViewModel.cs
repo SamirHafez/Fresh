@@ -1,8 +1,8 @@
-﻿using Fresh.Windows.Models;
+﻿using Fresh.Windows.Shared.Models;
 using System;
 using System.Collections.ObjectModel;
 
-namespace Fresh.Windows.Interfaces
+namespace Fresh.Windows.Shared.Interfaces
 {
     public interface ITVShowPageViewModel
     {
@@ -18,13 +18,10 @@ namespace Fresh.Windows.Interfaces
         DayOfWeek AirDay { get; set; }
         TimeSpan AirTime { get; set; }
         DateTime LastUpdate { get; set; }
-        Images Images { get; set; }
-        Ratings Ratings { get; set; }
-        Stats Stats { get; set; }
+        string Poster { get; set; }
 
         ObservableCollection<string> Genres { get; set; }
         ObservableCollection<Season> Seasons { get; set; }
         ObservableCollection<Episode> TopEpisodes { get; set; }
-        ObservableCollection<Actor> Actors { get; set; }
     }
 }

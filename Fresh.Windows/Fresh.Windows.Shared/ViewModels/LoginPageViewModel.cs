@@ -1,5 +1,5 @@
-﻿using Fresh.Windows.Core.Services.Interfaces;
-using Fresh.Windows.Interfaces;
+﻿using Fresh.Windows.Shared.Interfaces;
+using Fresh.Windows.Shared.Services.Interfaces;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.Mvvm.Interfaces;
@@ -29,8 +29,7 @@ namespace Fresh.Windows.ViewModels
         {
             get
             {
-                return new DelegateCommand(Login,
-                    () => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password));
+                return new DelegateCommand(Login);
             }
         }
 

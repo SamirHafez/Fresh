@@ -6,9 +6,11 @@
     <SharedGUID>52e3e768-2dcc-4b1a-a962-c97b74d88f7e</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>Fresh.Windows</Import_RootNamespace>
+    <Import_RootNamespace>Fresh.Windows.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\FreshSession.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\ISession.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\PageBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DesignTime\EpisodeViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DesignTime\LoginPageViewModel.cs" />
@@ -25,6 +27,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\Episode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Season.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\TVShow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\User.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Interfaces\ILoginService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Interfaces\IStorageService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\LoginService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\SQLiteService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SQLite.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SQLiteAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\EpisodeViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LoginPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\MainPageViewModel.cs" />

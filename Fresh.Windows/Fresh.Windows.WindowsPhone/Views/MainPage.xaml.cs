@@ -1,5 +1,4 @@
-﻿using Fresh.Windows.Controls;
-using Windows.UI.Xaml.Controls;
+﻿using Fresh.Windows.Shared.Controls;
 
 namespace Fresh.Windows.Views
 {

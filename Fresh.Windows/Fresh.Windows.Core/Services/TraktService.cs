@@ -97,7 +97,7 @@ namespace Fresh.Windows.Core.Services
             this.apiKey = apiKey;
         }
 
-        public Task<IList<TraktTVShow>> GetLibrary(string username, bool extended = false)
+        public Task<IList<TraktTVShow>> GetLibraryAsync(string username, bool extended = false)
         {
             return new TraktIO<IList<TraktTVShow>>(apiKey).
                 ForPath("user/library/shows/all.json").
@@ -106,7 +106,7 @@ namespace Fresh.Windows.Core.Services
                 Execute();
         }
 
-        public Task<IList<TraktTVShow>> GetWatched(string username, bool extended = false)
+        public Task<IList<TraktTVShow>> GetWatchedAsync(string username, bool extended = false)
         {
             return new TraktIO<IList<TraktTVShow>>(apiKey).
                 ForPath("user/library/shows/watched.json").
@@ -115,7 +115,7 @@ namespace Fresh.Windows.Core.Services
                 Execute();
         }
 
-        public Task<IList<TraktEpisode>> GetSeason(string showId, int seasonNumber, bool extended = false)
+        public Task<IList<TraktEpisode>> GetSeasonAsync(string showId, int seasonNumber, bool extended = false)
         {
             return new TraktIO<IList<TraktEpisode>>(apiKey).
                 ForPath("show/season.json").
@@ -123,7 +123,7 @@ namespace Fresh.Windows.Core.Services
                 Execute();
         }
 
-        public Task<dynamic> GetSettings(string username, string password)
+        public Task<dynamic> GetSettingsAsync(string username, string password)
         {
             var passVector = CryptographicBuffer.ConvertStringToBinary(password, BinaryStringEncoding.Utf8);
             var digest = HashAlgorithmProvider.OpenAlgorithm("SHA1").HashData(passVector);
@@ -136,7 +136,7 @@ namespace Fresh.Windows.Core.Services
                 Execute();
         }
 
-        public Task<TraktTVShow> GetShow(string showId, bool extended = false)
+        public Task<TraktTVShow> GetShowAsync(string showId, bool extended = false)
         {
             return new TraktIO<TraktTVShow>(apiKey).
                 ForPath("show/summary.json").

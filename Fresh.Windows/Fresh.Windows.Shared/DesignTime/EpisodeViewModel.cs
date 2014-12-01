@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using Fresh.Windows.Interfaces;
+using Fresh.Windows.Shared.Interfaces;
 
-namespace Fresh.Windows.DesignTime
+namespace Fresh.Windows.Shared.DesignTime
 {
     public class EpisodeViewModel : IEpisodeViewModel
     {

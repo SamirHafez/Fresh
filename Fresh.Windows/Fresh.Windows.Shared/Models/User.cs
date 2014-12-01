@@ -1,6 +1,6 @@
 ﻿using SQLite;
 
-namespace Fresh.Windows.Core.Models
+namespace Fresh.Windows.Shared.Models
 {
     public class User
     {

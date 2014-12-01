@@ -1,6 +1,8 @@
-﻿using Fresh.Windows.Core.Configuration;
-using Fresh.Windows.Core.Services;
+﻿using Fresh.Windows.Core.Services;
 using Fresh.Windows.Core.Services.Interfaces;
+using Fresh.Windows.Shared.Configuration;
+using Fresh.Windows.Shared.Services;
+using Fresh.Windows.Shared.Services.Interfaces;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.Mvvm.Interfaces;
 using Microsoft.Practices.Unity;
@@ -28,7 +30,7 @@ namespace Fresh.Windows
             container.RegisterInstance<INavigationService>(NavigationService);
             container.RegisterType<ISession, FreshSession>(new ContainerControlledLifetimeManager());
             container.RegisterType<ILoginService, LoginService>(new ContainerControlledLifetimeManager());
-            container.RegisterType<IStorageService, PCLStorageService>(new ContainerControlledLifetimeManager());
+            container.RegisterType<IStorageService, SQLiteService>(new ContainerControlledLifetimeManager());
             container.RegisterType<ICrawlerService, FreeTVCrawler>();
             container.RegisterInstance<ITraktService>(new TraktService(TRAKT_APIKEY), new ContainerControlledLifetimeManager());
 

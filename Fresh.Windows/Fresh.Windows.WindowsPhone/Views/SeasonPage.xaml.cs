@@ -1,4 +1,4 @@
-﻿using Fresh.Windows.Controls;
+﻿using Fresh.Windows.Shared.Controls;
 
 namespace Fresh.Windows.Views
 {

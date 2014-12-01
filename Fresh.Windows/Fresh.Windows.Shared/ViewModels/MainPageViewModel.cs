@@ -1,15 +1,16 @@
-﻿using Fresh.Windows.Core.Configuration;
-using Fresh.Windows.Core.Services.Interfaces;
-using Fresh.Windows.Interfaces;
-using Fresh.Windows.Models;
+﻿using Fresh.Windows.Core.Services.Interfaces;
+using Fresh.Windows.Shared.Configuration;
+using Fresh.Windows.Shared.Interfaces;
+using Fresh.Windows.Shared.Models;
+using Fresh.Windows.Shared.Services.Interfaces;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.Mvvm.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using Windows.UI.Xaml.Navigation;
+using Fresh.Windows.Core.Models;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -30,19 +31,23 @@ namespace Fresh.Windows.ViewModels
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
-            var username = configurationService.Username;
+            var username = configurationService.User.Username;
 
             if (string.IsNullOrWhiteSpace(username))
                 throw new ArgumentException("Username not provided.");
 
-            Library = new ObservableCollection<TVShow>(
-                await storageService.HasKey("library") ?
-                    await storageService.Get<IList<TVShow>>("library") :
-                    (await traktService.GetLibrary(username, extended: true)).Select(TVShow.FromTrakt).ToList()
-            );
+            Library = new ObservableCollection<TVShow>(await storageService.GetLibraryAsync());
 
-            if (!await storageService.HasKey("library"))
-                await storageService.Save("library", Library);
+            var traktLibrary = await traktService.GetLibraryAsync(username, extended: library.Count == 0);
+
+            UpdateLibrary(traktLibrary);
+
+            await storageService.UpdateLibraryAsync(Library);
+       }
+
+        private void UpdateLibrary(IList<TraktTVShow> traktLibrary)
+        {
+            throw new NotImplementedException();
         }
 
         ObservableCollection<TVShow> library = default(ObservableCollection<TVShow>);

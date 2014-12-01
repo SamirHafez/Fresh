@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Fresh.Windows.Interfaces
+namespace Fresh.Windows.Shared.Interfaces
 {
     public interface ILoginPageViewModel
     {

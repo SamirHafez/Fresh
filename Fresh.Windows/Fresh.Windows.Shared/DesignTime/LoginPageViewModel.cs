@@ -1,7 +1,6 @@
-﻿using System;
-using Fresh.Windows.Interfaces;
+﻿using Fresh.Windows.Shared.Interfaces;
 
-namespace Fresh.Windows.DesignTime
+namespace Fresh.Windows.Shared.DesignTime
 {
     public class LoginPageViewModel : ILoginPageViewModel
     {
