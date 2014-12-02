@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 
 namespace Fresh.Windows.Shared.Interfaces
 {
@@ -11,6 +10,6 @@ namespace Fresh.Windows.Shared.Interfaces
         DateTime FirstAired { get; set; }
         string Overview { get; set; }
 
-        ObservableCollection<string> Links { get; set; }
+        string Link { get; set; }
     }
 }

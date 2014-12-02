@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Navigation;
-using Fresh.Windows.Core.Models;
+using System.Linq;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -36,18 +36,18 @@ namespace Fresh.Windows.ViewModels
             if (string.IsNullOrWhiteSpace(username))
                 throw new ArgumentException("Username not provided.");
 
-            Library = new ObservableCollection<TVShow>(await storageService.GetLibraryAsync());
+            Library = new ObservableCollection<TVShow>((await storageService.GetLibraryAsync()).OrderBy(show => show.Title));
 
-            var traktLibrary = await traktService.GetLibraryAsync(username, extended: library.Count == 0);
+            if (Library.Count == 0)
+            {
+                var traktLibrary = (await traktService.GetLibraryAsync(username, extended: true)).
+                    Select(TVShow.FromTrakt).
+                    ToList();
 
-            UpdateLibrary(traktLibrary);
+                Library = new ObservableCollection<TVShow>(traktLibrary);
 
-            await storageService.UpdateLibraryAsync(Library);
-       }
-
-        private void UpdateLibrary(IList<TraktTVShow> traktLibrary)
-        {
-            throw new NotImplementedException();
+                await storageService.UpdateLibraryAsync(Library);
+            }
         }
 
         ObservableCollection<TVShow> library = default(ObservableCollection<TVShow>);

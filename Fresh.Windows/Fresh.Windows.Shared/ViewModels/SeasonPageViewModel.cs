@@ -1,6 +1,7 @@
 ﻿using Fresh.Windows.Core.Services.Interfaces;
 using Fresh.Windows.Shared.Interfaces;
 using Fresh.Windows.Shared.Models;
+using Fresh.Windows.Shared.Services.Interfaces;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
 using System.Collections.Generic;
@@ -14,52 +15,45 @@ namespace Fresh.Windows.ViewModels
     {
         private readonly ITraktService traktService;
         private readonly ICrawlerService crawlerService;
+        private readonly IStorageService storageService;
 
-        private string showTitle;
-
-        public SeasonPageViewModel(ITraktService traktService, ICrawlerService crawlerService)
+        public SeasonPageViewModel(ITraktService traktService, ICrawlerService crawlerService, IStorageService storageService)
         {
             this.traktService = traktService;
             this.crawlerService = crawlerService;
+            this.storageService = storageService;
         }
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
-            dynamic parameters = navigationParameter;
-            string showId = parameters.showId;
-            var seasonNumber = (int)parameters.seasonNumber;
-            showTitle = (string)parameters.showTitle;
+            var seasonId = (int)navigationParameter;
 
-            Number = seasonNumber;
+            var season = await storageService.GetSeasonAsync(seasonId);
 
-            var episodes = (await traktService.GetSeasonAsync(showId, seasonNumber, extended: true)).Select(Episode.FromTrakt).ToList();
-            Episodes = new ObservableCollection<IEpisodeViewModel>(episodes.Select(e => new EpisodeViewModel
-            {
-                Number = e.Number,
-                Season = e.Season,
-                Screen = e.Screen,
-                Overview = e.Overview,
-                FirstAired = e.FirstAired,
-                Links = new ObservableCollection<string>(e.Links ?? Enumerable.Empty<string>())
-            }));
+            Number = season.Number; 
+            Episodes = new ObservableCollection<Episode>(season.Episodes);
         }
 
-        public DelegateCommand<IEpisodeViewModel> EpisodeSelectedCommand
+        public DelegateCommand<Episode> EpisodeSelectedCommand
         {
             get
             {
-                return new DelegateCommand<IEpisodeViewModel>(EpisodeSelected);
+                return new DelegateCommand<Episode>(EpisodeSelected);
             }
         }
 
-        private async void EpisodeSelected(IEpisodeViewModel episode)
+        private async void EpisodeSelected(Episode episode)
         {
-            if (episode.Links.Count == 0)
-                episode.Links = new ObservableCollection<string>(await crawlerService.GetLinks(showTitle, episode.Season, episode.Number));
+            if (episode.Link == null)
+            {
+                episode.Link = (await crawlerService.GetLinks(episode.Season.TVShow.Title, episode.Season.Number, episode.Number)).FirstOrDefault();
+
+                await storageService.UpdateEpisodeAsync(episode);
+            }
         }
 
-        ObservableCollection<IEpisodeViewModel> episodes = default(ObservableCollection<IEpisodeViewModel>);
-        public ObservableCollection<IEpisodeViewModel> Episodes { get { return episodes; } set { SetProperty(ref episodes, value); } }
+        ObservableCollection<Episode> episodes = default(ObservableCollection<Episode>);
+        public ObservableCollection<Episode> Episodes { get { return episodes; } set { SetProperty(ref episodes, value); } }
 
         int number = default(int);
         public int Number { get { return number; } set { SetProperty(ref number, value); } }

@@ -50,7 +50,7 @@
                     <DataTemplate>
                         <Grid Height="150" Margin="10">
                             <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}">
-                                <Image Source="{Binding Images.Poster}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
+                                <Image Source="{Binding Poster}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
                             </Border>
                             <StackPanel VerticalAlignment="Bottom" Background="Green">
                                 <TextBlock Text="{Binding Title}" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" Height="20" Margin="15,0,15,0" FontWeight="SemiBold"/>

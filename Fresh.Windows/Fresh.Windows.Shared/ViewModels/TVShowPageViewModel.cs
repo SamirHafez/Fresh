@@ -4,11 +4,11 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using Windows.UI.Xaml.Navigation;
 using Fresh.Windows.Core.Services.Interfaces;
-using System.Linq;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm.Interfaces;
 using Fresh.Windows.Shared.Interfaces;
 using Fresh.Windows.Shared.Models;
+using Fresh.Windows.Shared.Services.Interfaces;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -16,27 +16,35 @@ namespace Fresh.Windows.ViewModels
     {
         private readonly ITraktService traktService;
         private readonly INavigationService navigationService;
+        private readonly IStorageService storageService;
 
         private string showId;
         private string showTitle;
 
-        private const int TOP_EPISODE_COUNT = 3;
-
-        public TVShowPageViewModel(ITraktService traktService, INavigationService navigationService)
+        public TVShowPageViewModel(ITraktService traktService, INavigationService navigationService, IStorageService storageService)
         {
             this.traktService = traktService;
             this.navigationService = navigationService;
+            this.storageService = storageService;
         }
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
             showId = navigationParameter as string;
 
-            var fullShow = TVShow.FromTrakt(await traktService.GetShowAsync(showId, extended: true));
+            var dbShow = await storageService.GetShowAsync(showId);
 
-            showTitle = fullShow.Title;
+            Update(dbShow);
 
-            Update(fullShow);
+            if (dbShow.Seasons.Count == 0)
+            { 
+                var fullShow = TVShow.FromTrakt(await traktService.GetShowAsync(showId, extended: true));
+
+                await storageService.UpdateShowAsync(fullShow);
+
+                dbShow = fullShow;
+                Update(dbShow);
+            } 
         }
 
         public DelegateCommand<Season> EnterSeasonCommand
@@ -49,7 +57,7 @@ namespace Fresh.Windows.ViewModels
 
         private void EnterSeason(Season season)
         {
-            navigationService.Navigate(App.Experience.Season.ToString(), new { showId, seasonNumber = season.Number, showTitle });
+            navigationService.Navigate(App.Experience.Season.ToString(), season.Id);
         }
 
         private void Update(TVShow fullShow)
@@ -60,8 +68,8 @@ namespace Fresh.Windows.ViewModels
             Overview = fullShow.Overview;
             Poster = fullShow.Poster;
             FirstAired = fullShow.FirstAired;
+
             Seasons = new ObservableCollection<Season>(fullShow.Seasons);
-            TopEpisodes = new ObservableCollection<Episode>(Seasons.SelectMany(s => s.Episodes).OrderByDescending(e => e.Plays).Take(TOP_EPISODE_COUNT));
         }
 
         string title = default(string);
@@ -103,13 +111,10 @@ namespace Fresh.Windows.ViewModels
         string poster = default(string);
         public string Poster { get { return poster; } set { SetProperty(ref poster, value); } }
 
-        ObservableCollection<Episode> topEpisodes = default(ObservableCollection<Episode>);
-        public ObservableCollection<Episode> TopEpisodes { get { return topEpisodes; } set { SetProperty(ref topEpisodes, value); } }
-
         ObservableCollection<Season> seasons = default(ObservableCollection<Season>);
         public ObservableCollection<Season> Seasons { get { return seasons; } set { SetProperty(ref seasons, value); } }
 
         ObservableCollection<string> genres = default(ObservableCollection<string>);
-        public ObservableCollection<string> Genres { get { return genres; } set { SetProperty(ref genres, value); } } 
+        public ObservableCollection<string> Genres { get { return genres; } set { SetProperty(ref genres, value); } }
     }
 }

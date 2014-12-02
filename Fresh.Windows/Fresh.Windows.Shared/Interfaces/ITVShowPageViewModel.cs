@@ -22,6 +22,5 @@ namespace Fresh.Windows.Shared.Interfaces
 
         ObservableCollection<string> Genres { get; set; }
         ObservableCollection<Season> Seasons { get; set; }
-        ObservableCollection<Episode> TopEpisodes { get; set; }
     }
 }

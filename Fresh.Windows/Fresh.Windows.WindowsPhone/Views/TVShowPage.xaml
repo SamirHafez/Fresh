@@ -17,7 +17,7 @@
     </d:Page.DataContext>
 
     <controls:PageBase.Background>
-        <ImageBrush ImageSource="{Binding Images.Poster}"></ImageBrush>
+        <ImageBrush ImageSource="{Binding Poster}"></ImageBrush>
     </controls:PageBase.Background>
 
     <Grid x:Name="LayoutRoot">

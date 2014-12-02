@@ -1,7 +1,6 @@
 ﻿using Fresh.Windows.Shared.Interfaces;
 using Microsoft.Practices.Prism.Mvvm;
 using System;
-using System.Collections.ObjectModel;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -22,7 +21,7 @@ namespace Fresh.Windows.ViewModels
         DateTime firstAired = default(DateTime);
         public DateTime FirstAired { get { return firstAired; } set { SetProperty(ref firstAired, value); } }
 
-        ObservableCollection<string> links = default(ObservableCollection<string>);
-        public ObservableCollection<string> Links { get { return links; } set { SetProperty(ref links, value); } }
+        string link = default(string);
+        public string Link { get { return link; } set { SetProperty(ref link, value); } }
     }
 }

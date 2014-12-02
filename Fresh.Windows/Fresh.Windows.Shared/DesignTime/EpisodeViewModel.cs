@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using Fresh.Windows.Shared.Interfaces;
 
 namespace Fresh.Windows.Shared.DesignTime
 {
     public class EpisodeViewModel : IEpisodeViewModel
     {
-        public ObservableCollection<string> Links { get; set; }
+        public string Link { get; set; }
 
         public int Number { get; set; }
 

@@ -1,11 +1,13 @@
 ﻿using Fresh.Windows.Core.Services;
 using Fresh.Windows.Core.Services.Interfaces;
+using Fresh.Windows.Helpers;
 using Fresh.Windows.Shared.Configuration;
 using Fresh.Windows.Shared.Services;
 using Fresh.Windows.Shared.Services.Interfaces;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.Mvvm.Interfaces;
 using Microsoft.Practices.Unity;
+using SQLite.Net.Interop;
 using System;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
@@ -29,8 +31,9 @@ namespace Fresh.Windows
         {
             container.RegisterInstance<INavigationService>(NavigationService);
             container.RegisterType<ISession, FreshSession>(new ContainerControlledLifetimeManager());
-            container.RegisterType<ILoginService, LoginService>(new ContainerControlledLifetimeManager());
-            container.RegisterType<IStorageService, SQLiteService>(new ContainerControlledLifetimeManager());
+            container.RegisterType<ILoginService, LoginService>();
+            container.RegisterType<ISQLitePlatform, SQLitePlatformWP81>(new ContainerControlledLifetimeManager());
+            container.RegisterType<IStorageService, SQLiteService>();
             container.RegisterType<ICrawlerService, FreeTVCrawler>();
             container.RegisterInstance<ITraktService>(new TraktService(TRAKT_APIKEY), new ContainerControlledLifetimeManager());
 

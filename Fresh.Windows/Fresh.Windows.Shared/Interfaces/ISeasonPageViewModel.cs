@@ -1,10 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using Fresh.Windows.Shared.Models;
+using System.Collections.ObjectModel;
 
 namespace Fresh.Windows.Shared.Interfaces
 {
     public interface ISeasonPageViewModel
     { 
         int Number { get; set; }
-        ObservableCollection<IEpisodeViewModel> Episodes { get; set; }
+        ObservableCollection<Episode> Episodes { get; set; }
     }
 }

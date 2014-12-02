@@ -34,7 +34,10 @@
         <!-- Title Panel -->
         <StackPanel Grid.Row="0" Margin="19,0,0,0">
             <TextBlock Text="FRESH" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
-            <TextBlock Text="{Binding Number}" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
+            <TextBlock Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}">
+                <Run Text="Season "></Run>
+                <Run Text="{Binding Number}"></Run>
+            </TextBlock>
         </StackPanel>
 
         <!--TODO: Content should be placed within the following grid-->
@@ -70,8 +73,6 @@
                 </StackPanel>
             </ScrollViewer>
 
-
-
             <Grid x:Name="itemDetailGrid" Grid.Row="0" DataContext="{Binding SelectedItem, ElementName=itemListView}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30*"></RowDefinition>
@@ -84,10 +85,10 @@
                         <ColumnDefinition Width="70*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Image Grid.Column="0" Source="{Binding Screen}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
-                    <TextBlock Grid.Column="1" Margin="20" TextWrapping="WrapWholeWords" Text="{Binding Overview}"></TextBlock>
+                    <TextBlock Grid.Column="1" Margin="10" TextWrapping="WrapWholeWords" Text="{Binding Overview}"></TextBlock>
                 </Grid>
 
-                <MediaElement Grid.Row="1" AreTransportControlsEnabled="True" Source="{Binding Links[0]}" AutoPlay="False"></MediaElement>
+                <MediaElement Grid.Row="1" AreTransportControlsEnabled="True" Source="{Binding Link}" AutoPlay="False"></MediaElement>
             </Grid>
         </Grid>
     </Grid>
