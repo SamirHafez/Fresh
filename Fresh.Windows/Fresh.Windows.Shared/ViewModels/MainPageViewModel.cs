@@ -44,7 +44,7 @@ namespace Fresh.Windows.ViewModels
                     Select(TVShow.FromTrakt).
                     ToList();
 
-                Library = new ObservableCollection<TVShow>(traktLibrary);
+                Library = new ObservableCollection<TVShow>(traktLibrary.OrderBy(show => show.Title));
 
                 await storageService.UpdateLibraryAsync(Library);
             }

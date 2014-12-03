@@ -15,7 +15,6 @@ namespace Fresh.Windows.Shared.Models
 
         [ForeignKey(typeof(TVShow))]
         public string ShowId { get; set; }
-        public string Url { get; set; }
         public string Poster { get; set; }
 
         [ManyToOne]
@@ -29,7 +28,6 @@ namespace Fresh.Windows.Shared.Models
             return new Season
             {
                 Number = trakt.Season,
-                Url = trakt.Url,
                 Poster = trakt.Poster,
                 Episodes = trakt.Episodes != null ? new List<Episode>(trakt.Episodes.Select(Episode.FromTrakt)) : null
             };

@@ -2,11 +2,12 @@
 using SQLite.Net.Attributes;
 using SQLiteNetExtensions.Attributes;
 using System;
+using System.ComponentModel;
 using System.Globalization;
 
 namespace Fresh.Windows.Shared.Models
 {
-    public class Episode
+    public class Episode : INotifyPropertyChanged
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -17,16 +18,26 @@ namespace Fresh.Windows.Shared.Models
         public string Title { get; set; }
         public int Number { get; set; }
         public string Overview { get; set; }
-        public string Url { get; set; }
         public string Screen { get; set; }
-        public int TvdbId { get; set; }
-        public int? Plays { get; set; }
-        public bool Watched { get; set; }
-        public string Link { get; set; }
+
+        private string link;
+        public string Link
+        {
+            get { return link; }
+            set
+            {
+                link = value;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("Link"));
+            }
+        }
+
         public DateTime FirstAired { get; set; }
 
         [ManyToOne]
         public Season Season { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public static Episode FromTrakt(TraktEpisode trakt)
         {
@@ -34,13 +45,9 @@ namespace Fresh.Windows.Shared.Models
             {
                 Title = trakt.Title,
                 Number = trakt.Number,
-                Url = trakt.Url,
                 FirstAired = DateTime.Parse(trakt.First_aired_iso ?? "1900-01-01", CultureInfo.InvariantCulture),
                 Overview = trakt.Overview,
-                TvdbId = trakt.Tvdb_id,
-                Screen = trakt.Screen,
-                Plays = trakt.Plays,
-                Watched = false
+                Screen = trakt.Screen
             };
         }
     }

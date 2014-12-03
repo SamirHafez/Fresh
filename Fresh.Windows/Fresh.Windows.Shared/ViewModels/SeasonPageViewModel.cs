@@ -6,7 +6,6 @@ using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using Windows.UI.Xaml.Navigation;
 
 namespace Fresh.Windows.ViewModels
@@ -30,7 +29,7 @@ namespace Fresh.Windows.ViewModels
 
             var season = await storageService.GetSeasonAsync(seasonId);
 
-            Number = season.Number; 
+            Number = season.Number;
             Episodes = new ObservableCollection<Episode>(season.Episodes);
         }
 
@@ -46,7 +45,7 @@ namespace Fresh.Windows.ViewModels
         {
             if (episode.Link == null)
             {
-                episode.Link = (await crawlerService.GetLinks(episode.Season.TVShow.Title, episode.Season.Number, episode.Number)).FirstOrDefault();
+                episode.Link = await crawlerService.GetLink(episode.Season.TVShow.Title, episode.Season.Number, episode.Number);
 
                 await storageService.UpdateEpisodeAsync(episode);
             }

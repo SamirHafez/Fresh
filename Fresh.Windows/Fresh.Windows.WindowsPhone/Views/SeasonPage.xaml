@@ -12,6 +12,7 @@
     xmlns:designTime="using:Fresh.Windows.Shared.DesignTime"
     mc:Ignorable="d">
 
+
     <d:Page.DataContext>
         <designTime:SeasonPageViewModel/>
     </d:Page.DataContext>
@@ -85,7 +86,7 @@
                         <ColumnDefinition Width="70*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Image Grid.Column="0" Source="{Binding Screen}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
-                    <TextBlock Grid.Column="1" Margin="10" TextWrapping="WrapWholeWords" Text="{Binding Overview}"></TextBlock>
+                    <TextBlock Grid.Column="1" Margin="10" TextWrapping="WrapWholeWords" TextAlignment="Justify" Text="{Binding Overview}"></TextBlock>
                 </Grid>
 
                 <MediaElement Grid.Row="1" AreTransportControlsEnabled="True" Source="{Binding Link}" AutoPlay="False"></MediaElement>

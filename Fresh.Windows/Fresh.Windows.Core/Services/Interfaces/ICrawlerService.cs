@@ -5,6 +5,6 @@ namespace Fresh.Windows.Core.Services.Interfaces
 {
     public interface ICrawlerService
     {
-        Task<IList<string>> GetLinks(string tvShow, int season, int episode);
+        Task<string> GetLink(string tvShow, int season, int episode);
     }
 }
