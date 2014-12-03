@@ -12,7 +12,6 @@
     xmlns:designTime="using:Fresh.Windows.Shared.DesignTime"
     mc:Ignorable="d">
 
-
     <d:Page.DataContext>
         <designTime:SeasonPageViewModel/>
     </d:Page.DataContext>
