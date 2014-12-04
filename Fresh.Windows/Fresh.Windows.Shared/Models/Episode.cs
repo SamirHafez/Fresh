@@ -1,9 +1,7 @@
 ﻿using Fresh.Windows.Core.Models;
 using SQLite.Net.Attributes;
 using SQLiteNetExtensions.Attributes;
-using System;
 using System.ComponentModel;
-using System.Globalization;
 
 namespace Fresh.Windows.Shared.Models
 {
@@ -32,8 +30,6 @@ namespace Fresh.Windows.Shared.Models
             }
         }
 
-        public DateTime FirstAired { get; set; }
-
         [ManyToOne]
         public Season Season { get; set; }
 
@@ -45,7 +41,6 @@ namespace Fresh.Windows.Shared.Models
             {
                 Title = trakt.Title,
                 Number = trakt.Number,
-                FirstAired = DateTime.Parse(trakt.First_aired_iso ?? "1900-01-01", CultureInfo.InvariantCulture),
                 Overview = trakt.Overview,
                 Screen = trakt.Screen
             };
