@@ -15,11 +15,14 @@ namespace Fresh.Windows.Shared.Services
         private readonly SQLiteAsyncConnection context;
         private readonly SQLiteConnectionWithLock connection;
 
+        private bool isDisposed;
+
         public SQLiteService(ISQLitePlatform platform)
         {
             connection = new SQLiteConnectionWithLock(platform, new SQLiteConnectionString("fresh.db", storeDateTimeAsTicks: false));
             context = new SQLiteAsyncConnection(() => connection);
 
+            isDisposed = false;
 
             //var a = context.DropTableAsync<TVShow>().Result;
             //a = context.DropTableAsync<Season>().Result;
@@ -93,6 +96,29 @@ namespace Fresh.Windows.Shared.Services
             await context.CreateTablesAsync<TVShow, Season, Episode>();
 
             var updated = await context.UpdateAsync(episode);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (isDisposed)
+                return;
+
+            if (disposing)
+            {
+                if (connection.IsInTransaction)
+                    connection.Rollback();
+
+                using (connection.Lock())
+                    connection.Dispose();
+            }
+
+            isDisposed = true;
         }
     }
 }

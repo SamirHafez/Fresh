@@ -37,18 +37,19 @@ namespace Fresh.Windows.Helpers
 
     class SQLiteApi : ISQLiteApi
     {
-        static class Sqlite3
+        [BestFitMapping(false, ThrowOnUnmappableChar = true)]
+        static class NativeMethods
         {
-            [DllImport("sqlite3", EntryPoint = "sqlite3_open", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("sqlite3", EntryPoint = "sqlite3_open", CallingConvention = CallingConvention.Cdecl, BestFitMapping = false, ThrowOnUnmappableChar = true)]
             public static extern Result Open([MarshalAs(UnmanagedType.LPStr)] string filename, out IntPtr db);
 
-            [DllImport("sqlite3", EntryPoint = "sqlite3_open_v2", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("sqlite3", EntryPoint = "sqlite3_open_v2", CallingConvention = CallingConvention.Cdecl, BestFitMapping = false, ThrowOnUnmappableChar = true)]
             public static extern Result Open([MarshalAs(UnmanagedType.LPStr)] string filename, out IntPtr db, int flags, IntPtr zvfs);
 
             [DllImport("sqlite3", EntryPoint = "sqlite3_open_v2", CallingConvention = CallingConvention.Cdecl)]
             public static extern Result Open(byte[] filename, out IntPtr db, int flags, IntPtr zvfs);
 
-            [DllImport("sqlite3", EntryPoint = "sqlite3_open16", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("sqlite3", EntryPoint = "sqlite3_open16", CallingConvention = CallingConvention.Cdecl, BestFitMapping = false, ThrowOnUnmappableChar = true)]
             public static extern Result Open16([MarshalAs(UnmanagedType.LPWStr)] string filename, out IntPtr db);
 
             [DllImport("sqlite3", EntryPoint = "sqlite3_enable_load_extension", CallingConvention = CallingConvention.Cdecl)]
@@ -75,7 +76,7 @@ namespace Fresh.Windows.Helpers
             [DllImport("sqlite3", EntryPoint = "sqlite3_changes", CallingConvention = CallingConvention.Cdecl)]
             public static extern int Changes(IntPtr db);
 
-            [DllImport("sqlite3", EntryPoint = "sqlite3_prepare_v2", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("sqlite3", EntryPoint = "sqlite3_prepare_v2", CallingConvention = CallingConvention.Cdecl, BestFitMapping = false, ThrowOnUnmappableChar = true)]
             public static extern Result Prepare2(IntPtr db, [MarshalAs(UnmanagedType.LPStr)] string sql, int numBytes, out IntPtr stmt, IntPtr pzTail);
 
             [DllImport("sqlite3", EntryPoint = "sqlite3_prepare_v2", CallingConvention = CallingConvention.Cdecl)]
@@ -113,7 +114,7 @@ namespace Fresh.Windows.Helpers
                 return Marshal.PtrToStringUni(Errmsg(db));
             }
 
-            [DllImport("sqlite3", EntryPoint = "sqlite3_bind_parameter_index", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("sqlite3", EntryPoint = "sqlite3_bind_parameter_index", CallingConvention = CallingConvention.Cdecl, BestFitMapping = false, ThrowOnUnmappableChar = true)]
             public static extern int BindParameterIndex(IntPtr stmt, [MarshalAs(UnmanagedType.LPStr)] string name);
 
             [DllImport("sqlite3", EntryPoint = "sqlite3_bind_null", CallingConvention = CallingConvention.Cdecl)]
@@ -128,7 +129,7 @@ namespace Fresh.Windows.Helpers
             [DllImport("sqlite3", EntryPoint = "sqlite3_bind_double", CallingConvention = CallingConvention.Cdecl)]
             public static extern int BindDouble(IntPtr stmt, int index, double val);
 
-            [DllImport("sqlite3", EntryPoint = "sqlite3_bind_text16", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+            [DllImport("sqlite3", EntryPoint = "sqlite3_bind_text16", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode, BestFitMapping = false, ThrowOnUnmappableChar = true)]
             public static extern int BindText(IntPtr stmt, int index, [MarshalAs(UnmanagedType.LPWStr)] string val, int n, IntPtr free);
 
             [DllImport("sqlite3", EntryPoint = "sqlite3_bind_blob", CallingConvention = CallingConvention.Cdecl)]
@@ -173,7 +174,7 @@ namespace Fresh.Windows.Helpers
 
             public static string ColumnString(IntPtr stmt, int index)
             {
-                return Marshal.PtrToStringUni(Sqlite3.ColumnText16(stmt, index));
+                return Marshal.PtrToStringUni(NativeMethods.ColumnText16(stmt, index));
             }
 
             public static byte[] ColumnByteArray(IntPtr stmt, int index)
@@ -196,7 +197,7 @@ namespace Fresh.Windows.Helpers
         {
             string dbFileName = Encoding.UTF8.GetString(filename, 0, filename.Length - 1);
             Sqlite3DatabaseHandle internalDbHandle;
-            var ret = (Result)Sqlite3.Open(dbFileName, out internalDbHandle, flags, zVfs);
+            var ret = (Result)NativeMethods.Open(dbFileName, out internalDbHandle, flags, zVfs);
             db = new DbHandle(internalDbHandle);
             return ret;
         }
@@ -204,24 +205,24 @@ namespace Fresh.Windows.Helpers
         public ExtendedResult ExtendedErrCode(IDbHandle db)
         {
             var dbHandle = (DbHandle)db;
-            return Sqlite3.ExtendedErrCode(dbHandle.InternalDbHandle);
+            return NativeMethods.ExtendedErrCode(dbHandle.InternalDbHandle);
         }
 
         public int LibVersionNumber()
         {
-            return Sqlite3.LibVersionNumber();
+            return NativeMethods.LibVersionNumber();
         }
 
         public Result EnableLoadExtension(IDbHandle db, int onoff)
         {
             var dbHandle = (DbHandle)db;
-            return (Result)Sqlite3.EnableLoadExtension(dbHandle.InternalDbHandle, onoff);
+            return (Result)NativeMethods.EnableLoadExtension(dbHandle.InternalDbHandle, onoff);
         }
 
         public Result Close(IDbHandle db)
         {
             var dbHandle = (DbHandle)db;
-            return (Result)Sqlite3.Close(dbHandle.InternalDbHandle);
+            return (Result)NativeMethods.Close(dbHandle.InternalDbHandle);
         }
 
         public Result Initialize()
@@ -241,13 +242,13 @@ namespace Fresh.Windows.Helpers
         public Result BusyTimeout(IDbHandle db, int milliseconds)
         {
             var dbHandle = (DbHandle)db;
-            return (Result)Sqlite3.BusyTimeout(dbHandle.InternalDbHandle, milliseconds);
+            return (Result)NativeMethods.BusyTimeout(dbHandle.InternalDbHandle, milliseconds);
         }
 
         public int Changes(IDbHandle db)
         {
             var dbHandle = (DbHandle)db;
-            return Sqlite3.Changes(dbHandle.InternalDbHandle);
+            return NativeMethods.Changes(dbHandle.InternalDbHandle);
         }
 
 
@@ -257,7 +258,7 @@ namespace Fresh.Windows.Helpers
             var stmt = default(Sqlite3Statement);
 
             int queryByteCount = Encoding.UTF8.GetByteCount(query);
-            int r = (int)Sqlite3.Prepare2(dbHandle.InternalDbHandle, query, queryByteCount, out stmt, default(IntPtr));
+            int r = (int)NativeMethods.Prepare2(dbHandle.InternalDbHandle, query, queryByteCount, out stmt, default(IntPtr));
 
             if (r != 0)
             {
@@ -269,116 +270,116 @@ namespace Fresh.Windows.Helpers
         public Result Step(IDbStatement stmt)
         {
             var dbStatement = (DbStatement)stmt;
-            return (Result)Sqlite3.Step(dbStatement.InternalStmt);
+            return (Result)NativeMethods.Step(dbStatement.InternalStmt);
         }
 
         public Result Reset(IDbStatement stmt)
         {
             var dbStatement = (DbStatement)stmt;
-            return (Result)Sqlite3.Reset(dbStatement.InternalStmt);
+            return (Result)NativeMethods.Reset(dbStatement.InternalStmt);
         }
 
         public Result Finalize(IDbStatement stmt)
         {
             var dbStatement = (DbStatement)stmt;
             Sqlite3Statement internalStmt = dbStatement.InternalStmt;
-            return (Result)Sqlite3.Finalize(internalStmt);
+            return (Result)NativeMethods.Finalize(internalStmt);
         }
 
         public long LastInsertRowid(IDbHandle db)
         {
             var dbHandle = (DbHandle)db;
-            return Sqlite3.LastInsertRowid(dbHandle.InternalDbHandle);
+            return NativeMethods.LastInsertRowid(dbHandle.InternalDbHandle);
         }
 
         public string Errmsg16(IDbHandle db)
         {
             var dbHandle = (DbHandle)db;
-            return Sqlite3.GetErrmsg(dbHandle.InternalDbHandle);
+            return NativeMethods.GetErrmsg(dbHandle.InternalDbHandle);
         }
 
         public int BindParameterIndex(IDbStatement stmt, string name)
         {
             var dbStatement = (DbStatement)stmt;
-            return Sqlite3.BindParameterIndex(dbStatement.InternalStmt, name);
+            return NativeMethods.BindParameterIndex(dbStatement.InternalStmt, name);
         }
 
         public int BindNull(IDbStatement stmt, int index)
         {
             var dbStatement = (DbStatement)stmt;
-            return Sqlite3.BindNull(dbStatement.InternalStmt, index);
+            return NativeMethods.BindNull(dbStatement.InternalStmt, index);
         }
 
         public int BindInt(IDbStatement stmt, int index, int val)
         {
             var dbStatement = (DbStatement)stmt;
-            return Sqlite3.BindInt(dbStatement.InternalStmt, index, val);
+            return NativeMethods.BindInt(dbStatement.InternalStmt, index, val);
         }
 
         public int BindInt64(IDbStatement stmt, int index, long val)
         {
             var dbStatement = (DbStatement)stmt;
-            return Sqlite3.BindInt64(dbStatement.InternalStmt, index, val);
+            return NativeMethods.BindInt64(dbStatement.InternalStmt, index, val);
         }
 
         public int BindDouble(IDbStatement stmt, int index, double val)
         {
             var dbStatement = (DbStatement)stmt;
-            return Sqlite3.BindDouble(dbStatement.InternalStmt, index, val);
+            return NativeMethods.BindDouble(dbStatement.InternalStmt, index, val);
         }
 
         public int BindText16(IDbStatement stmt, int index, string val, int n, IntPtr free)
         {
             var dbStatement = (DbStatement)stmt;
-            return Sqlite3.BindText(dbStatement.InternalStmt, index, val, n, free);
+            return NativeMethods.BindText(dbStatement.InternalStmt, index, val, n, free);
         }
 
         public int BindBlob(IDbStatement stmt, int index, byte[] val, int n, IntPtr free)
         {
             var dbStatement = (DbStatement)stmt;
-            return Sqlite3.BindBlob(dbStatement.InternalStmt, index, val, n, free);
+            return NativeMethods.BindBlob(dbStatement.InternalStmt, index, val, n, free);
         }
 
         public int ColumnCount(IDbStatement stmt)
         {
             var dbStatement = (DbStatement)stmt;
-            return Sqlite3.ColumnCount(dbStatement.InternalStmt);
+            return NativeMethods.ColumnCount(dbStatement.InternalStmt);
         }
 
         public string ColumnName16(IDbStatement stmt, int index)
         {
             var dbStatement = (DbStatement)stmt;
-            return Marshal.PtrToStringAnsi(Sqlite3.ColumnName(dbStatement.InternalStmt, index));
+            return Marshal.PtrToStringAnsi(NativeMethods.ColumnName(dbStatement.InternalStmt, index));
         }
 
         public ColType ColumnType(IDbStatement stmt, int index)
         {
             var dbStatement = (DbStatement)stmt;
-            return (ColType)Sqlite3.ColumnType(dbStatement.InternalStmt, index);
+            return (ColType)NativeMethods.ColumnType(dbStatement.InternalStmt, index);
         }
 
         public int ColumnInt(IDbStatement stmt, int index)
         {
             var dbStatement = (DbStatement)stmt;
-            return Sqlite3.ColumnInt(dbStatement.InternalStmt, index);
+            return NativeMethods.ColumnInt(dbStatement.InternalStmt, index);
         }
 
         public long ColumnInt64(IDbStatement stmt, int index)
         {
             var dbStatement = (DbStatement)stmt;
-            return Sqlite3.ColumnInt64(dbStatement.InternalStmt, index);
+            return NativeMethods.ColumnInt64(dbStatement.InternalStmt, index);
         }
 
         public double ColumnDouble(IDbStatement stmt, int index)
         {
             var dbStatement = (DbStatement)stmt;
-            return Sqlite3.ColumnDouble(dbStatement.InternalStmt, index);
+            return NativeMethods.ColumnDouble(dbStatement.InternalStmt, index);
         }
 
         public int ColumnBytes(IDbStatement stmt, int index)
         {
             var dbStatement = (DbStatement)stmt;
-            return Sqlite3.ColumnBytes(dbStatement.InternalStmt, index);
+            return NativeMethods.ColumnBytes(dbStatement.InternalStmt, index);
         }
 
         public byte[] ColumnByteArray(IDbStatement stmt, int index)
@@ -389,13 +390,13 @@ namespace Fresh.Windows.Helpers
         public string ColumnText16(IDbStatement stmt, int index)
         {
             var dbStatement = (DbStatement)stmt;
-            return Marshal.PtrToStringAnsi(Sqlite3.ColumnText(dbStatement.InternalStmt, index));
+            return Marshal.PtrToStringAnsi(NativeMethods.ColumnText(dbStatement.InternalStmt, index));
         }
 
         public byte[] ColumnBlob(IDbStatement stmt, int index)
         {
             //var dbStatement = (DbStatement)stmt;
-            //return Sqlite3.ColumnBlob(dbStatement.InternalStmt, index);
+            //return NativeMethods.ColumnBlob(dbStatement.InternalStmt, index);
 
             throw new NotImplementedException();
         }
@@ -403,7 +404,7 @@ namespace Fresh.Windows.Helpers
         public Result Open(string filename, out IDbHandle db)
         {
             Sqlite3DatabaseHandle internalDbHandle;
-            var ret = (Result)Sqlite3.Open(filename, out internalDbHandle);
+            var ret = (Result)NativeMethods.Open(filename, out internalDbHandle);
             db = new DbHandle(internalDbHandle);
             return ret;
         }
@@ -411,25 +412,25 @@ namespace Fresh.Windows.Helpers
         public string GetErrmsg(IDbHandle db)
         {
             var dbHandle = (DbHandle)db;
-            return Sqlite3.GetErrmsg(dbHandle.InternalDbHandle);
+            return NativeMethods.GetErrmsg(dbHandle.InternalDbHandle);
         }
 
         public string ColumnString(IDbStatement stmt, int index)
         {
             var dbStatement = (DbStatement)stmt;
-            return Marshal.PtrToStringAnsi(Sqlite3.ColumnText(dbStatement.InternalStmt, index));
+            return Marshal.PtrToStringAnsi(NativeMethods.ColumnText(dbStatement.InternalStmt, index));
         }
 
         public string ColumnName(IDbStatement stmt, int index)
         {
             var dbStatement = (DbStatement)stmt;
-            return Marshal.PtrToStringAnsi(Sqlite3.ColumnName(dbStatement.InternalStmt, index));
+            return Marshal.PtrToStringAnsi(NativeMethods.ColumnName(dbStatement.InternalStmt, index));
         }
 
         public string ColumnText(IDbStatement stmt, int index)
         {
             var dbStatement = (DbStatement)stmt;
-            return Marshal.PtrToStringAnsi(Sqlite3.ColumnText(dbStatement.InternalStmt, index));
+            return Marshal.PtrToStringAnsi(NativeMethods.ColumnText(dbStatement.InternalStmt, index));
         }
 
         private struct DbHandle : IDbHandle
