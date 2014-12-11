@@ -42,7 +42,7 @@ namespace Fresh.Windows.ViewModels
             }
             catch (Exception exception)
             {
-                await new MessageDialog(exception.Message, "Error").ShowAsync();
+                //await new MessageDialog(exception.Message, "Error").ShowAsync();
             }
         }
     }

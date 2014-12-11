@@ -18,19 +18,19 @@ namespace Fresh.Windows.Shared.Models
         public string Overview { get; set; }
         public string Screen { get; set; }
 
-        public bool Watched { get; set; }
-
-        private string link;
-        public string Link
+        private bool watched;
+        public bool Watched 
         {
-            get { return link; }
-            set
+            get { return watched; }
+            set 
             {
-                link = value;
+                watched = value;
                 if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("Link"));
-            }
+                    PropertyChanged(this, new PropertyChangedEventArgs("Watched"));
+            } 
         }
+
+        public string Link { get; set; }
 
         [ManyToOne]
         public Season Season { get; set; }
