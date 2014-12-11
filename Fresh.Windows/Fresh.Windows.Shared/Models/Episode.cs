@@ -18,6 +18,8 @@ namespace Fresh.Windows.Shared.Models
         public string Overview { get; set; }
         public string Screen { get; set; }
 
+        public bool Watched { get; set; }
+
         private string link;
         public string Link
         {

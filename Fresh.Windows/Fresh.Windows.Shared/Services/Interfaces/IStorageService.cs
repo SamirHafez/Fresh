@@ -15,6 +15,8 @@ namespace Fresh.Windows.Shared.Services.Interfaces
 
         Task<TVShow> GetShowAsync(string showId);
 
+        Task<Episode> GetEpisodeAsync(int episodeId);
+
         Task UpdateLibraryAsync(IList<TVShow> library);
 
         Task UpdateShowAsync(TVShow dbShow);

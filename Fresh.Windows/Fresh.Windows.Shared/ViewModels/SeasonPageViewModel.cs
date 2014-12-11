@@ -4,6 +4,7 @@ using Fresh.Windows.Shared.Models;
 using Fresh.Windows.Shared.Services.Interfaces;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
+using Microsoft.Practices.Prism.Mvvm.Interfaces;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Navigation;
@@ -13,14 +14,14 @@ namespace Fresh.Windows.ViewModels
     public class SeasonPageViewModel : ViewModel, ISeasonPageViewModel
     {
         private readonly ITraktService traktService;
-        private readonly ICrawlerService crawlerService;
         private readonly IStorageService storageService;
+        private readonly INavigationService navigationService;
 
-        public SeasonPageViewModel(ITraktService traktService, ICrawlerService crawlerService, IStorageService storageService)
+        public SeasonPageViewModel(ITraktService traktService, IStorageService storageService, INavigationService navigationService)
         {
             this.traktService = traktService;
-            this.crawlerService = crawlerService;
             this.storageService = storageService;
+            this.navigationService = navigationService;
         }
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
@@ -41,14 +42,26 @@ namespace Fresh.Windows.ViewModels
             }
         }
 
-        private async void EpisodeSelected(Episode episode)
+        private void EpisodeSelected(Episode episode)
         {
-            if (episode.Link == null)
-            {
-                episode.Link = await crawlerService.GetLink(episode.Season.TVShow.Title, episode.Season.Number, episode.Number);
+            navigationService.Navigate(App.Experience.Episode.ToString(), episode.Id);
+        }
 
-                await storageService.UpdateEpisodeAsync(episode);
+        public DelegateCommand SeasonWatchedCommand
+        {
+            get
+            {
+                return new DelegateCommand(SeasonWatched);
             }
+        }
+
+        private async void SeasonWatched()
+        {
+            foreach (var episode in episodes)
+            {
+                episode.Watched = true;
+                await storageService.UpdateEpisodeAsync(episode);
+            } 
         }
 
         ObservableCollection<Episode> episodes = default(ObservableCollection<Episode>);

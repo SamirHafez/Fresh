@@ -16,7 +16,7 @@ namespace Fresh.Windows
 {
     public sealed partial class App : MvvmAppBase
     {
-        public enum Experience { Main, Login, TVShow, Season };
+        public enum Experience { Main, Login, TVShow, Season, Episode };
 
         private readonly UnityContainer container = new UnityContainer();
 

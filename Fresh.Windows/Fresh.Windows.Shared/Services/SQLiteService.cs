@@ -23,10 +23,6 @@ namespace Fresh.Windows.Shared.Services
             context = new SQLiteAsyncConnection(() => connection);
 
             isDisposed = false;
-
-            //var a = context.DropTableAsync<TVShow>().Result;
-            //a = context.DropTableAsync<Season>().Result;
-            //a = context.DropTableAsync<Episode>().Result;
         }
 
         public async Task<User> CreateOrUpdateUserAsync(User user)
@@ -96,6 +92,17 @@ namespace Fresh.Windows.Shared.Services
             await context.CreateTablesAsync<TVShow, Season, Episode>();
 
             var updated = await context.UpdateAsync(episode);
+        }
+
+        public async Task<Episode> GetEpisodeAsync(int episodeId)
+        {
+            await context.CreateTablesAsync<TVShow, Season, Episode>();
+
+            var episode = connection.GetWithChildren<Episode>(episodeId, recursive: true);
+
+            connection.GetChildren(episode.Season, recursive: false);
+
+            return episode;
         }
 
         public void Dispose()

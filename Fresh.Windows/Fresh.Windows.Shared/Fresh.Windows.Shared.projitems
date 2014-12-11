@@ -12,12 +12,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\FreshSession.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\ISession.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\PageBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DesignTime\EpisodePageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DesignTime\LoginPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DesignTime\MainPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DesignTime\SeasonPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DesignTime\TVShowPageViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\BooleanToVisibilityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ItemClickCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\SelectionChangedCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IEpisodePageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ILoginPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IMainPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ISeasonPageViewModel.cs" />
@@ -30,6 +33,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\Interfaces\IStorageService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\LoginService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\SQLiteService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\EpisodePageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LoginPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\MainPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\SeasonPageViewModel.cs" />

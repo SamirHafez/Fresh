@@ -45,7 +45,7 @@
             IsItemClickEnabled="True"
             SelectionMode="None"
             helpers:ItemClickCommand.Command="{Binding EnterShowCommand}"
-            IsSwipeEnabled="false">
+            IsSwipeEnabled="false"> 
                 <GridView.ItemTemplate>
                     <DataTemplate>
                         <Grid Height="150" Margin="10">
