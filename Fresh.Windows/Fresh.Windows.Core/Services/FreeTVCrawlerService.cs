@@ -8,18 +8,18 @@ using HtmlAgilityPack;
 
 namespace Fresh.Windows.Core.Services
 {
-    public class FreeTVCrawler : ICrawlerService
+    public class FreeTVCrawlerService : ICrawlerService
     {
         private const string FreeTv = @"http://www.free-tv-video-online.me";
         private const string FreeTvQuery = @"{0}/search/?q={1}&md=shows";
         private const string FreeTvSeason = @"/season_{0}.html";
 
         public async Task<string> GetLink(string tvShow, int season, int episode)
-        { 
+        {
             tvShow = tvShow.Replace("&", "and");
 
             var encodedString = WebUtility.UrlEncode(tvShow);
-            var httpClient = new HttpClient(); 
+            var httpClient = new HttpClient();
 
             var response = await httpClient.GetStringAsync(string.Format(FreeTvQuery, FreeTv, encodedString));
 
@@ -32,7 +32,12 @@ namespace Fresh.Windows.Core.Services
             foreach (var link in GetEpisodeLinks(response, episode))
                 try
                 {
-                    return await GetVideoLink(link);
+                    var videoLink = await GetVideoLink(link);
+
+                    if (videoLink == null)
+                        continue;
+
+                    return videoLink;
                 }
                 catch
                 { }

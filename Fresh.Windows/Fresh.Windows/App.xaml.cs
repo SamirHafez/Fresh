@@ -31,7 +31,7 @@ namespace Fresh.Windows
             container.RegisterType<ISession, FreshSession>(new ContainerControlledLifetimeManager());
             container.RegisterType<ILoginService, LoginService>(new ContainerControlledLifetimeManager());
             container.RegisterType<IStorageService, SQLiteService>(new ContainerControlledLifetimeManager());
-            container.RegisterType<ICrawlerService, FreeTVCrawler>();
+            container.RegisterType<ICrawlerService, FreeTVCrawlerService>();
             container.RegisterInstance<ITraktService>(new TraktService(TRAKT_APIKEY), new ContainerControlledLifetimeManager());
 
             return Task.FromResult<object>(null);

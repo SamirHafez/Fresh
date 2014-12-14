@@ -34,7 +34,7 @@ namespace Fresh.Windows
             container.RegisterType<ILoginService, LoginService>();
             container.RegisterType<ISQLitePlatform, SQLitePlatformWP81>(new ContainerControlledLifetimeManager());
             container.RegisterType<IStorageService, SQLiteService>();
-            container.RegisterType<ICrawlerService, FreeTVCrawler>();
+            container.RegisterType<ICrawlerService, LetMeWatchThisCrawlerService>();
             container.RegisterInstance<ITraktService>(new TraktService(TRAKT_APIKEY), new ContainerControlledLifetimeManager());
 
             return Task.FromResult<object>(null);
