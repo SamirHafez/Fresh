@@ -1,6 +1,9 @@
 ﻿using Fresh.Windows.Core.Models;
 using SQLite.Net.Attributes;
 using SQLiteNetExtensions.Attributes;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Fresh.Windows.Shared.Models
@@ -17,6 +20,7 @@ namespace Fresh.Windows.Shared.Models
         public int Number { get; set; }
         public string Overview { get; set; }
         public string Screen { get; set; }
+        public DateTime? AirDate { get; set; }
 
         private bool watched;
         public bool Watched 
@@ -44,8 +48,15 @@ namespace Fresh.Windows.Shared.Models
                 Title = trakt.Title,
                 Number = trakt.Number,
                 Overview = trakt.Overview,
-                Screen = trakt.Screen
+                Screen = trakt.Screen,
+                AirDate = trakt.First_aired_iso != null ? DateTime.Parse(trakt.First_aired_iso) : (DateTime?)null
             };
         }
+    }
+
+    public class GroupedEpisodes<T>
+    {
+        public T Key { get; set; }
+        public IList<Episode> Episodes { get; set; }
     }
 }

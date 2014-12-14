@@ -10,11 +10,16 @@
     prism:ViewModelLocator.AutoWireViewModel="True"
     xmlns:designTime="using:Fresh.Windows.Shared.DesignTime"
     xmlns:helpers="using:Fresh.Windows.Shared.Helpers"
+    xmlns:models="using:Fresh.Windows.Shared.Models"
     mc:Ignorable="d">
 
     <d:Page.DataContext>
         <designTime:MainPageViewModel/>
     </d:Page.DataContext>
+
+    <Page.Resources>
+        <CollectionViewSource x:Key="thisWeekCvs" Source="{Binding ThisWeek}" d:Source="{Binding ThisWeek, Source={d:DesignInstance Type=designTime:MainPageViewModel, IsDesignTimeCreatable=True}}"  IsSourceGrouped="True" ItemsPath="Episodes"></CollectionViewSource>
+    </Page.Resources>
 
     <Grid x:Name="LayoutRoot">
         <Grid.ChildrenTransitions>
@@ -23,20 +28,48 @@
             </TransitionCollection>
         </Grid.ChildrenTransitions>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <!-- Title Panel -->
-        <StackPanel Grid.Row="0" Margin="19,0,0,0">
-            <TextBlock Text="FRESH" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
-            <TextBlock Text="library" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
-        </StackPanel>
-
-        <!--TODO: Content should be placed within the following grid-->
-        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-            <GridView
+        <Grid x:Name="ContentRoot" Margin="19,9.5,19,0">
+            <Hub Header="fresh">
+                <HubSection Header="this week">
+                    <DataTemplate>
+                        <GridView ItemsSource="{Binding Source={StaticResource thisWeekCvs}}"
+                                  helpers:ItemClickCommand.Command="{Binding EpisodeSelectedCommand}"
+                                  IsItemClickEnabled="True"
+                                  SelectionMode="None">
+                            <GridView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0, 0, 0, 10">
+                                        <Image Source="{Binding Screen}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Number}"/>
+                                        <Border Background="Green" MaxWidth="300" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
+                                            <TextBlock Margin="5, 0, 5, 0" Text="{Binding Title}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}"></TextBlock>
+                                        </Border>
+                                        <Border Background="Green" Width="30" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
+                                            <TextBlock Text="{Binding Number}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}"></TextBlock>
+                                        </Border>
+                                        <Border Background="Green" MaxWidth="300" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10">
+                                            <TextBlock Margin="5, 0, 5, 0" Text="{Binding Season.TVShow.Title}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}"></TextBlock>
+                                        </Border>
+                                        <Border VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="30" Background="Green" Margin="10" Visibility="{Binding Watched, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <TextBlock Margin="5, 0, 5, 0" Text="Watched" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" Height="25" FontWeight="Bold"/>
+                                        </Border>
+                                    </Grid>
+                                </DataTemplate>
+                            </GridView.ItemTemplate>
+                            <GridView.GroupStyle>
+                                <GroupStyle>
+                                    <GroupStyle.HeaderTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Key}" FontSize="40"></TextBlock>
+                                        </DataTemplate>
+                                    </GroupStyle.HeaderTemplate>
+                                </GroupStyle>
+                            </GridView.GroupStyle>
+                        </GridView>
+                    </DataTemplate>
+                </HubSection>
+                <HubSection Header="collection">
+                    <DataTemplate>
+                        <GridView
             AutomationProperties.AutomationId="ItemsGridView"
             AutomationProperties.Name="Items"
             TabIndex="1"
@@ -45,21 +78,24 @@
             IsItemClickEnabled="True"
             SelectionMode="None"
             helpers:ItemClickCommand.Command="{Binding EnterShowCommand}"
-            IsSwipeEnabled="false"> 
-                <GridView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Height="150" Margin="10">
-                            <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}">
-                                <Image Source="{Binding Poster}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
-                            </Border>
-                            <StackPanel VerticalAlignment="Bottom" Background="Green">
-                                <TextBlock Text="{Binding Title}" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" Height="20" Margin="15,0,15,0" FontWeight="SemiBold"/>
-                                <TextBlock Text="{Binding Year}" Foreground="{ThemeResource ListViewItemOverlaySecondaryForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap" Margin="15,0,15,10" FontSize="12"/>
-                            </StackPanel>
-                        </Grid>
+            IsSwipeEnabled="false">
+                            <GridView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Height="150" Margin="0, 0, 0, 10">
+                                        <Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}">
+                                            <Image Source="{Binding Poster}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
+                                        </Border>
+                                        <StackPanel VerticalAlignment="Bottom" Background="Green">
+                                            <TextBlock Text="{Binding Title}" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" Height="20" Margin="15,0,15,0" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{Binding Year}" Foreground="{ThemeResource ListViewItemOverlaySecondaryForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap" Margin="15,0,15,10" FontSize="12"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </GridView.ItemTemplate>
+                        </GridView>
                     </DataTemplate>
-                </GridView.ItemTemplate>
-            </GridView>
+                </HubSection>
+            </Hub>
         </Grid>
     </Grid>
 </controls:PageBase>

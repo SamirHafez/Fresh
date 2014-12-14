@@ -13,13 +13,11 @@ namespace Fresh.Windows.ViewModels
 {
     public class SeasonPageViewModel : ViewModel, ISeasonPageViewModel
     {
-        private readonly ITraktService traktService;
         private readonly IStorageService storageService;
         private readonly INavigationService navigationService;
 
-        public SeasonPageViewModel(ITraktService traktService, IStorageService storageService, INavigationService navigationService)
+        public SeasonPageViewModel(IStorageService storageService, INavigationService navigationService)
         {
-            this.traktService = traktService;
             this.storageService = storageService;
             this.navigationService = navigationService;
         }

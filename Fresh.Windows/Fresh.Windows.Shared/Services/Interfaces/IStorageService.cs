@@ -1,6 +1,7 @@
 ﻿using Fresh.Windows.Shared.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Fresh.Windows.Shared.Services.Interfaces
@@ -16,6 +17,8 @@ namespace Fresh.Windows.Shared.Services.Interfaces
         Task<TVShow> GetShowAsync(string showId);
 
         Task<Episode> GetEpisodeAsync(int episodeId);
+
+        Task<IList<Episode>> GetEpisodesAsync(Expression<Func<Episode, bool>> predicate = null);
 
         Task UpdateLibraryAsync(IList<TVShow> library);
 

@@ -1,6 +1,7 @@
 ﻿using Fresh.Windows.Core.Models;
 using SQLite.Net.Attributes;
 using SQLiteNetExtensions.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,8 +15,8 @@ namespace Fresh.Windows.Shared.Models
         public int Year { get; set; }
         public string Overview { get; set; }
         public string Network { get; set; }
-
         public string Poster { get; set; }
+        public DayOfWeek? AirDay { get; set; }
 
         [OneToMany(CascadeOperations = CascadeOperation.All)]
         public List<Season> Seasons { get; set; }
@@ -30,6 +31,7 @@ namespace Fresh.Windows.Shared.Models
                 Overview = trakt.Overview,
                 Network = trakt.Network,
                 Poster = trakt.Images != null ? trakt.Images.Poster : null,
+                AirDay = trakt.Air_day != null ? (DayOfWeek)Enum.Parse(typeof(DayOfWeek), trakt.Air_day, ignoreCase: true) : (DayOfWeek?)null,
                 Seasons = trakt.Seasons != null ? new List<Season>(trakt.Seasons.Select(Season.FromTrakt)) : null
             };
         }

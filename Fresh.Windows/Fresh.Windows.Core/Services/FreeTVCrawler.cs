@@ -15,9 +15,11 @@ namespace Fresh.Windows.Core.Services
         private const string FreeTvSeason = @"/season_{0}.html";
 
         public async Task<string> GetLink(string tvShow, int season, int episode)
-        {
+        { 
+            tvShow = tvShow.Replace("&", "and");
+
             var encodedString = WebUtility.UrlEncode(tvShow);
-            var httpClient = new HttpClient();
+            var httpClient = new HttpClient(); 
 
             var response = await httpClient.GetStringAsync(string.Format(FreeTvQuery, FreeTv, encodedString));
 

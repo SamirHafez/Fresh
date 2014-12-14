@@ -10,10 +10,8 @@ namespace Fresh.Windows.Core.Services.Interfaces
 
         Task<IList<TraktTVShow>> GetLibraryAsync(string username, bool extended = false);
 
-        Task<IList<TraktTVShow>> GetWatchedAsync(string username, bool extended = false);
-
         Task<TraktTVShow> GetShowAsync(string showId, bool extended = false);
 
-        Task<IList<TraktEpisode>> GetSeasonAsync(string showId, int seasonNumber, bool extended = false);
+        Task<IList<TraktEpisode>> GetSeasonEpisodesAsync(string showId, int seasonNumber, bool extended = false);
     }
 }

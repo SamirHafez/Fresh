@@ -106,16 +106,7 @@ namespace Fresh.Windows.Core.Services
                 Execute();
         }
 
-        public Task<IList<TraktTVShow>> GetWatchedAsync(string username, bool extended = false)
-        {
-            return new TraktIO<IList<TraktTVShow>>(apiKey).
-                ForPath("user/library/shows/watched.json").
-                WithParameters(new { username }).
-                Extended(extended).
-                Execute();
-        }
-
-        public Task<IList<TraktEpisode>> GetSeasonAsync(string showId, int seasonNumber, bool extended = false)
+        public Task<IList<TraktEpisode>> GetSeasonEpisodesAsync(string showId, int seasonNumber, bool extended = false)
         {
             return new TraktIO<IList<TraktEpisode>>(apiKey).
                 ForPath("show/season.json").

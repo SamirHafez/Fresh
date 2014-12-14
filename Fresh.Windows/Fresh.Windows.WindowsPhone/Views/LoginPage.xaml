@@ -12,16 +12,6 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <controls:PageBase.Resources>
-        <Storyboard x:Name="loginStory">
-            <DoubleAnimation SpeedRatio="3" EnableDependentAnimation="True" Storyboard.TargetName="spLogin" Storyboard.TargetProperty="Height" From="500" To="0"></DoubleAnimation>
-            <FadeOutThemeAnimation SpeedRatio=".7" TargetName="spGreet"></FadeOutThemeAnimation>
-        </Storyboard>
-        <Storyboard x:Name="reverseLoginStory">
-            <DoubleAnimation SpeedRatio="3" EnableDependentAnimation="True" Storyboard.TargetName="spLogin" Storyboard.TargetProperty="Height" From="0" To="500"></DoubleAnimation>
-            <FadeInThemeAnimation SpeedRatio=".7" TargetName="spGreet"></FadeInThemeAnimation>
-        </Storyboard>
-    </controls:PageBase.Resources>
     <controls:PageBase.Transitions>
         <TransitionCollection>
             <EntranceThemeTransition></EntranceThemeTransition>
@@ -31,9 +21,9 @@
     <d:Page.DataContext>
         <designTime:LoginPageViewModel/>
     </d:Page.DataContext>
-    
+
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-         <Grid.RowDefinitions>
+        <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
@@ -44,12 +34,11 @@
                 <TextBlock FontSize="{StaticResource HubSectionHeaderFontSize}" Style="{StaticResource HeaderTextBlockStyle}">Login with Trakt</TextBlock>
             </StackPanel>
         </Border>
-        <ProgressRing Name="prProgress" Grid.Row="0" IsActive="false" Foreground="White" VerticalAlignment="Center" Width="400" Height="400"/>
         <StackPanel Height="500" Name="spLogin" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center">
             <StackPanel Orientation="Vertical">
                 <TextBox Text="{Binding Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" Margin="20" Padding="20" FontSize="45" HorizontalContentAlignment="Center" Width="400" PlaceholderText="username"></TextBox>
                 <PasswordBox Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" Margin="20" Padding="20" FontSize="45" HorizontalContentAlignment="Center" Width="400" PlaceholderText="password"></PasswordBox>
-                <Button Name="bLogin" BorderThickness="0" Height="100" FontSize="50" Background="Green" Command="{Binding LoginCommand}">Login</Button>
+                <Button BorderThickness="0" Height="100" FontSize="50" Background="Green" Command="{Binding LoginCommand}">login</Button>
             </StackPanel>
         </StackPanel>
     </Grid>

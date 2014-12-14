@@ -7,6 +7,7 @@ using SQLite.Net;
 using SQLite.Net.Interop;
 using SQLiteNetExtensions.Extensions;
 using System;
+using System.Linq.Expressions;
 
 namespace Fresh.Windows.Shared.Services
 {
@@ -36,15 +37,20 @@ namespace Fresh.Windows.Shared.Services
 
         public async Task<IList<TVShow>> GetLibraryAsync()
         {
+            //await context.DropTableAsync<TVShow>();
+            //await context.DropTableAsync<Season>();
+            //await context.DropTableAsync<Episode>();
+
             await context.CreateTablesAsync<TVShow, Season, Episode>();
 
             return await context.Table<TVShow>().ToListAsync();
         }
 
         public async Task UpdateLibraryAsync(IList<TVShow> library)
-        {
-            var updated = await context.UpdateAllAsync(library);
-            var inserted = await context.InsertAllAsync(library);
+        { 
+            await context.CreateTablesAsync<TVShow, Season, Episode>();
+
+            connection.InsertOrReplaceAllWithChildren(library, recursive: true);
         }
 
         public async Task<User> GetUserAsync()
@@ -103,6 +109,18 @@ namespace Fresh.Windows.Shared.Services
             connection.GetChildren(episode.Season, recursive: false);
 
             return episode;
+        }
+
+        public async Task<IList<Episode>> GetEpisodesAsync(Expression<Func<Episode, bool>> predicate = null)
+        {
+            await context.CreateTablesAsync<TVShow, Season, Episode>();
+
+            var episodes = connection.GetAllWithChildren(predicate, recursive: true);
+
+            foreach (var episode in episodes)
+                connection.GetChildren(episode.Season);
+
+            return episodes;
         }
 
         public void Dispose()

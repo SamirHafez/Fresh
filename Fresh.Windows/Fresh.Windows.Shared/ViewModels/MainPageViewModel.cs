@@ -11,6 +11,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Navigation;
 using System.Linq;
+using Windows.UI.Xaml.Data;
+using Fresh.Windows.Core.Models;
+using System.Threading.Tasks;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -40,18 +43,61 @@ namespace Fresh.Windows.ViewModels
 
             if (Library.Count == 0)
             {
-                var traktLibrary = (await traktService.GetLibraryAsync(username, extended: true)).
-                    Select(TVShow.FromTrakt).
-                    ToList();
+                var traktFullShowTasks = from show in await traktService.GetLibraryAsync(username, extended: false)
+                                         let id = TVShow.FromTrakt(show).Id
+                                         select traktService.GetShowAsync(id, extended: true);
 
-                Library = new ObservableCollection<TVShow>(traktLibrary.OrderBy(show => show.Title));
+                var fullShows = (from show in await Task.WhenAll(traktFullShowTasks)
+                                 orderby show.Title
+                                 select TVShow.FromTrakt(show)).ToList();
 
-                await storageService.UpdateLibraryAsync(Library);
+                Library = new ObservableCollection<TVShow>(fullShows);
+
+                await storageService.UpdateLibraryAsync(fullShows);
             }
+
+            var lastMonday = StartOfWeek(DateTime.UtcNow, DayOfWeek.Monday);
+            var nextSunday = lastMonday.AddDays(7);
+            ThisWeek = from episode in await storageService.GetEpisodesAsync(e => e.AirDate >= lastMonday && e.AirDate < nextSunday)
+                       group episode by episode.Season.TVShow.AirDay into g
+                       where g.Key.HasValue
+                       orderby g.Key
+                       select new GroupedEpisodes<DayOfWeek>
+                       {
+                           Key = g.Key.Value,
+                           Episodes = g.ToList()
+                       };
+        }
+
+        public DelegateCommand<Episode> EpisodeSelectedCommand
+        {
+            get
+            {
+                return new DelegateCommand<Episode>(EpisodeSelected);
+            }
+        }
+
+        private void EpisodeSelected(Episode episode)
+        {
+            navigationService.Navigate(App.Experience.Episode.ToString(), episode.Id);
+        }
+
+        public static DateTime StartOfWeek(DateTime dt, DayOfWeek startOfWeek)
+        {
+            int diff = dt.DayOfWeek - startOfWeek;
+            if (diff < 0)
+            {
+                diff += 7;
+            }
+
+            return dt.AddDays(-1 * diff);
         }
 
         ObservableCollection<TVShow> library = default(ObservableCollection<TVShow>);
         public ObservableCollection<TVShow> Library { get { return library; } set { SetProperty(ref library, value); } }
+
+        IEnumerable<GroupedEpisodes<DayOfWeek>> thisWeek = default(IEnumerable<GroupedEpisodes<DayOfWeek>>);
+        public IEnumerable<GroupedEpisodes<DayOfWeek>> ThisWeek { get { return thisWeek; } set { SetProperty(ref thisWeek, value); } }
 
         public DelegateCommand<TVShow> EnterShowCommand
         {

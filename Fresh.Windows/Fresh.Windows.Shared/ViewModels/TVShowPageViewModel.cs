@@ -13,13 +13,11 @@ namespace Fresh.Windows.ViewModels
 {
     public class TVShowPageViewModel : ViewModel, ITVShowPageViewModel
     {
-        private readonly ITraktService traktService;
         private readonly INavigationService navigationService;
         private readonly IStorageService storageService;
 
-        public TVShowPageViewModel(ITraktService traktService, INavigationService navigationService, IStorageService storageService)
+        public TVShowPageViewModel(INavigationService navigationService, IStorageService storageService)
         {
-            this.traktService = traktService;
             this.navigationService = navigationService;
             this.storageService = storageService;
         }
@@ -31,16 +29,6 @@ namespace Fresh.Windows.ViewModels
             var dbShow = await storageService.GetShowAsync(showId);
 
             Update(dbShow);
-
-            if (dbShow.Seasons.Count == 0)
-            { 
-                var fullShow = TVShow.FromTrakt(await traktService.GetShowAsync(showId, extended: true));
-
-                await storageService.UpdateShowAsync(fullShow);
-
-                dbShow = fullShow;
-                Update(dbShow);
-            } 
         }
 
         public DelegateCommand<Season> EnterSeasonCommand

@@ -6,6 +6,7 @@ using Microsoft.Practices.Prism.Mvvm;
 using Windows.UI.Xaml.Navigation;
 using Microsoft.Practices.Prism.Commands;
 using Fresh.Windows.Shared.Models;
+using System;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -34,10 +35,17 @@ namespace Fresh.Windows.ViewModels
             Screen = episode.Screen;
             Watched = episode.Watched;
 
-            if (episode.Link == null)
+            if (episode.Link == null && episode.AirDate < DateTime.UtcNow)
             {
-                episode.Link = await crawlerService.GetLink(episode.Season.TVShow.Title, episode.Season.Number, episode.Number);
-                await storageService.UpdateEpisodeAsync(episode); 
+                try
+                {
+                    episode.Link = await crawlerService.GetLink(episode.Season.TVShow.Title, episode.Season.Number, episode.Number);
+                    await storageService.UpdateEpisodeAsync(episode);
+                }
+                catch
+                {
+
+                }
             }
 
             Link = episode.Link;
