@@ -39,22 +39,12 @@ namespace Fresh.Windows.ViewModels
             if (string.IsNullOrWhiteSpace(username))
                 throw new ArgumentException("Username not provided.");
 
-            Library = new ObservableCollection<TVShow>((await storageService.GetLibraryAsync()).OrderBy(show => show.Title));
+            Library = new ObservableCollection<TVShow>(from show in await storageService.GetLibraryAsync()
+                                                       orderby show.Title
+                                                       select show);
 
             if (Library.Count == 0)
-            {
-                var traktFullShowTasks = from show in await traktService.GetLibraryAsync(username, extended: false)
-                                         let id = TVShow.FromTrakt(show).Id
-                                         select traktService.GetShowAsync(id, extended: true);
-
-                var fullShows = (from show in await Task.WhenAll(traktFullShowTasks)
-                                 orderby show.Title
-                                 select TVShow.FromTrakt(show)).ToList();
-
-                Library = new ObservableCollection<TVShow>(fullShows);
-
-                await storageService.UpdateLibraryAsync(fullShows);
-            }
+                Library = new ObservableCollection<TVShow>(await FirstLoadAsync(username));
 
             var lastMonday = StartOfWeek(DateTime.UtcNow, DayOfWeek.Monday);
             var nextSunday = lastMonday.AddDays(7);
@@ -67,6 +57,35 @@ namespace Fresh.Windows.ViewModels
                            Key = g.Key.Value,
                            Episodes = g.ToList()
                        };
+        }
+
+        private async Task<IList<TVShow>> FirstLoadAsync(string username)
+        {
+            var traktFullShowTasks = from show in await traktService.GetLibraryAsync(username, extended: false)
+                                     let id = TVShow.FromTrakt(show).Id
+                                     select traktService.GetShowAsync(id, extended: true);
+
+            var fullShows = (from show in await Task.WhenAll(traktFullShowTasks)
+                             orderby show.Title
+                             select TVShow.FromTrakt(show)).ToList();
+
+            var watchedEpisodes = await traktService.GetWatchedEpisodesAsync(username);
+
+            foreach (var watchedEpisode in watchedEpisodes)
+            {
+                var show = fullShows.First(s => s.Title == watchedEpisode.Show.Title);
+
+                var episode = (from s in show.Seasons
+                               from ep in s.Episodes
+                               where s.Number == watchedEpisode.Episode.Season && ep.Number == watchedEpisode.Episode.Number
+                               select ep).First();
+
+                episode.Watched = true;
+            }
+
+            await storageService.UpdateLibraryAsync(fullShows);
+
+            return fullShows;
         }
 
         public DelegateCommand<Episode> EpisodeSelectedCommand
