@@ -40,6 +40,7 @@ namespace Fresh.Windows.Shared.Services
             //await context.DropTableAsync<TVShow>();
             //await context.DropTableAsync<Season>();
             //await context.DropTableAsync<Episode>();
+            //await context.DropTableAsync<User>();
 
             await context.CreateTablesAsync<TVShow, Season, Episode>();
 
