@@ -6,7 +6,6 @@
     xmlns:local="using:Fresh.Windows.Views"
     xmlns:prism="using:Microsoft.Practices.Prism.Mvvm"
     prism:ViewModelLocator.AutoWireViewModel="True"
-    xmlns:helpers="using:Fresh.Windows.Shared.Helpers"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:designTime="using:Fresh.Windows.Shared.DesignTime"
@@ -46,24 +45,7 @@
             x:Name="itemListView"
             ItemsSource="{Binding Episodes}"
             SelectionMode="Single"
-            helpers:SelectionChangedCommand.Command="{Binding EpisodeSelectedCommand}"
-            IsSwipeEnabled="False">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="0, 0, 0, 10">
-                                    <Image Source="{Binding Screen}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Number}"/>
-                                    <Border Background="Green" MaxWidth="300" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock Text="{Binding Title}" Margin="5, 0, 5, 0" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}"></TextBlock>
-                                    </Border>
-                                    <Border Background="Green" Width="30" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-                                        <TextBlock Text="{Binding Number}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}"></TextBlock>
-                                    </Border>
-                                    <StackPanel VerticalAlignment="Bottom" Background="Green" Visibility="{Binding Watched, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <TextBlock Text="Watched" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" Height="20" Margin="15,0,15,5" FontWeight="SemiBold"/>
-                                    </StackPanel>
-                                </Grid>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
+            IsSwipeEnabled="False" ItemTemplate="{StaticResource EpisodeTemplate}">
                     </ListView>
                 </StackPanel>
             </ScrollViewer>

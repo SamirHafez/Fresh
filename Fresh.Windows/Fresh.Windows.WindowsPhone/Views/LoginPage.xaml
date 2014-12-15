@@ -13,12 +13,6 @@
     mc:Ignorable="d"
     Background="Green">
 
-    <controls:PageBase.Transitions>
-        <TransitionCollection>
-            <EntranceThemeTransition/>
-        </TransitionCollection>
-    </controls:PageBase.Transitions>
-
     <d:DataContext>
         <designTime:LoginPageViewModel/>
     </d:DataContext>

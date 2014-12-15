@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Navigation;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Controls;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -28,6 +29,8 @@ namespace Fresh.Windows.ViewModels
             this.storageService = storageService;
             this.navigationService = navigationService;
             this.configurationService = configurationService;
+
+            Loading = true;
         }
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
@@ -55,6 +58,8 @@ namespace Fresh.Windows.ViewModels
                            Key = g.Key.Value,
                            Episodes = g.ToList()
                        };
+ 
+            Loading = false;
         }
 
         private async Task<IList<TVShow>> FirstLoadAsync(string username)
@@ -86,11 +91,11 @@ namespace Fresh.Windows.ViewModels
             return fullShows;
         }
 
-        public DelegateCommand<Episode> EpisodeSelectedCommand
+        public DelegateCommand<ItemClickEventArgs> EpisodeSelectedCommand
         {
             get
             {
-                return new DelegateCommand<Episode>(EpisodeSelected);
+                return new DelegateCommand<ItemClickEventArgs>(args => EpisodeSelected((Episode)args.ClickedItem));
             }
         }
 
@@ -116,11 +121,14 @@ namespace Fresh.Windows.ViewModels
         IEnumerable<GroupedEpisodes<DayOfWeek>> thisWeek = default(IEnumerable<GroupedEpisodes<DayOfWeek>>);
         public IEnumerable<GroupedEpisodes<DayOfWeek>> ThisWeek { get { return thisWeek; } set { SetProperty(ref thisWeek, value); } }
 
-        public DelegateCommand<TVShow> EnterShowCommand
+        bool loading = default(bool);
+        public bool Loading { get { return loading; } set { SetProperty(ref loading, value); } }
+
+        public DelegateCommand<ItemClickEventArgs> EnterShowCommand
         {
             get
             {
-                return new DelegateCommand<TVShow>(EnterShow);
+                return new DelegateCommand<ItemClickEventArgs>(args => EnterShow((TVShow)args.ClickedItem));
             }
         }
 

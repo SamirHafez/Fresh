@@ -17,9 +17,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)DesignTime\MainPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DesignTime\SeasonPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DesignTime\TVShowPageViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\BooleanToVisibilityConverter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ItemClickCommand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\SelectionChangedCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IEpisodePageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ILoginPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IMainPageViewModel.cs" />

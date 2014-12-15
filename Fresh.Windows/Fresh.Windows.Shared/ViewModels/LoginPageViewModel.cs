@@ -38,7 +38,7 @@ namespace Fresh.Windows.ViewModels
         {
             Working = true;
             try
-            { 
+            {
                 await loginService.LoginAsync(Username, Password);
                 navigationService.Navigate(App.Experience.Main.ToString(), Username);
             }

@@ -7,7 +7,6 @@
     xmlns:common="using:Fresh.Windows.Common"
     xmlns:prism="using:Microsoft.Practices.Prism.Mvvm"
     prism:ViewModelLocator.AutoWireViewModel="True"
-    xmlns:helpers="using:Fresh.Windows.Shared.Helpers"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:designTime="using:Fresh.Windows.Shared.DesignTime"
@@ -57,7 +56,6 @@
             Padding="120,0,0,60"
             ItemsSource="{Binding Episodes}"
             SelectionMode="Single"
-            helpers:SelectionChangedCommand.Command="{Binding EpisodeSelectedCommand}"
             IsSwipeEnabled="False">
             <ListView.ItemTemplate>
                 <DataTemplate>

@@ -6,7 +6,6 @@
     xmlns:controls="using:Fresh.Windows.Shared.Controls"
     xmlns:prism="using:Microsoft.Practices.Prism.Mvvm"
     prism:ViewModelLocator.AutoWireViewModel="True"
-    xmlns:helpers="using:Fresh.Windows.Shared.Helpers"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:designTime="using:Fresh.Windows.Shared.DesignTime"
@@ -37,7 +36,6 @@
             ItemsSource="{Binding Seasons}"
             IsItemClickEnabled="True"
             SelectionMode="None"
-            helpers:ItemClickCommand.Command="{Binding EnterSeasonCommand}"
             IsSwipeEnabled="false">
                     <GridView.ItemTemplate>
                         <DataTemplate>

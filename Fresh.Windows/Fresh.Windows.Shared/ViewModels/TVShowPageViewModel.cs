@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using Windows.UI.Xaml.Navigation;
-using Fresh.Windows.Core.Services.Interfaces;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm.Interfaces;
 using Fresh.Windows.Shared.Interfaces;
