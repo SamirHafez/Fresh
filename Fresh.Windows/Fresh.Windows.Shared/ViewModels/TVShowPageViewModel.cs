@@ -7,6 +7,7 @@ using Microsoft.Practices.Prism.Mvvm.Interfaces;
 using Fresh.Windows.Shared.Interfaces;
 using Fresh.Windows.Shared.Models;
 using Fresh.Windows.Shared.Services.Interfaces;
+using Windows.UI.Xaml.Controls;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -30,11 +31,11 @@ namespace Fresh.Windows.ViewModels
             Update(dbShow);
         }
 
-        public DelegateCommand<Season> EnterSeasonCommand
+        public DelegateCommand<ItemClickEventArgs> EnterSeasonCommand
         {
             get
             {
-                return new DelegateCommand<Season>(EnterSeason);
+                return new DelegateCommand<ItemClickEventArgs>(args => EnterSeason((Season)args.ClickedItem));
             }
         }
 

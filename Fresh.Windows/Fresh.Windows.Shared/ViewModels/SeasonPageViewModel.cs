@@ -7,6 +7,7 @@ using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.Mvvm.Interfaces;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
 namespace Fresh.Windows.ViewModels
@@ -32,11 +33,11 @@ namespace Fresh.Windows.ViewModels
             Episodes = new ObservableCollection<Episode>(season.Episodes);
         }
 
-        public DelegateCommand<Episode> EpisodeSelectedCommand
+        public DelegateCommand<ItemClickEventArgs> EpisodeSelectedCommand
         {
             get
             {
-                return new DelegateCommand<Episode>(EpisodeSelected);
+                return new DelegateCommand<ItemClickEventArgs>(args => EpisodeSelected((Episode)args.ClickedItem));
             }
         }
 
