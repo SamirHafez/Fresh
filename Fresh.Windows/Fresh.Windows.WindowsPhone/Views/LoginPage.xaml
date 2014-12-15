@@ -11,7 +11,7 @@
     x:Class="Fresh.Windows.Views.LoginPage"
     prism:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="Green">
 
     <controls:PageBase.Transitions>
         <TransitionCollection>
@@ -38,7 +38,7 @@
 					<VisualTransition GeneratedDuration="0"/>
 					<VisualTransition GeneratedDuration="0:0:0.5" To="WorkingState">
 						<VisualTransition.GeneratedEasingFunction>
-							<CircleEase EasingMode="EaseIn"/>
+							<CircleEase EasingMode="EaseOut"/>
 						</VisualTransition.GeneratedEasingFunction>
 					</VisualTransition>
 					<VisualTransition GeneratedDuration="0:0:0.2" To="InitialState">
@@ -65,7 +65,7 @@
 			</VisualStateGroup>
 		</VisualStateManager.VisualStateGroups>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="150"/>
+			<RowDefinition Height="130"/>
 			<RowDefinition/>
 		</Grid.RowDefinitions>
 
@@ -73,14 +73,14 @@
 			<Border.RenderTransform>
 				<CompositeTransform/>
 			</Border.RenderTransform>
-			<TextBlock x:Name="textBlock" FontSize="{StaticResource HubHeaderFontSize}" Style="{StaticResource TitleTextBlockStyle}" Text="fresh"/>
+			<Image Height="104" Source="ms-appx:///Assets/Fresh.png" Width="265" Stretch="None"/>
 		</Border>
 		<StackPanel x:Name="stackPanel" Grid.Row="1" Background="Black" RenderTransformOrigin="0.5,0.5">
 			<StackPanel.RenderTransform>
 				<CompositeTransform/>
 			</StackPanel.RenderTransform><TextBlock TextWrapping="Wrap" Text="login with Trakt.tv" Style="{StaticResource HeaderTextBlockStyle}" Margin="12,0"/>
 			<TextBox Text="{Binding Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" PlaceholderText="username" Margin="12,5" Height="50" FontWeight="Light" FontSize="32"/>
-			<PasswordBox Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" FontSize="32" HorizontalContentAlignment="Center" PlaceholderText="password" Margin="12,0" Height="50" FontWeight="Light"/>
+			<PasswordBox Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" FontSize="32" HorizontalContentAlignment="Center" PlaceholderText="password" Margin="12,0,12,5" Height="50" FontWeight="Light"/>
 			<Button FontSize="50" Command="{Binding LoginCommand}" Content="login" HorizontalAlignment="Center" Foreground="White" BorderThickness="0" Background="Green"/>
 		</StackPanel>
 		<ProgressBar x:Name="progressBar" IsEnabled="True" Foreground="White" Background="Transparent" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Height="10" Width="400" Visibility="Collapsed" Margin="0,228,0,0" IsIndeterminate="True">

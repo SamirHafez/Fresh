@@ -11,8 +11,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Navigation;
 using System.Linq;
-using Windows.UI.Xaml.Data;
-using Fresh.Windows.Core.Models;
 using System.Threading.Tasks;
 
 namespace Fresh.Windows.ViewModels

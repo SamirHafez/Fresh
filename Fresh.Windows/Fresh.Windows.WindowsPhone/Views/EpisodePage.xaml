@@ -34,9 +34,9 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Margin="19,0,0,0">
-            <TextBlock Text="FRESH" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
-            <TextBlock Text="{Binding Title}" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
+        <StackPanel Grid.Row="0" Margin="0" Background="Green">
+            <TextBlock Text="FRESH" Style="{ThemeResource TitleTextBlockStyle}" Margin="19,12,0,0"/>
+            <TextBlock Text="{Binding Title}" Margin="19,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
         </StackPanel>
 
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
@@ -45,8 +45,8 @@
                 <RowDefinition Height="40*"></RowDefinition>
             </Grid.RowDefinitions>
             <MediaElement Grid.Row="0" AreTransportControlsEnabled="True" Source="{Binding Link}"></MediaElement>
-            <Border Grid.Row="1" Background="Green" Margin="0, 10, 0, 0">
-                <TextBlock Margin="5" Text="{Binding Overview}" MaxLines="6" Style="{StaticResource BodyTextBlockStyle}" TextAlignment="Justify" TextWrapping="WrapWholeWords" TextTrimming="WordEllipsis"></TextBlock>
+            <Border Grid.Row="1" Background="Green" Margin="0, 10, 0, 0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <TextBlock Margin="5" Text="{Binding Overview}" MaxLines="6" Style="{StaticResource BodyTextBlockStyle}" TextAlignment="Justify" TextWrapping="WrapWholeWords" TextTrimming="WordEllipsis" FontWeight="Light" FontFamily="Segoe WP Light"/>
             </Border>
         </Grid>
     </Grid>
