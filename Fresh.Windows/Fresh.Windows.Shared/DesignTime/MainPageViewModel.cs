@@ -1,9 +1,11 @@
 ﻿using Fresh.Windows.Shared.Interfaces;
 using Fresh.Windows.Shared.Models;
+using Microsoft.Practices.Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 
 namespace Fresh.Windows.Shared.DesignTime
@@ -56,5 +58,16 @@ namespace Fresh.Windows.Shared.DesignTime
         public ObservableCollection<TVShow> Library { get; set; }
         public IList<GroupedEpisodes<DayOfWeek>> ThisWeek { get; set; }
         public bool Loading { get; set; }
+
+
+        public DelegateCommand<ItemClickEventArgs> EpisodeSelectedCommand
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public DelegateCommand<ItemClickEventArgs> EnterShowCommand
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

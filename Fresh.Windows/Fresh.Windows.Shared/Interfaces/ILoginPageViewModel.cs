@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Practices.Prism.Commands;
+using System;
 
 namespace Fresh.Windows.Shared.Interfaces
 {
@@ -7,5 +8,7 @@ namespace Fresh.Windows.Shared.Interfaces
         string Username { get; set; }
         string Password { get; set; }
         bool Working { get; set; }
+
+        DelegateCommand LoginCommand { get; }
     }
 }

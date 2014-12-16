@@ -144,7 +144,8 @@ namespace Fresh.Windows.ViewModels
         {
             get
             {
-                return new DelegateCommand<ItemClickEventArgs>(args => EpisodeSelected((Episode)args.ClickedItem));
+                return new DelegateCommand<ItemClickEventArgs>(args =>
+                    navigationService.Navigate(App.Experience.Episode.ToString(), ((Episode)args.ClickedItem).Id));
             }
         }
 
@@ -177,13 +178,9 @@ namespace Fresh.Windows.ViewModels
         {
             get
             {
-                return new DelegateCommand<ItemClickEventArgs>(args => EnterShow((TVShow)args.ClickedItem));
+                return new DelegateCommand<ItemClickEventArgs>(args =>
+                    navigationService.Navigate(App.Experience.TVShow.ToString(), ((Episode)args.ClickedItem).Id));
             }
-        }
-
-        private void EnterShow(TVShow show)
-        {
-            navigationService.Navigate(App.Experience.TVShow.ToString(), show.Id);
         }
     }
 }

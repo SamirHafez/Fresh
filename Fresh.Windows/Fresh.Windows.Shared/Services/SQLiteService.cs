@@ -30,13 +30,18 @@ namespace Fresh.Windows.Shared.Services
         {
             await context.CreateTableAsync<User>();
 
-            await context.InsertAsync(user);
+            await context.InsertOrReplaceAsync(user);
 
             return user;
         }
 
         public async Task<IList<TVShow>> GetLibraryAsync()
         {
+            //await context.DropTableAsync<TVShow>();
+            //await context.DropTableAsync<Season>();
+            //await context.DropTableAsync<Episode>();
+            //await context.DropTableAsync<User>();
+
             await context.CreateTablesAsync<TVShow, Season, Episode>();
 
             return await context.Table<TVShow>().ToListAsync();
