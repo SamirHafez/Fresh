@@ -99,6 +99,7 @@ namespace Fresh.Windows.Shared.Services
             await context.CreateTablesAsync<TVShow, Season, Episode>();
 
             var updated = await context.UpdateAsync(episode);
+            var inserted = await context.InsertAsync(episode);
         }
 
         public async Task<Episode> GetEpisodeAsync(int episodeId)

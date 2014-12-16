@@ -54,7 +54,7 @@ namespace Fresh.Windows.Shared.DesignTime
         }
 
         public ObservableCollection<TVShow> Library { get; set; }
-        public IEnumerable<GroupedEpisodes<DayOfWeek>> ThisWeek { get; set; }
+        public IList<GroupedEpisodes<DayOfWeek>> ThisWeek { get; set; }
         public bool Loading { get; set; }
     }
 }

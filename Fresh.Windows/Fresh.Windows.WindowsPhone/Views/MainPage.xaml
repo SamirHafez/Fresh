@@ -109,13 +109,27 @@
 				<CompositeTransform/>
 			</Pivot.RenderTransform>
 			<PivotItem Header="this week">
-				<ListView ItemsSource="{Binding Source={StaticResource thisWeekCvs}}" ItemTemplate="{StaticResource EpisodeTemplate}" IsItemClickEnabled="True">
-					<Interactivity:Interaction.Behaviors>
-						<Core:EventTriggerBehavior EventName="ItemClick">
-							<Core:InvokeCommandAction Command="{Binding EpisodeSelectedCommand}"/>
-						</Core:EventTriggerBehavior>
-					</Interactivity:Interaction.Behaviors>
-				</ListView>
+				<Grid Margin="0,0,-0.333,0.333">
+					<Border HorizontalAlignment="Left" VerticalAlignment="Top" Background="Green" >
+						<Interactivity:Interaction.Behaviors>
+							<Core:DataTriggerBehavior Binding="{Binding ThisWeek.Count, Mode=OneWay}" Value="0">
+								<Core:ChangePropertyAction PropertyName="Visibility">
+									<Core:ChangePropertyAction.Value>
+										<Visibility>Visible</Visibility>
+									</Core:ChangePropertyAction.Value>
+								</Core:ChangePropertyAction>
+							</Core:DataTriggerBehavior>
+						</Interactivity:Interaction.Behaviors>
+						<TextBlock TextWrapping="WrapWholeWords" Text="nothing to see this week :(" FontFamily="Segoe WP Light" FontSize="56" FontWeight="Thin"/>
+					</Border>
+					<ListView ItemsSource="{Binding Source={StaticResource thisWeekCvs}}" ItemTemplate="{StaticResource EpisodeTemplate}" IsItemClickEnabled="True" d:IsHidden="True">
+						<Interactivity:Interaction.Behaviors>
+							<Core:EventTriggerBehavior EventName="ItemClick">
+								<Core:InvokeCommandAction Command="{Binding EpisodeSelectedCommand}"/>
+							</Core:EventTriggerBehavior>
+						</Interactivity:Interaction.Behaviors>
+					</ListView>
+				</Grid>
 			</PivotItem>
 			<PivotItem Header="collection">
 				<ListView ItemTemplate="{StaticResource TVShowTemplate}" ItemsSource="{Binding Library}" IsItemClickEnabled="True">

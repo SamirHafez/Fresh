@@ -9,7 +9,7 @@ namespace Fresh.Windows.Shared.Interfaces
     {
         ObservableCollection<TVShow> Library { get; set; }
 
-        IEnumerable<GroupedEpisodes<DayOfWeek>> ThisWeek { get; set; }
+        IList<GroupedEpisodes<DayOfWeek>> ThisWeek { get; set; }
 
         bool Loading { get; set; }
     }

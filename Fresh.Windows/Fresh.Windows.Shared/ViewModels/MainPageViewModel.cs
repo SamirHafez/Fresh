@@ -46,20 +46,69 @@ namespace Fresh.Windows.ViewModels
 
             if (Library.Count == 0)
                 Library = new ObservableCollection<TVShow>(await FirstLoadAsync(username));
+            else
+                await Update();
 
             var lastMonday = StartOfWeek(DateTime.UtcNow, DayOfWeek.Monday);
             var nextSunday = lastMonday.AddDays(7);
-            ThisWeek = from episode in await storageService.GetEpisodesAsync(e => e.AirDate >= lastMonday && e.AirDate < nextSunday)
-                       group episode by episode.Season.TVShow.AirDay into g
-                       where g.Key.HasValue
-                       orderby g.Key
-                       select new GroupedEpisodes<DayOfWeek>
-                       {
-                           Key = g.Key.Value,
-                           Episodes = g.ToList()
-                       };
- 
+            ThisWeek = await GetSchedule(lastMonday, nextSunday);
+
             Loading = false;
+        }
+
+        private async Task Update()
+        {
+            var incompleteSeasons = from episode in await storageService.GetEpisodesAsync(e => e.AirDate == null)
+                                    where episode.Season.Number != 0
+                                    group episode by new { episode.SeasonId, episode.Season.ShowId, episode.Season.Number } into season
+                                    select season;
+
+            foreach (var season in incompleteSeasons)
+            {
+                var traktEpisodes = (await traktService.GetSeasonEpisodesAsync(season.Key.ShowId, season.Key.Number, extended: true)).ToList();
+
+                int highestEpisode = 1;
+                foreach (var episode in season)
+                {
+                    var traktEpisode = traktEpisodes.FirstOrDefault(e => e.Number == episode.Number);
+                    highestEpisode = highestEpisode > episode.Number ? highestEpisode : episode.Number;
+
+                    if (traktEpisode == null)
+                        continue;
+
+                    var recentEpisode = Episode.FromTrakt(traktEpisode);
+
+                    episode.Overview = recentEpisode.Overview;
+                    episode.AirDate = recentEpisode.AirDate;
+                    episode.Screen = recentEpisode.Screen;
+                    episode.Title = recentEpisode.Title;
+
+                    traktEpisodes.Remove(traktEpisode);
+
+                    await storageService.UpdateEpisodeAsync(episode);
+                }
+
+                foreach (var episode in from te in traktEpisodes
+                                        where te.Number > highestEpisode
+                                        select Episode.FromTrakt(te))
+                {
+                    episode.SeasonId = season.Key.SeasonId;
+                    await storageService.UpdateEpisodeAsync(episode);
+                }
+            }
+        }
+
+        private async Task<IList<GroupedEpisodes<DayOfWeek>>> GetSchedule(DateTime lastMonday, DateTime nextSunday)
+        {
+            return (from episode in await storageService.GetEpisodesAsync(e => e.AirDate >= lastMonday && e.AirDate < nextSunday)
+                    group episode by episode.Season.TVShow.AirDay into g
+                    where g.Key.HasValue
+                    orderby g.Key
+                    select new GroupedEpisodes<DayOfWeek>
+                    {
+                        Key = g.Key.Value,
+                        Episodes = g.ToList()
+                    }).ToList();
         }
 
         private async Task<IList<TVShow>> FirstLoadAsync(string username)
@@ -118,8 +167,8 @@ namespace Fresh.Windows.ViewModels
         ObservableCollection<TVShow> library = default(ObservableCollection<TVShow>);
         public ObservableCollection<TVShow> Library { get { return library; } set { SetProperty(ref library, value); } }
 
-        IEnumerable<GroupedEpisodes<DayOfWeek>> thisWeek = default(IEnumerable<GroupedEpisodes<DayOfWeek>>);
-        public IEnumerable<GroupedEpisodes<DayOfWeek>> ThisWeek { get { return thisWeek; } set { SetProperty(ref thisWeek, value); } }
+        IList<GroupedEpisodes<DayOfWeek>> thisWeek = default(IList<GroupedEpisodes<DayOfWeek>>);
+        public IList<GroupedEpisodes<DayOfWeek>> ThisWeek { get { return thisWeek; } set { SetProperty(ref thisWeek, value); } }
 
         bool loading = default(bool);
         public bool Loading { get { return loading; } set { SetProperty(ref loading, value); } }
