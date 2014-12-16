@@ -98,7 +98,7 @@
 				<Core:GoToStateAction StateName="Idle"/>
 			</Core:DataTriggerBehavior>
 		</Interactivity:Interaction.Behaviors>
-		<Border x:Name="border" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="67.5,13">
+		<Border x:Name="border" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
 			<Border.RenderTransform>
 				<CompositeTransform/>
 			</Border.RenderTransform>

@@ -1,4 +1,5 @@
 ﻿using Fresh.Windows.Shared.Interfaces;
+using Microsoft.Practices.Prism.Commands;
 
 namespace Fresh.Windows.Shared.DesignTime
 {
@@ -13,5 +14,11 @@ namespace Fresh.Windows.Shared.DesignTime
         public string Username { get; set; }
         public string Password { get; set; }
         public bool Working { get; set; }
+
+
+        public DelegateCommand LoginCommand
+        {
+            get { throw new System.NotImplementedException(); }
+        }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.Mvvm.Interfaces;
 using System;
+using Windows.UI.Popups;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -37,16 +38,21 @@ namespace Fresh.Windows.ViewModels
         private async void Login()
         {
             Working = true;
+
+            Exception exception = null;
             try
             {
                 await loginService.LoginAsync(Username, Password);
                 navigationService.Navigate(App.Experience.Main.ToString(), Username);
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                //await new MessageDialog(exception.Message, "Error").ShowAsync();
+                exception = ex;
                 Working = false;
             }
+
+            if (exception != null)
+                await new MessageDialog(exception.Message, "Error").ShowAsync();
         }
     }
 }

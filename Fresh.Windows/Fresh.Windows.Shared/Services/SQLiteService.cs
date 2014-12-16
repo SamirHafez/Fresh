@@ -30,7 +30,7 @@ namespace Fresh.Windows.Shared.Services
         {
             await context.CreateTableAsync<User>();
 
-            await context.InsertAsync(user);
+            await context.InsertOrReplaceAsync(user);
 
             return user;
         }
