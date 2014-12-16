@@ -144,9 +144,13 @@ namespace Fresh.Windows.ViewModels
         {
             get
             {
-                return new DelegateCommand<ItemClickEventArgs>(args =>
-                    navigationService.Navigate(App.Experience.Episode.ToString(), ((Episode)args.ClickedItem).Id));
+                return new DelegateCommand<ItemClickEventArgs>(args => EpisodeSelected((Episode)args.ClickedItem));
             }
+        }
+
+        private void EpisodeSelected(Episode episode)
+        {
+            navigationService.Navigate(App.Experience.Episode.ToString(), episode.Id);
         }
 
         public static DateTime StartOfWeek(DateTime dt, DayOfWeek startOfWeek)
@@ -173,9 +177,13 @@ namespace Fresh.Windows.ViewModels
         {
             get
             {
-                return new DelegateCommand<ItemClickEventArgs>(args =>
-                    navigationService.Navigate(App.Experience.TVShow.ToString(), ((Episode)args.ClickedItem).Id));
+                return new DelegateCommand<ItemClickEventArgs>(args => EnterShow((TVShow)args.ClickedItem));
             }
+        }
+
+        private void EnterShow(TVShow show)
+        {
+            navigationService.Navigate(App.Experience.TVShow.ToString(), show.Id);
         }
     }
 }
