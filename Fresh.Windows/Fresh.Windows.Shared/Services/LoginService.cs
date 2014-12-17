@@ -4,6 +4,8 @@ using Fresh.Windows.Core.Services.Interfaces;
 using Fresh.Windows.Shared.Services.Interfaces;
 using Fresh.Windows.Shared.Configuration;
 using Fresh.Windows.Shared.Models;
+using Windows.Security.Cryptography;
+using Windows.Security.Cryptography.Core;
 
 namespace Fresh.Windows.Shared.Services
 {
@@ -24,9 +26,14 @@ namespace Fresh.Windows.Shared.Services
         {
             try
             {
-                dynamic settings = await traktService.GetSettingsAsync(username, password); 
-                var user = new User { Username = settings["username"].Value }; 
-                await storageService.CreateOrUpdateUserAsync(user); 
+                var passVector = CryptographicBuffer.ConvertStringToBinary(password, BinaryStringEncoding.Utf8);
+                var digest = HashAlgorithmProvider.OpenAlgorithm("SHA1").HashData(passVector);
+
+                password = CryptographicBuffer.EncodeToHexString(digest);
+
+                dynamic settings = await traktService.GetSettingsAsync(username, password);
+                var user = new User { Username = settings["username"].Value, Credential = password };
+                await storageService.CreateOrUpdateUserAsync(user);
 
                 session.User = user;
             }

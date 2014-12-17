@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using System.Linq;
+using Fresh.Windows.Shared.Configuration;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -16,11 +18,15 @@ namespace Fresh.Windows.ViewModels
     {
         private readonly IStorageService storageService;
         private readonly INavigationService navigationService;
+        private readonly ITraktService traktService;
+        private readonly ISession session;
 
-        public SeasonPageViewModel(IStorageService storageService, INavigationService navigationService)
+        public SeasonPageViewModel(IStorageService storageService, INavigationService navigationService, ITraktService traktService, ISession session)
         {
             this.storageService = storageService;
             this.navigationService = navigationService;
+            this.traktService = traktService;
+            this.session = session;
         }
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
@@ -56,11 +62,21 @@ namespace Fresh.Windows.ViewModels
 
         private async void SeasonWatched()
         {
-            foreach (var episode in episodes)
+            foreach (var episode in  Episodes)
             {
+                if(episode.Watched == true)
+                    continue;
+
                 episode.Watched = true;
+
+                await traktService.WatchEpisodeAsync(session.User.Username,
+                                session.User.Credential,
+                                episode.Season.TVShow.Title,
+                                episode.Season.TVShow.Year,
+                                episode.Season.Number,
+                                episode.Number);
                 await storageService.UpdateEpisodeAsync(episode);
-            } 
+            }
         }
 
         ObservableCollection<Episode> episodes = default(ObservableCollection<Episode>);

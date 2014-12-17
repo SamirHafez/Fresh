@@ -14,6 +14,8 @@ namespace Fresh.Windows.Core.Services.Interfaces
 
         Task<IList<TraktEpisode>> GetSeasonEpisodesAsync(string showId, int seasonNumber, bool extended = false);
 
-        Task<IList<TraktWatchedEpisode>> GetWatchedEpisodesAsync(string username);
+        Task<IList<TraktTVShow>> GetWatchedEpisodesAsync(string username);
+
+        Task WatchEpisodeAsync(string username, string password, string showTitle, int year, int season, int episode);
     }
 }

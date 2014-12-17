@@ -18,13 +18,6 @@
         public TraktRatings Ratings { get; set; }
     }
 
-    public class TraktWatchedEpisode
-    {
-        public string Action { get; set; }
-        public TraktEpisode Episode { get; set; }
-        public TraktTVShow Show { get; set; }
-    }
-
     public class Images
     {
         public string screen { get; set; }

@@ -7,6 +7,7 @@ using Windows.UI.Xaml.Navigation;
 using Microsoft.Practices.Prism.Commands;
 using Fresh.Windows.Shared.Models;
 using System;
+using Fresh.Windows.Shared.Configuration;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -14,13 +15,17 @@ namespace Fresh.Windows.ViewModels
     {
         private readonly IStorageService storageService;
         private readonly ICrawlerService crawlerService;
+        private readonly ITraktService traktService;
+        private readonly ISession session;
 
         private Episode episode;
 
-        public EpisodePageViewModel(IStorageService storageService, ICrawlerService crawlerService)
+        public EpisodePageViewModel(IStorageService storageService, ICrawlerService crawlerService, ITraktService traktService, ISession session)
         {
             this.storageService = storageService;
             this.crawlerService = crawlerService;
+            this.traktService = traktService;
+            this.session = session;
         }
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
@@ -63,6 +68,12 @@ namespace Fresh.Windows.ViewModels
         {
             episode.Watched = Watched;
 
+            await traktService.WatchEpisodeAsync(session.User.Username,
+                session.User.Credential,
+                episode.Season.TVShow.Title,
+                episode.Season.TVShow.Year,
+                episode.Season.Number,
+                episode.Number);
             await storageService.UpdateEpisodeAsync(episode);
         }
 

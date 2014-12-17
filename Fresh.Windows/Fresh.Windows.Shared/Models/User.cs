@@ -6,5 +6,6 @@ namespace Fresh.Windows.Shared.Models
     {
         [PrimaryKey]
         public string Username { get; set; }
+        public string Credential { get; set; }
     }
 }

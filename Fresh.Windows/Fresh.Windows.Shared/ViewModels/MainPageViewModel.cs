@@ -121,19 +121,20 @@ namespace Fresh.Windows.ViewModels
                              orderby show.Title
                              select TVShow.FromTrakt(show)).ToList();
 
-            var watchedEpisodes = await traktService.GetWatchedEpisodesAsync(username);
+            var watchedEpisodesbyShow = await traktService.GetWatchedEpisodesAsync(username);
 
-            foreach (var watchedEpisode in watchedEpisodes)
-            {
-                var show = fullShows.First(s => s.Title == watchedEpisode.Show.Title);
+            var watchedEpisodes = from watchedShow in watchedEpisodesbyShow
+                                  from watchedSeason in watchedShow.Seasons
+                                  from watchedEpisode in watchedSeason.Episodes
+                                  join show in fullShows on watchedShow.Title equals show.Title
+                                  from season in show.Seasons
+                                  where season.Number == watchedSeason.Season
+                                  from episode in season.Episodes
+                                  where episode.Number == watchedEpisode.Number
+                                  select episode;
 
-                var episode = (from s in show.Seasons
-                               from ep in s.Episodes
-                               where s.Number == watchedEpisode.Episode.Season && ep.Number == watchedEpisode.Episode.Number
-                               select ep).First();
-
+            foreach (var episode in watchedEpisodes)
                 episode.Watched = true;
-            }
 
             await storageService.UpdateLibraryAsync(fullShows);
 
@@ -179,7 +180,7 @@ namespace Fresh.Windows.ViewModels
             get
             {
                 return new DelegateCommand<ItemClickEventArgs>(args =>
-                    navigationService.Navigate(App.Experience.TVShow.ToString(), ((Episode)args.ClickedItem).Id));
+                    navigationService.Navigate(App.Experience.TVShow.ToString(), ((TVShow)args.ClickedItem).Id));
             }
         }
     }

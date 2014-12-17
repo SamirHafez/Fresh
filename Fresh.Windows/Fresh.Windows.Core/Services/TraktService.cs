@@ -60,9 +60,9 @@ namespace Fresh.Windows.Core.Services
         public async Task<T> Execute()
         {
             HttpResponseMessage response;
-            using(var httpClient = new HttpClient())
-                response = asPost ? 
-                    await httpClient.PostAsync(GenerateQueryString(), GeneratePostBody()) : 
+            using (var httpClient = new HttpClient())
+                response = asPost ?
+                    await httpClient.PostAsync(GenerateQueryString(), GeneratePostBody()) :
                     await httpClient.GetAsync(GenerateQueryString());
 
             response.EnsureSuccessStatusCode();
@@ -70,7 +70,7 @@ namespace Fresh.Windows.Core.Services
             string content = await response.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<T>(withSelect != null ?
-                JsonConvert.SerializeObject(withSelect(JsonConvert.DeserializeObject(content))) : 
+                JsonConvert.SerializeObject(withSelect(JsonConvert.DeserializeObject(content))) :
                 content);
         }
 
@@ -100,7 +100,7 @@ namespace Fresh.Windows.Core.Services
         public Task<IList<TraktTVShow>> GetLibraryAsync(string username, bool extended = false)
         {
             return new TraktIO<IList<TraktTVShow>>(apiKey).
-                ForPath("user/library/shows/all.json").
+                ForPath("user/library/shows/collection.json").
                 WithParameters(new { username }).
                 Extended(extended).
                 Execute();
@@ -116,13 +116,10 @@ namespace Fresh.Windows.Core.Services
 
         public Task<dynamic> GetSettingsAsync(string username, string password)
         {
-            var passVector = CryptographicBuffer.ConvertStringToBinary(password, BinaryStringEncoding.Utf8);
-            var digest = HashAlgorithmProvider.OpenAlgorithm("SHA1").HashData(passVector);
-
             return new TraktIO<dynamic>(apiKey).
                 ForPath("account/settings").
                 AsPost().
-                WithParameters(new { username, password = CryptographicBuffer.EncodeToHexString(digest) }).
+                WithParameters(new { username, password }).
                 Select(content => content["profile"]).
                 Execute();
         }
@@ -137,13 +134,35 @@ namespace Fresh.Windows.Core.Services
         }
 
 
-        public Task<IList<TraktWatchedEpisode>> GetWatchedEpisodesAsync(string username)
+        public Task<IList<TraktTVShow>> GetWatchedEpisodesAsync(string username)
         {
-            return new TraktIO<IList<TraktWatchedEpisode>>(apiKey).
-                ForPath("user/watched/episodes.json").
+            return new TraktIO<IList<TraktTVShow>>(apiKey).
+                ForPath("user/library/shows/watched.json").
                 WithParameters(new { username }).
                 Extended(false).
                 Execute();
+        }
+
+
+        public Task WatchEpisodeAsync(string username, string password, string showTitle, int year, int season, int episode)
+        {
+            var result = new TraktIO<dynamic>(apiKey).
+                ForPath("show/episode/seen").
+                AsPost().
+                WithParameters(new
+                {
+                    username,
+                    password,
+                    title = showTitle,
+                    year,
+                    episodes = new[] 
+                    {
+                        new { season, episode, last_played = DateTime.UtcNow }
+                    }
+                }).
+                Execute();
+
+            return Task.FromResult<object>(null);
         }
     }
 }
