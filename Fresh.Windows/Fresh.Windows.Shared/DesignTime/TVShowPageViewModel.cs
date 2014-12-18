@@ -20,10 +20,14 @@ namespace Fresh.Windows.Shared.DesignTime
                     Poster = "http://slurm.trakt.us/images/seasons/124-5.47.jpg"
                 }
             };
+
+            Overview = "TVShow Overview ipsum lorem.";
         }
 
         public string Title { get; set; }
         public string Poster { get; set; }
         public ObservableCollection<Season> Seasons { get; set; }
+
+        public string Overview { get; set; }
     }
 }
