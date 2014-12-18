@@ -35,6 +35,8 @@ namespace Fresh.Windows.ViewModels
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
+            navigationService.ClearHistory();
+
             var username = configurationService.User.Username;
 
             if (string.IsNullOrWhiteSpace(username))
