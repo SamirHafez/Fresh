@@ -5,6 +5,7 @@ using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.Mvvm.Interfaces;
 using System;
 using Windows.UI.Popups;
+using System.Collections.Generic;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -22,6 +23,13 @@ namespace Fresh.Windows.ViewModels
 
             this.loginCommand = new DelegateCommand(Login,
                     () => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password));
+        }
+
+        public override void OnNavigatedFrom(Dictionary<string, object> viewModelState, bool suspending)
+        {
+            base.OnNavigatedFrom(viewModelState, suspending);
+
+            navigationService.ClearHistory();
         }
 
         string username = default(string);

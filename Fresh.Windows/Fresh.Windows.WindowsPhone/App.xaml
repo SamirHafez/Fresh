@@ -8,7 +8,7 @@
     >
     <prism:MvvmAppBase.Resources>
         <DataTemplate x:Key="EpisodeTemplate">
-        	<Grid Margin="0, 0, 0, 10">
+        	<Grid Margin="0, 0, 0, 10" Width="330" Height="185">
         		<Image Source="{Binding Screen}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Number}"/>
         		<StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal">
         			<Border Background="#CC008000" Padding="5,0">

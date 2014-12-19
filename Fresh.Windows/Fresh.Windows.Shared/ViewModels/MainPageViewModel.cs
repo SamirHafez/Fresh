@@ -35,8 +35,6 @@ namespace Fresh.Windows.ViewModels
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
-            navigationService.ClearHistory();
-
             var username = configurationService.User.Username;
 
             if (string.IsNullOrWhiteSpace(username))
@@ -104,7 +102,8 @@ namespace Fresh.Windows.ViewModels
 
         private async Task<IList<GroupedEpisodes<TVShow>>> GetUnwatchedEpisodesByShow()
         {
-            return (from episode in await storageService.GetEpisodesAsync(e => e.Watched == false)
+            return (from episode in await storageService.GetEpisodesAsync(e => e.Watched == false && e.AirDate != null && e.AirDate <= DateTime.UtcNow)
+                    where episode.Season.Number > 0
                     group episode by episode.Season.ShowId into g
                     let tvShow = g.First().Season.TVShow
                     orderby g.Count() descending
