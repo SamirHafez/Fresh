@@ -15,6 +15,14 @@
 
     <controls:PageBase.Resources>
         <CollectionViewSource x:Key="thisWeekCvs" Source="{Binding ThisWeek}" d:Source="{Binding ThisWeek, Source={d:DesignInstance IsDesignTimeCreatable=True, Type=designTime:MainPageViewModel}}"  IsSourceGrouped="True" ItemsPath="Episodes"/>
+        <DataTemplate x:Key="ShowWithEpisodes">
+        	<Grid Height="200" Margin="5">
+        		<Image Source="{Binding Key.Poster}"/>
+        		<Border Background="#CC008000" Padding="5" HorizontalAlignment="Right" VerticalAlignment="Top">
+        			<TextBlock TextWrapping="Wrap" Text="{Binding Episodes.Count}" Style="{StaticResource ListViewItemContentTextBlockStyle}"/>
+        		</Border>
+        	</Grid>
+        </DataTemplate>
     </controls:PageBase.Resources>
 
     <d:DataContext>
@@ -26,43 +34,73 @@
 		</Hub.Header>
 		<HubSection Margin="-20,0,0,0" Background="Green">
 			<DataTemplate>
-				<Grid/>
+				<Grid Margin="5,0,5.111,-0.444">
+					<ListView IsItemClickEnabled="True">
+						<ListView.Resources>
+							<DataTemplate x:Key="HeaderTemplate">
+								<Border Margin="0, 0, 0, 5">
+									<TextBlock Text="{Binding Key}" Foreground="White" Style="{StaticResource SubheaderTextBlockStyle}" Margin="5"/>
+								</Border>
+							</DataTemplate>
+						</ListView.Resources>
+						<Interactivity:Interaction.Behaviors>
+							<Core:EventTriggerBehavior EventName="ItemClick">
+								<Core:InvokeCommandAction Command="{Binding EpisodeSelectedCommand, Mode=OneWay}"/>
+							</Core:EventTriggerBehavior>
+						</Interactivity:Interaction.Behaviors>
+						<ListView.ItemsSource>
+							<Binding Source="{StaticResource thisWeekCvs}"/>
+						</ListView.ItemsSource>
+						<ListView.ItemTemplate>
+							<StaticResource ResourceKey="EpisodeTemplate"/>
+						</ListView.ItemTemplate>
+						<ListView.GroupStyle>
+							<GroupStyle HeaderTemplate="{StaticResource HeaderTemplate}"/>
+						</ListView.GroupStyle>
+					</ListView>
+					<TextBlock Style="{StaticResource SubheaderTextBlockStyle}" Text="nothing to watch this week :(" Margin="5,5,4,9" TextWrapping="WrapWholeWords" Visibility="Collapsed">
+						<Interactivity:Interaction.Behaviors>
+							<Core:DataTriggerBehavior Binding="{Binding ThisWeek.Count, Mode=OneWay}" Value="0">
+								<Core:ChangePropertyAction PropertyName="Visibility">
+									<Core:ChangePropertyAction.Value>
+										<Visibility>Visible</Visibility>
+									</Core:ChangePropertyAction.Value>
+								</Core:ChangePropertyAction>
+							</Core:DataTriggerBehavior>
+						</Interactivity:Interaction.Behaviors>
+					</TextBlock>
+				</Grid>
 			</DataTemplate>
 		</HubSection>
-		<HubSection Header="THIS WEEK">
-			<Interactivity:Interaction.Behaviors>
-				<Core:DataTriggerBehavior Binding="{Binding ThisWeek.Count}" Value="0">
-					<Core:ChangePropertyAction PropertyName="Visibility">
-						<Core:ChangePropertyAction.Value>
-							<Visibility>Collapsed</Visibility>
-						</Core:ChangePropertyAction.Value>
-					</Core:ChangePropertyAction>
-				</Core:DataTriggerBehavior>
-			</Interactivity:Interaction.Behaviors>
+		<HubSection>
 			<DataTemplate>
-				<ListView>
-					<ListView.Resources>
-						<DataTemplate x:Key="HeaderTemplate">
-							<Border Background="Green" Margin="0, 0, 0, 5">
-								<TextBlock Text="{Binding Key}" Style="{StaticResource SubheaderTextBlockStyle}" Margin="5"/>
-							</Border>
+				<GridView Header="{Binding UnwatchedEpisodesByShow.Count, Mode=OneWay}" ItemsSource="{Binding UnwatchedEpisodesByShow}" ItemTemplate="{StaticResource ShowWithEpisodes}" Margin="0,0,20,0" IsItemClickEnabled="True">
+					<Interactivity:Interaction.Behaviors>
+						<Core:EventTriggerBehavior EventName="ItemClick">
+							<Core:InvokeCommandAction Command="{Binding EnterShowCommand, Mode=OneWay}"/>
+						</Core:EventTriggerBehavior>
+					</Interactivity:Interaction.Behaviors>
+					<GridView.HeaderTemplate>
+						<DataTemplate>
+							<TextBlock Margin="5, 0 ,0, 0" Style="{StaticResource SubheaderTextBlockStyle}">
+								<Run Text="You have"/>
+								<Run Text="{Binding}" FontWeight="ExtraBold" Foreground="Green"/>
+								<Run Text="shows with unwatched episodes"/>
+							</TextBlock>
 						</DataTemplate>
-					</ListView.Resources>
-					<ListView.ItemsSource>
-						<Binding Source="{StaticResource thisWeekCvs}"/>
-					</ListView.ItemsSource>
-					<ListView.ItemTemplate>
-						<StaticResource ResourceKey="EpisodeTemplate"/>
-					</ListView.ItemTemplate>
-					<ListView.GroupStyle>
-						<GroupStyle HeaderTemplate="{StaticResource HeaderTemplate}"/>
-					</ListView.GroupStyle>
-				</ListView>
+					</GridView.HeaderTemplate>
+				</GridView>
 			</DataTemplate>
 		</HubSection>
 		<HubSection Header="COLLECTION">
 			<DataTemplate>
-				<ListView ItemsSource="{Binding Library}" ItemTemplate="{StaticResource TVShowTemplate}"/>
+				<ListView ItemsSource="{Binding Library}" ItemTemplate="{StaticResource TVShowTemplate}" Margin="0,0,20,0" IsItemClickEnabled="True">
+					<Interactivity:Interaction.Behaviors>
+						<Core:EventTriggerBehavior EventName="ItemClick">
+							<Core:InvokeCommandAction Command="{Binding EnterShowCommand, Mode=OneWay}"/>
+						</Core:EventTriggerBehavior>
+					</Interactivity:Interaction.Behaviors>
+				</ListView>
 			</DataTemplate>
 		</HubSection>
 	</Hub>

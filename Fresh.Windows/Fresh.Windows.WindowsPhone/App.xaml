@@ -10,16 +10,21 @@
         <DataTemplate x:Key="EpisodeTemplate">
         	<Grid Margin="0, 0, 0, 10">
         		<Image Source="{Binding Screen}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Number}"/>
-        		<Border Background="Green" MaxWidth="300" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
-        			<TextBlock Margin="5, 0, 5, 0" Text="{Binding Title}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}"/>
-        		</Border>
-        		<Border Background="Green" Width="30" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10">
-        			<TextBlock Text="{Binding Number}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}"/>
-        		</Border>
-        		<Border Background="Green" MaxWidth="300" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10">
+        		<StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal">
+        			<Border Background="#CC008000" Padding="5,0">
+        				<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}">
+        					<Run Text="#"/>
+        					<Run Text="{Binding Number}"/>
+        				</TextBlock>
+        			</Border>
+        			<Border Background="#99090A09" MaxWidth="300" Padding="5,0">
+        				<TextBlock Margin="5, 0, 5, 0" Text="{Binding Title}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"/>
+        			</Border>
+        		</StackPanel>
+        		<Border Background="#CC008000" MaxWidth="300" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top">
         			<TextBlock Margin="5, 0, 5, 0" Text="{Binding Season.TVShow.Title}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}"/>
         		</Border>
-        		<Border VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="30" Background="Green" Margin="10" Visibility="Collapsed">
+        		<Border VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="30" Background="#CC008000" Visibility="Collapsed">
         			<Interactivity:Interaction.Behaviors>
         				<Core:DataTriggerBehavior Binding="{Binding Watched}" Value="True">
         					<Core:ChangePropertyAction PropertyName="Visibility">
@@ -38,7 +43,7 @@
         		<Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}">
         			<Image Source="{Binding Poster}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
         		</Border>
-        		<StackPanel VerticalAlignment="Bottom" Background="Green" Margin="5">
+        		<StackPanel VerticalAlignment="Bottom" Background="#CC008000">
         			<TextBlock Text="{Binding Title}" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" FontWeight="SemiBold" Margin="5,0"/>
         			<TextBlock Text="{Binding Year}" Foreground="{ThemeResource ListViewItemOverlaySecondaryForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap" FontSize="12" Margin="5,0"/>
         		</StackPanel>

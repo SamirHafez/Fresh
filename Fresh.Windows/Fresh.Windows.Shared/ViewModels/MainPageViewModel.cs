@@ -55,6 +55,8 @@ namespace Fresh.Windows.ViewModels
             var nextSunday = lastMonday.AddDays(7);
             ThisWeek = await GetSchedule(lastMonday, nextSunday);
 
+            UnwatchedEpisodesByShow = await GetUnwatchedEpisodesByShow();
+
             Loading = false;
         }
 
@@ -98,6 +100,19 @@ namespace Fresh.Windows.ViewModels
                     await storageService.UpdateEpisodeAsync(episode);
                 }
             }
+        }
+
+        private async Task<IList<GroupedEpisodes<TVShow>>> GetUnwatchedEpisodesByShow()
+        {
+            return (from episode in await storageService.GetEpisodesAsync(e => e.Watched == false)
+                    group episode by episode.Season.ShowId into g
+                    let tvShow = g.First().Season.TVShow
+                    orderby g.Count() descending
+                    select new GroupedEpisodes<TVShow>
+                    {
+                        Key = tvShow,
+                        Episodes = g.ToList()
+                    }).ToList();
         }
 
         private async Task<IList<GroupedEpisodes<DayOfWeek>>> GetSchedule(DateTime lastMonday, DateTime nextSunday)
@@ -171,6 +186,9 @@ namespace Fresh.Windows.ViewModels
         ObservableCollection<TVShow> library = default(ObservableCollection<TVShow>);
         public ObservableCollection<TVShow> Library { get { return library; } set { SetProperty(ref library, value); } }
 
+        IList<GroupedEpisodes<TVShow>> unwatchedEpisodeByShow = default(IList<GroupedEpisodes<TVShow>>);
+        public IList<GroupedEpisodes<TVShow>> UnwatchedEpisodesByShow { get { return unwatchedEpisodeByShow; } set { SetProperty(ref unwatchedEpisodeByShow, value); } }
+
         IList<GroupedEpisodes<DayOfWeek>> thisWeek = default(IList<GroupedEpisodes<DayOfWeek>>);
         public IList<GroupedEpisodes<DayOfWeek>> ThisWeek { get { return thisWeek; } set { SetProperty(ref thisWeek, value); } }
 
@@ -182,7 +200,13 @@ namespace Fresh.Windows.ViewModels
             get
             {
                 return new DelegateCommand<ItemClickEventArgs>(args =>
-                    navigationService.Navigate(App.Experience.TVShow.ToString(), ((TVShow)args.ClickedItem).Id));
+                {
+                    var tvShow = args.ClickedItem is TVShow ?
+                        (TVShow)args.ClickedItem :
+                        ((GroupedEpisodes<TVShow>)args.ClickedItem).Key;
+
+                    navigationService.Navigate(App.Experience.TVShow.ToString(), tvShow.Id);
+                });
             }
         }
     }
