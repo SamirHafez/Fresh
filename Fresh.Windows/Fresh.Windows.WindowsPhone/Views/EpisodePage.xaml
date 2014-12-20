@@ -53,7 +53,7 @@
 
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarToggleButton IsChecked="{Binding Watched, Mode=TwoWay}" IsThreeState="False" Label="Watched" Command="{Binding ToggleWatchedCommand}"></AppBarToggleButton>
+            <AppBarToggleButton IsChecked="{Binding Watched, Mode=TwoWay}" IsThreeState="False" Label="Watched" Command="{Binding ToggleWatchedCommand}" Icon="Accept"/>
         </CommandBar>
     </Page.BottomAppBar>
 </controls:PageBase>

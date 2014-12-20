@@ -18,7 +18,7 @@
 
     <controls:PageBase.BottomAppBar>
         <CommandBar>
-            <AppBarButton Command="{Binding SeasonWatchedCommand}" Label="Watched"/>
+            <AppBarButton Command="{Binding SeasonWatchedCommand}" Label="Watched" Icon="Accept"/>
         </CommandBar>
     </controls:PageBase.BottomAppBar>
 
