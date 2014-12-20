@@ -83,7 +83,6 @@
 					<GridView.HeaderTemplate>
 						<DataTemplate>
 							<TextBlock Margin="5, 0 ,0, 0" Style="{StaticResource SubheaderTextBlockStyle}">
-								<Run Text="You have"/>
 								<Run Text="{Binding}" FontWeight="ExtraBold" Foreground="Green"/>
 								<Run Text="shows with unwatched episodes"/>
 							</TextBlock>

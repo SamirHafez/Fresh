@@ -49,6 +49,9 @@ namespace Fresh.Windows.ViewModels
             Title = fullShow.Title;
             Poster = fullShow.Poster;
             Overview = fullShow.Overview;
+            Rating = fullShow.Rating;
+            Loved = fullShow.Loved;
+            Hated = fullShow.Hated;
 
             Seasons = new ObservableCollection<Season>(fullShow.Seasons);
         }
@@ -61,6 +64,15 @@ namespace Fresh.Windows.ViewModels
 
         string overview = default(string);
         public string Overview { get { return overview; } set { SetProperty(ref overview, value); } }
+
+        int rating = default(int);
+        public int Rating { get { return rating; } set { SetProperty(ref rating, value); } }
+
+        int loved = default(int);
+        public int Loved { get { return loved; } set { SetProperty(ref loved, value); } }
+
+        int hated = default(int);
+        public int Hated { get { return hated; } set { SetProperty(ref hated, value); } }
 
         ObservableCollection<Season> seasons = default(ObservableCollection<Season>);
         public ObservableCollection<Season> Seasons { get { return seasons; } set { SetProperty(ref seasons, value); } }

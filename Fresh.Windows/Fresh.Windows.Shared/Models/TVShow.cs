@@ -17,6 +17,9 @@ namespace Fresh.Windows.Shared.Models
         public string Network { get; set; }
         public string Poster { get; set; }
         public DayOfWeek? AirDay { get; set; }
+        public int Rating { get; set; }
+        public int Loved { get; set; }
+        public int Hated { get; set; }
 
         [OneToMany(CascadeOperations = CascadeOperation.All)]
         public List<Season> Seasons { get; set; }
@@ -30,6 +33,9 @@ namespace Fresh.Windows.Shared.Models
                 Year = trakt.Year,
                 Overview = trakt.Overview,
                 Network = trakt.Network,
+                Rating = trakt.Ratings != null ? trakt.Ratings.Percentage : 0,
+                Loved = trakt.Ratings != null ? trakt.Ratings.Loved : 0,
+                Hated = trakt.Ratings != null ? trakt.Ratings.Hated : 0,
                 Poster = trakt.Images != null ? trakt.Images.Poster : null,
                 AirDay = trakt.Air_day != null ? (DayOfWeek)Enum.Parse(typeof(DayOfWeek), trakt.Air_day, ignoreCase: true) : (DayOfWeek?)null,
                 Seasons = trakt.Seasons != null ? new List<Season>(trakt.Seasons.Select(Season.FromTrakt)) : null
