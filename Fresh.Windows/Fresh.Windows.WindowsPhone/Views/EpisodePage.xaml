@@ -44,7 +44,7 @@
 		<Border HorizontalAlignment="Left" VerticalAlignment="Top" Background="Green" Padding="5" Margin="0,20,0,0">
 			<TextBlock TextWrapping="Wrap" Text="{Binding Title}" Style="{StaticResource SubheaderTextBlockStyle}"/>
 		</Border>
-		<ScrollViewer HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,30" Height="200" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Bottom" HorizontalScrollMode="Disabled" >
+		<ScrollViewer HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="195" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Bottom" HorizontalScrollMode="Disabled" Margin="0,0,0,5" >
 			<Border Background="Green" Padding="5" BorderThickness="0" VerticalAlignment="Bottom" HorizontalAlignment="Left">
 				<TextBlock TextWrapping="Wrap" Text="{Binding Overview}" Style="{StaticResource BodyTextBlockStyle}"/>
 			</Border>
