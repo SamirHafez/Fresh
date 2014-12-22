@@ -49,7 +49,7 @@ namespace Fresh.Windows.ViewModels
             else
                 await Update();
 
-            var lastMonday = StartOfWeek(DateTime.UtcNow, DayOfWeek.Monday);
+            var lastMonday = StartOfWeek(DateTime.Now, DayOfWeek.Monday);
             var nextSunday = lastMonday.AddDays(7);
             ThisWeek = await GetSchedule(lastMonday, nextSunday);
 
@@ -116,13 +116,14 @@ namespace Fresh.Windows.ViewModels
 
         private async Task<IList<GroupedEpisodes<DayOfWeek>>> GetSchedule(DateTime lastMonday, DateTime nextSunday)
         {
-            return (from episode in await storageService.GetEpisodesAsync(e => e.AirDate >= lastMonday && e.AirDate < nextSunday)
-                    group episode by episode.Season.TVShow.AirDay into g
-                    where g.Key.HasValue
+            var utcLastMonday = lastMonday.ToUniversalTime();
+            var utcNextSunday = nextSunday.ToUniversalTime();
+            return (from episode in await storageService.GetEpisodesAsync(e => e.AirDate != null && e.AirDate >= utcLastMonday && e.AirDate <= utcNextSunday)
+                    group episode by episode.AirDate.Value.ToLocalTime().DayOfWeek into g
                     orderby g.Key
                     select new GroupedEpisodes<DayOfWeek>
                     {
-                        Key = g.Key.Value,
+                        Key = g.Key,
                         Episodes = g.ToList()
                     }).ToList();
         }
@@ -179,7 +180,7 @@ namespace Fresh.Windows.ViewModels
                 diff += 7;
             }
 
-            return dt.AddDays(-1 * diff);
+            return dt.AddDays(-1 * diff).Date;
         }
 
         ObservableCollection<TVShow> library = default(ObservableCollection<TVShow>);

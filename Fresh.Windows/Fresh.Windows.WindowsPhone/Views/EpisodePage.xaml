@@ -41,10 +41,15 @@
 				<TextBlock TextWrapping="Wrap" Text="LOADING EPISODE" Style="{StaticResource SubheaderTextBlockStyle}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 			</Border>
 		</Grid>
-		<Border HorizontalAlignment="Left" VerticalAlignment="Top" Background="Green" Padding="5" Margin="0,20,0,0">
-			<TextBlock TextWrapping="Wrap" Text="{Binding Title}" Style="{StaticResource SubheaderTextBlockStyle}"/>
-		</Border>
-		<ScrollViewer HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="195" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Bottom" HorizontalScrollMode="Disabled" Margin="0,0,0,5" >
+		<StackPanel Margin="0,20,0,0" Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top">
+			<Border Background="Green" Padding="5" Margin="0,0,0,5">
+				<TextBlock TextWrapping="Wrap" Text="{Binding Title}" Style="{StaticResource SubheaderTextBlockStyle}"/>
+			</Border>
+			<Border Background="Green" Padding="5">
+				<TextBlock TextWrapping="Wrap" Text="{Binding AirDate}" Style="{StaticResource SubheaderTextBlockStyle}"/>
+			</Border>
+		</StackPanel>
+		<ScrollViewer HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="195" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Bottom" HorizontalScrollMode="Disabled" >
 			<Border Background="Green" Padding="5" BorderThickness="0" VerticalAlignment="Bottom" HorizontalAlignment="Left">
 				<TextBlock TextWrapping="Wrap" Text="{Binding Overview}" Style="{StaticResource BodyTextBlockStyle}"/>
 			</Border>

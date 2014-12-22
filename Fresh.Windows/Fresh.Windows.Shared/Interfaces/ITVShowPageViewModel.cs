@@ -13,5 +13,6 @@ namespace Fresh.Windows.Shared.Interfaces
         int Hated { get; set; }
 
         ObservableCollection<Season> Seasons { get; set; }
+        ObservableCollection<Episode> UnwatchedEpisodes { get; set; }
     }
 }

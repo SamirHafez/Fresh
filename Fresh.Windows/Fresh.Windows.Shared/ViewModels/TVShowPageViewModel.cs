@@ -8,6 +8,8 @@ using Fresh.Windows.Shared.Interfaces;
 using Fresh.Windows.Shared.Models;
 using Fresh.Windows.Shared.Services.Interfaces;
 using Windows.UI.Xaml.Controls;
+using System.Linq;
+using System;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -54,6 +56,28 @@ namespace Fresh.Windows.ViewModels
             Hated = fullShow.Hated;
 
             Seasons = new ObservableCollection<Season>(fullShow.Seasons);
+            UnwatchedEpisodes = new ObservableCollection<Episode>(from season in fullShow.Seasons
+                                                                  from episode in season.Episodes
+                                                                  where episode.Watched == false &&
+                                                                    episode.AirDate.HasValue && 
+                                                                    episode.AirDate <= DateTime.UtcNow &&
+                                                                    episode.Season.Number != 0
+                                                                  orderby episode.Season.Number, episode.Number
+                                                                  select episode);
+        }
+
+        public DelegateCommand<ItemClickEventArgs> EpisodeSelectedCommand
+        {
+            get
+            {
+                return new DelegateCommand<ItemClickEventArgs>(args =>
+                    navigationService.Navigate(App.Experience.Episode.ToString(), ((Episode)args.ClickedItem).Id));
+            }
+        }
+
+        private void EpisodeSelected(Episode episode)
+        {
+            navigationService.Navigate(App.Experience.Episode.ToString(), episode.Id);
         }
 
         string title = default(string);
@@ -76,5 +100,8 @@ namespace Fresh.Windows.ViewModels
 
         ObservableCollection<Season> seasons = default(ObservableCollection<Season>);
         public ObservableCollection<Season> Seasons { get { return seasons; } set { SetProperty(ref seasons, value); } }
+
+        ObservableCollection<Episode> unwatchedEpisodes = default(ObservableCollection<Episode>);
+        public ObservableCollection<Episode> UnwatchedEpisodes { get { return unwatchedEpisodes; } set { SetProperty(ref unwatchedEpisodes, value); } }
     }
 }

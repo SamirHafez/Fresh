@@ -36,6 +36,9 @@
         			</Interactivity:Interaction.Behaviors>
         			<TextBlock Margin="5, 0, 5, 0" Text="Watched" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" Height="25" FontWeight="Bold"/>
         		</Border>
+        		<Border Background="#CC008000" MaxWidth="300" HorizontalAlignment="Right" VerticalAlignment="Top">
+        			<TextBlock Text="{Binding AirDate}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" Margin="5,0"/>
+        		</Border>
         	</Grid>
         </DataTemplate>
         <DataTemplate x:Key="TVShowTemplate">
@@ -50,7 +53,7 @@
         	</Grid>
         </DataTemplate>
         <DataTemplate x:Key="SeasonTemplate">
-        	<Grid Width="200" Height="300" Margin="0,0,10,10">
+        	<Grid Width="160" Height="240" Margin="0,0,10,10">
         		<Grid.Background>
         			<ImageBrush ImageSource="{Binding Poster}" Stretch="UniformToFill"/>
         		</Grid.Background>

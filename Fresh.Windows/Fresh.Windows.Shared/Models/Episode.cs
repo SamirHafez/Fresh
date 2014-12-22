@@ -20,18 +20,23 @@ namespace Fresh.Windows.Shared.Models
         public int Number { get; set; }
         public string Overview { get; set; }
         public string Screen { get; set; }
-        public DateTime? AirDate { get; set; }
+        private DateTime? airDate;
+        public DateTime? AirDate 
+        {
+            get { return airDate != null ? DateTime.SpecifyKind(airDate.Value, DateTimeKind.Utc) : (DateTime?)null; }
+            set { airDate = value; }
+        }
 
         private bool watched;
-        public bool Watched 
+        public bool Watched
         {
             get { return watched; }
-            set 
+            set
             {
                 watched = value;
                 if (PropertyChanged != null)
                     PropertyChanged(this, new PropertyChangedEventArgs("Watched"));
-            } 
+            }
         }
 
         public string Link { get; set; }
@@ -49,7 +54,7 @@ namespace Fresh.Windows.Shared.Models
                 Number = trakt.Number,
                 Overview = trakt.Overview,
                 Screen = trakt.Screen,
-                AirDate = trakt.First_aired_iso != null ? DateTime.Parse(trakt.First_aired_iso) : (DateTime?)null
+                AirDate = trakt.First_aired_utc != 0 ? new DateTime(1970, 1, 1).AddSeconds(trakt.First_aired_utc) : (DateTime?)null
             };
         }
     }

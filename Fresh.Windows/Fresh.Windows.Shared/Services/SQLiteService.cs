@@ -66,7 +66,12 @@ namespace Fresh.Windows.Shared.Services
         {
             await context.CreateTablesAsync<TVShow, Season, Episode>();
 
-            return connection.GetWithChildren<TVShow>(showId);
+            var show = connection.GetWithChildren<TVShow>(showId);
+
+            foreach (var season in show.Seasons)
+                connection.GetChildren(season, recursive: true);
+
+            return show;
         }
 
         public async Task UpdateShowAsync(TVShow dbShow)

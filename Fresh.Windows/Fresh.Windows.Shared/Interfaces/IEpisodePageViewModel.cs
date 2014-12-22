@@ -1,4 +1,5 @@
-﻿namespace Fresh.Windows.Shared.Interfaces
+﻿using System;
+namespace Fresh.Windows.Shared.Interfaces
 {
     public interface IEpisodePageViewModel
     {
@@ -13,5 +14,6 @@
         bool Watched { get; set; }
 
         string Screen { get; set; }
+        DateTime AirDate { get; set; }
     }
 }

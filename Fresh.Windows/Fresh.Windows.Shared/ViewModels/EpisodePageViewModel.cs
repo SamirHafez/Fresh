@@ -39,6 +39,7 @@ namespace Fresh.Windows.ViewModels
             Overview = episode.Overview;
             Screen = episode.Screen;
             Watched = episode.Watched;
+            AirDate = episode.AirDate.GetValueOrDefault();
 
             if (episode.Link == null && episode.AirDate < DateTime.UtcNow)
             {
@@ -94,5 +95,8 @@ namespace Fresh.Windows.ViewModels
 
         bool watched = default(bool);
         public bool Watched { get { return watched; } set { SetProperty(ref watched, value); } }
+
+        DateTime airDate = default(DateTime);
+        public DateTime AirDate { get { return airDate; } set { SetProperty(ref airDate, value); } }
     }
 }

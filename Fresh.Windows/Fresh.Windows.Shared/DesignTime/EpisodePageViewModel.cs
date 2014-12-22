@@ -1,4 +1,5 @@
 ﻿using Fresh.Windows.Shared.Interfaces;
+using System;
 
 namespace Fresh.Windows.Shared.DesignTime
 {
@@ -12,6 +13,8 @@ namespace Fresh.Windows.Shared.DesignTime
             Watched = true;
             Link = null;
             Screen = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg";
+
+            AirDate = DateTime.UtcNow;
         }
 
         public string Link { get; set; }
@@ -25,5 +28,6 @@ namespace Fresh.Windows.Shared.DesignTime
         public bool Watched { get; set; }
 
         public string Screen { get; set; }
+        public DateTime AirDate { get; set; }
     }
 }

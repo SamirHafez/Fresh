@@ -54,14 +54,34 @@
         </HubSection>
         <HubSection Header="SEASONS">
             <DataTemplate>
-                <ListView ItemsSource="{Binding Seasons}" Margin="0,0,20,0" IsItemClickEnabled="True" ItemTemplate="{StaticResource SeasonTemplate}">
+                <GridView ItemsSource="{Binding Seasons}" IsItemClickEnabled="True" ItemTemplate="{StaticResource SeasonTemplate}">
                     <Interactivity:Interaction.Behaviors>
                         <Core:EventTriggerBehavior EventName="ItemClick">
                             <Core:InvokeCommandAction Command="{Binding EnterSeasonCommand}"/>
                         </Core:EventTriggerBehavior>
                     </Interactivity:Interaction.Behaviors>
-                </ListView>
+                </GridView>
             </DataTemplate>
+        </HubSection>
+        <HubSection Header="UNWATCHED EPISODES" Margin="0,0,20,0">
+        	<Interactivity:Interaction.Behaviors>
+        		<Core:DataTriggerBehavior Binding="{Binding UnwatchedEpisodes.Count, Mode=OneWay}" Value="0">
+        			<Core:ChangePropertyAction PropertyName="Visibility">
+        				<Core:ChangePropertyAction.Value>
+        					<Visibility>Collapsed</Visibility>
+        				</Core:ChangePropertyAction.Value>
+        			</Core:ChangePropertyAction>
+        		</Core:DataTriggerBehavior>
+        	</Interactivity:Interaction.Behaviors>
+        	<DataTemplate>
+        		<ListView ItemsSource="{Binding UnwatchedEpisodes}" ItemTemplate="{StaticResource EpisodeTemplate}" IsItemClickEnabled="True">
+        			<Interactivity:Interaction.Behaviors>
+        				<Core:EventTriggerBehavior EventName="ItemClick">
+        					<Core:InvokeCommandAction Command="{Binding EpisodeSelectedCommand}"/>
+        				</Core:EventTriggerBehavior>
+        			</Interactivity:Interaction.Behaviors>
+        		</ListView>
+        	</DataTemplate>
         </HubSection>
     </Hub>
 </controls:PageBase>

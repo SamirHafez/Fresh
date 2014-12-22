@@ -31,12 +31,29 @@ namespace Fresh.Windows.Shared.DesignTime
                 }
             };
 
+            UnwatchedEpisodes = new ObservableCollection<Episode>
+            {
+                new Episode
+                        {
+                            Number = 1,
+                            Title = "Episode 1",
+                            Screen = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg",
+                        },
+                new Episode
+                        {
+                            Number = 2,
+                            Title = "Episode 3",
+                            Screen = "http://slurm.trakt.us/images/episodes/124-5-2.47.jpg",
+                        }
+            };
+
             Overview = "TVShow Overview ipsum lorem.";
         }
 
         public string Title { get; set; }
         public string Poster { get; set; }
         public ObservableCollection<Season> Seasons { get; set; }
+        public ObservableCollection<Episode> UnwatchedEpisodes { get; set; }
 
         public string Overview { get; set; }
 
