@@ -36,6 +36,7 @@ namespace Fresh.Windows.ViewModels
             var season = await storageService.GetSeasonAsync(seasonId);
 
             Number = season.Number;
+            Poster = season.Poster;
             Episodes = new ObservableCollection<Episode>(season.Episodes);
         }
 
@@ -84,5 +85,8 @@ namespace Fresh.Windows.ViewModels
 
         int number = default(int);
         public int Number { get { return number; } set { SetProperty(ref number, value); } }
+
+        string poster = default(string);
+        public string Poster { get { return poster; } set { SetProperty(ref poster, value); } }
     }
 }

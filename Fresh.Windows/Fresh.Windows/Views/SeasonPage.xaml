@@ -12,15 +12,43 @@
     x:Class="Fresh.Windows.Views.SeasonPage"
     prism:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d">
+	<controls:PageBase.BottomAppBar>
+		<CommandBar Background="Green">
+			<AppBarButton Icon="Accept" Label="Watched">
+				<Interactivity:Interaction.Behaviors>
+					<Core:EventTriggerBehavior EventName="Click">
+						<Core:InvokeCommandAction Command="{Binding SeasonWatchedCommand}"/>
+					</Core:EventTriggerBehavior>
+				</Interactivity:Interaction.Behaviors>
+			</AppBarButton>
+		</CommandBar>
+	</controls:PageBase.BottomAppBar>
 
     <d:DataContext>
         <designTime:SeasonPageViewModel/>
     </d:DataContext>
-	<GridView ItemsSource="{Binding Episodes}" ItemTemplate="{StaticResource EpisodeTemplate}" IsItemClickEnabled="True">
-		<Interactivity:Interaction.Behaviors>
-			<Core:EventTriggerBehavior EventName="ItemClick">
-				<Core:InvokeCommandAction Command="{Binding EpisodeSelectedCommand}"/>
-			</Core:EventTriggerBehavior>
-		</Interactivity:Interaction.Behaviors>
-	</GridView>
+	<Hub>
+		<Hub.Header>
+			<Image Source="ms-appx:///Assets/Fresh.png" Stretch="Fill" Width="265"/>
+		</Hub.Header>
+		<HubSection Width="436">
+			<HubSection.Background>
+				<ImageBrush Stretch="UniformToFill" ImageSource="{Binding Poster}"/>
+			</HubSection.Background>
+			<DataTemplate>
+				<Grid/>
+			</DataTemplate>
+		</HubSection>
+		<HubSection Header="episodes">
+			<DataTemplate>
+				<GridView ItemsSource="{Binding Episodes}" ItemTemplate="{StaticResource EpisodeTemplate}" IsItemClickEnabled="True">
+					<Interactivity:Interaction.Behaviors>
+						<Core:EventTriggerBehavior EventName="ItemClick">
+							<Core:InvokeCommandAction Command="{Binding EpisodeSelectedCommand}"/>
+						</Core:EventTriggerBehavior>
+					</Interactivity:Interaction.Behaviors>
+				</GridView>
+			</DataTemplate>
+		</HubSection>
+	</Hub>
 </controls:PageBase>

@@ -25,7 +25,11 @@
 			</HubSection.Background>
 			<DataTemplate>
 				<Grid>
-					<StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+					<Grid.RowDefinitions>
+						<RowDefinition/>
+						<RowDefinition/>
+					</Grid.RowDefinitions>
+					<StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top">
 						<Border Background="Green" Padding="5" Margin="0,0,0,5" HorizontalAlignment="Left">
 							<TextBlock TextWrapping="Wrap" Text="{Binding Title}" Style="{StaticResource SubheaderTextBlockStyle}"/>
 						</Border>
@@ -45,12 +49,32 @@
 							</Border>
 						</StackPanel>
 					</StackPanel>
-					<ScrollViewer HorizontalAlignment="Left" VerticalAlignment="Bottom" VerticalScrollMode="Enabled" Height="200" VerticalScrollBarVisibility="Auto" >
-						<Border Padding="5" Background="Green" VerticalAlignment="Bottom">
+					<ScrollViewer HorizontalAlignment="Left" VerticalAlignment="Top" VerticalScrollMode="Enabled" Height="200" VerticalScrollBarVisibility="Auto" Grid.Row="1" Margin="0,20,0,0" >
+						<Border Padding="5" Background="Green" VerticalAlignment="Top" HorizontalAlignment="Left">
 							<TextBlock TextWrapping="Wrap" Text="{Binding Overview}" Style="{StaticResource BodyTextBlockStyle}" TextAlignment="Justify"/>
 						</Border>
 					</ScrollViewer>
 				</Grid>
+			</DataTemplate>
+		</HubSection>
+		<HubSection Header="unwatched episodes">
+			<Interactivity:Interaction.Behaviors>
+				<Core:DataTriggerBehavior Binding="{Binding UnwatchedEpisodes.Count, Mode=OneWay}" Value="0">
+					<Core:ChangePropertyAction PropertyName="Visibility">
+						<Core:ChangePropertyAction.Value>
+							<Visibility>Collapsed</Visibility>
+						</Core:ChangePropertyAction.Value>
+					</Core:ChangePropertyAction>
+				</Core:DataTriggerBehavior>
+			</Interactivity:Interaction.Behaviors>
+			<DataTemplate>
+				<ListView ItemsSource="{Binding UnwatchedEpisodes}" ItemTemplate="{StaticResource EpisodeTemplate}" IsItemClickEnabled="True">
+					<Interactivity:Interaction.Behaviors>
+						<Core:EventTriggerBehavior EventName="ItemClick">
+							<Core:InvokeCommandAction Command="{Binding EpisodeSelectedCommand}"/>
+						</Core:EventTriggerBehavior>
+					</Interactivity:Interaction.Behaviors>
+				</ListView>
 			</DataTemplate>
 		</HubSection>
 		<HubSection Header="seasons">

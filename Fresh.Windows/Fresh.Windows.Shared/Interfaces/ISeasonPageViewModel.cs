@@ -6,6 +6,7 @@ namespace Fresh.Windows.Shared.Interfaces
     public interface ISeasonPageViewModel
     { 
         int Number { get; set; }
+        string Poster { get; set; }
         ObservableCollection<Episode> Episodes { get; set; } 
     }
 }

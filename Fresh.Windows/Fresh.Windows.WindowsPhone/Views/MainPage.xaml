@@ -77,7 +77,7 @@
 		<HubSection Header="{Binding UnwatchedEpisodesByShow.Count}">
 			<HubSection.Resources>
 				<DataTemplate x:Key="HeaderTemplate">
-					<TextBlock Style="{StaticResource SubheaderTextBlockStyle}">
+					<TextBlock>
 								<Run Text="{Binding}" FontWeight="ExtraBold" Foreground="Green"/>
 								<Run Text="shows with unwatched episodes"/>
 							</TextBlock>

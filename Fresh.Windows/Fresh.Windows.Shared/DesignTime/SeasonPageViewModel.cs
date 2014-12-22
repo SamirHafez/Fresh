@@ -7,11 +7,14 @@ namespace Fresh.Windows.Shared.DesignTime
     public class SeasonPageViewModel : ISeasonPageViewModel
     {
         public int Number { get; set; }
+        public string Poster { get; set; }
         public ObservableCollection<Episode> Episodes { get; set; }
 
         public SeasonPageViewModel()
         {
             Number = 2;
+
+            Poster = "http://slurm.trakt.us/images/seasons/124-5.47.jpg";
 
             var season = new Season { TVShow = new TVShow { Title = "The Walking Dead" } };
 
