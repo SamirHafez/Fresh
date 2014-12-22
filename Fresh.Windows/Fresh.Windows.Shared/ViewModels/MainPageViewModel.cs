@@ -49,7 +49,7 @@ namespace Fresh.Windows.ViewModels
             else
                 await Update();
 
-            var lastMonday = StartOfWeek(DateTime.UtcNow, DayOfWeek.Monday);
+            var lastMonday = StartOfWeek(DateTime.UtcNow.AddDays(-15), DayOfWeek.Monday);
             var nextSunday = lastMonday.AddDays(7);
             ThisWeek = await GetSchedule(lastMonday, nextSunday);
 

@@ -9,16 +9,22 @@ using Microsoft.Practices.Prism.Mvvm.Interfaces;
 using Fresh.Windows.Shared.Configuration;
 using Fresh.Windows.Shared.Services.Interfaces;
 using Fresh.Windows.Shared.Services;
+using SQLite.Net.Interop;
+using Fresh.Windows.Helpers;
+using Windows.Storage;
+using SQLite.Net;
 
 namespace Fresh.Windows
 {
-    sealed partial class App : MvvmAppBase
+    public sealed partial class App : MvvmAppBase
     {
         public enum Experience { Main, Login, TVShow, Season, Episode };
 
         private readonly UnityContainer container = new UnityContainer();
 
-        private readonly string TRAKT_APIKEY = "68d5502c616356a5a844d284c546032d";
+        private const string TRAKT_APIKEY = "68d5502c616356a5a844d284c546032d";
+
+        private static readonly string APPLICATION_PATH = ApplicationData.Current.LocalFolder.Path;
 
         public App()
         {
@@ -29,9 +35,11 @@ namespace Fresh.Windows
         {
             container.RegisterInstance<INavigationService>(NavigationService);
             container.RegisterType<ISession, FreshSession>(new ContainerControlledLifetimeManager());
-            container.RegisterType<ILoginService, LoginService>(new ContainerControlledLifetimeManager());
-            container.RegisterType<IStorageService, SQLiteService>(new ContainerControlledLifetimeManager());
-            container.RegisterType<ICrawlerService, FreeTVCrawlerService>();
+            container.RegisterType<ILoginService, LoginService>();
+            container.RegisterInstance<SQLiteConnectionString>(new SQLiteConnectionString(APPLICATION_PATH + @"\fresh.db", storeDateTimeAsTicks: false), new ContainerControlledLifetimeManager());
+            container.RegisterType<ISQLitePlatform, SQLitePlatformW81>(new ContainerControlledLifetimeManager());
+            container.RegisterType<IStorageService, SQLiteService>();
+            container.RegisterType<ICrawlerService, LetMeWatchThisCrawlerService>();
             container.RegisterInstance<ITraktService>(new TraktService(TRAKT_APIKEY), new ContainerControlledLifetimeManager());
 
             return Task.FromResult<object>(null);
