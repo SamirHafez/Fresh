@@ -7,10 +7,12 @@ using Fresh.Windows.Shared.Services.Interfaces;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.Mvvm.Interfaces;
 using Microsoft.Practices.Unity;
+using SQLite.Net;
 using SQLite.Net.Interop;
 using System;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
+using Windows.Storage;
 
 namespace Fresh.Windows
 {
@@ -22,6 +24,8 @@ namespace Fresh.Windows
 
         private readonly string TRAKT_APIKEY = "68d5502c616356a5a844d284c546032d";
 
+        private static readonly string APPLICATION_PATH = ApplicationData.Current.LocalFolder.Path;
+
         public App()
         {
             this.InitializeComponent();
@@ -32,6 +36,7 @@ namespace Fresh.Windows
             container.RegisterInstance<INavigationService>(NavigationService);
             container.RegisterType<ISession, FreshSession>(new ContainerControlledLifetimeManager());
             container.RegisterType<ILoginService, LoginService>();
+            container.RegisterInstance<SQLiteConnectionString>(new SQLiteConnectionString(APPLICATION_PATH + @"\fresh.db", storeDateTimeAsTicks: false), new ContainerControlledLifetimeManager())
             container.RegisterType<ISQLitePlatform, SQLitePlatformWP81>(new ContainerControlledLifetimeManager());
             container.RegisterType<IStorageService, SQLiteService>();
             container.RegisterType<ICrawlerService, LetMeWatchThisCrawlerService>();

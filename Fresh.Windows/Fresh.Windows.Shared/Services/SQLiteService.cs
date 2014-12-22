@@ -18,11 +18,10 @@ namespace Fresh.Windows.Shared.Services
 
         private bool isDisposed;
 
-        public SQLiteService(ISQLitePlatform platform)
+        public SQLiteService(ISQLitePlatform platform, SQLiteConnectionString connectionString)
         {
-            connection = new SQLiteConnectionWithLock(platform, new SQLiteConnectionString("fresh.db", storeDateTimeAsTicks: false));
+            connection = new SQLiteConnectionWithLock(platform, connectionString);
             context = new SQLiteAsyncConnection(() => connection);
-
             isDisposed = false;
         }
 
