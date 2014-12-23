@@ -59,7 +59,7 @@ namespace Fresh.Windows.ViewModels
             UnwatchedEpisodes = new ObservableCollection<Episode>(from season in fullShow.Seasons
                                                                   from episode in season.Episodes
                                                                   where episode.Watched == false &&
-                                                                    episode.AirDate.HasValue && 
+                                                                    episode.AirDate.HasValue &&
                                                                     episode.AirDate <= DateTime.UtcNow &&
                                                                     episode.Season.Number != 0
                                                                   orderby episode.Season.Number, episode.Number
@@ -101,7 +101,7 @@ namespace Fresh.Windows.ViewModels
         ObservableCollection<Season> seasons = default(ObservableCollection<Season>);
         public ObservableCollection<Season> Seasons { get { return seasons; } set { SetProperty(ref seasons, value); } }
 
-        ObservableCollection<Episode> unwatchedEpisodes = default(ObservableCollection<Episode>);
+        ObservableCollection<Episode> unwatchedEpisodes = new ObservableCollection<Episode>(Enumerable.Empty<Episode>());
         public ObservableCollection<Episode> UnwatchedEpisodes { get { return unwatchedEpisodes; } set { SetProperty(ref unwatchedEpisodes, value); } }
     }
 }

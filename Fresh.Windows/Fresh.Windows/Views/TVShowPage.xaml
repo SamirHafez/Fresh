@@ -48,34 +48,29 @@
 				<ImageBrush Stretch="UniformToFill" ImageSource="{Binding Poster}"/>
 			</HubSection.Background>
 			<DataTemplate>
-				<Grid>
+				<Grid Height="500">
 					<Grid.RowDefinitions>
 						<RowDefinition/>
 						<RowDefinition/>
 					</Grid.RowDefinitions>
-					<StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top">
-						<Border Background="Green" Padding="5" Margin="0,0,0,5" HorizontalAlignment="Left">
-							<TextBlock TextWrapping="Wrap" Text="{Binding Title}" Style="{StaticResource SubheaderTextBlockStyle}"/>
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,210">
+						<Border Background="Green" Padding="5" Margin="0,0,5,0">
+							<TextBlock TextWrapping="Wrap" Style="{StaticResource SubheaderTextBlockStyle}">
+								<Run Text="{Binding Rating}"/>
+								<Run Text="%"/>
+							</TextBlock>
 						</Border>
-						<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-							<Border Background="Green" Padding="5" Margin="0,0,5,0">
-								<TextBlock TextWrapping="Wrap" Style="{StaticResource SubheaderTextBlockStyle}">
-									<Run Text="{Binding Rating}"/>
-									<Run Text="%"/>
-								</TextBlock>
-							</Border>
-							<Border Background="Green" Padding="5">
-								<TextBlock TextWrapping="Wrap" Style="{StaticResource SubheaderTextBlockStyle}">
-									<Run Text="{Binding Loved}"/>
-									<Run Text="/"/>
-									<Run Text="{Binding Hated}"/>
-								</TextBlock>
-							</Border>
-						</StackPanel>
+						<Border Background="Green" Padding="5">
+							<TextBlock TextWrapping="Wrap" Style="{StaticResource SubheaderTextBlockStyle}">
+								<Run Text="{Binding Loved}"/>
+								<Run Text="/"/>
+								<Run Text="{Binding Hated}"/>
+							</TextBlock>
+						</Border>
 					</StackPanel>
-					<ScrollViewer HorizontalAlignment="Left" VerticalAlignment="Top" VerticalScrollMode="Enabled" Height="200" VerticalScrollBarVisibility="Auto" Grid.Row="1" Margin="0,20,0,0" >
-						<Border Padding="5" Background="Green" VerticalAlignment="Top" HorizontalAlignment="Left">
-							<TextBlock TextWrapping="Wrap" Text="{Binding Overview}" Style="{StaticResource BodyTextBlockStyle}" TextAlignment="Justify"/>
+					<ScrollViewer Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Left" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" HorizontalScrollMode="Disabled">
+						<Border Padding="5" Background="Green">
+							<TextBlock TextWrapping="Wrap" Text="{Binding Overview}" Style="{StaticResource SubtitleTextBlockStyle}" TextAlignment="Justify"/>
 						</Border>
 					</ScrollViewer>
 				</Grid>
@@ -103,13 +98,13 @@
 		</HubSection>
 		<HubSection Header="seasons">
 			<DataTemplate>
-				<ListView ItemsSource="{Binding Seasons}" IsItemClickEnabled="True" ItemTemplate="{StaticResource SeasonTemplate}">
+				<GridView ItemsSource="{Binding Seasons}" IsItemClickEnabled="True" ItemTemplate="{StaticResource SeasonTemplate}">
 					<Interactivity:Interaction.Behaviors>
 						<Core:EventTriggerBehavior EventName="ItemClick">
 							<Core:InvokeCommandAction Command="{Binding EnterSeasonCommand}"/>
 						</Core:EventTriggerBehavior>
 					</Interactivity:Interaction.Behaviors>
-				</ListView>
+				</GridView>
 			</DataTemplate>
 		</HubSection>
 	</Hub>

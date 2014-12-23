@@ -40,6 +40,8 @@ namespace Fresh.Windows.ViewModels
             if (string.IsNullOrWhiteSpace(username))
                 throw new ArgumentException("Username not provided.");
 
+            Loading = true;
+
             Library = new ObservableCollection<TVShow>(from show in await storageService.GetLibraryAsync()
                                                        orderby show.Title
                                                        select show);
@@ -53,7 +55,7 @@ namespace Fresh.Windows.ViewModels
             var nextSunday = lastMonday.AddDays(7);
             ThisWeek = await GetSchedule(lastMonday, nextSunday);
 
-            UnwatchedEpisodesByShow = await GetUnwatchedEpisodesByShow();
+            UnwatchedEpisodesByShow = new ObservableCollection<GroupedEpisodes<TVShow>>(await GetUnwatchedEpisodesByShow());
 
             Loading = false;
         }
@@ -100,18 +102,18 @@ namespace Fresh.Windows.ViewModels
             }
         }
 
-        private async Task<IList<GroupedEpisodes<TVShow>>> GetUnwatchedEpisodesByShow()
+        private async Task<IEnumerable<GroupedEpisodes<TVShow>>> GetUnwatchedEpisodesByShow()
         {
-            return (from episode in await storageService.GetEpisodesAsync(e => e.Watched == false && e.AirDate != null && e.AirDate <= DateTime.UtcNow)
-                    where episode.Season.Number > 0
-                    group episode by episode.Season.ShowId into g
-                    let tvShow = g.First().Season.TVShow
-                    orderby g.Count() descending
-                    select new GroupedEpisodes<TVShow>
-                    {
-                        Key = tvShow,
-                        Episodes = g.ToList()
-                    }).ToList();
+            return from episode in await storageService.GetEpisodesAsync(e => e.Watched == false && e.AirDate != null && e.AirDate <= DateTime.UtcNow)
+                   where episode.Season.Number > 0
+                   group episode by episode.Season.ShowId into g
+                   let tvShow = g.First().Season.TVShow
+                   orderby g.Count() descending
+                   select new GroupedEpisodes<TVShow>
+                   {
+                       Key = tvShow,
+                       Episodes = g.ToList()
+                   };
         }
 
         private async Task<IList<GroupedEpisodes<DayOfWeek>>> GetSchedule(DateTime lastMonday, DateTime nextSunday)
@@ -186,8 +188,8 @@ namespace Fresh.Windows.ViewModels
         ObservableCollection<TVShow> library = default(ObservableCollection<TVShow>);
         public ObservableCollection<TVShow> Library { get { return library; } set { SetProperty(ref library, value); } }
 
-        IList<GroupedEpisodes<TVShow>> unwatchedEpisodeByShow = default(IList<GroupedEpisodes<TVShow>>);
-        public IList<GroupedEpisodes<TVShow>> UnwatchedEpisodesByShow { get { return unwatchedEpisodeByShow; } set { SetProperty(ref unwatchedEpisodeByShow, value); } }
+        ObservableCollection<GroupedEpisodes<TVShow>> unwatchedEpisodeByShow = new ObservableCollection<GroupedEpisodes<TVShow>>(Enumerable.Empty<GroupedEpisodes<TVShow>>());
+        public ObservableCollection<GroupedEpisodes<TVShow>> UnwatchedEpisodesByShow { get { return unwatchedEpisodeByShow; } set { SetProperty(ref unwatchedEpisodeByShow, value); } }
 
         IList<GroupedEpisodes<DayOfWeek>> thisWeek = default(IList<GroupedEpisodes<DayOfWeek>>);
         public IList<GroupedEpisodes<DayOfWeek>> ThisWeek { get { return thisWeek; } set { SetProperty(ref thisWeek, value); } }

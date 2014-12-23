@@ -15,10 +15,10 @@
 	<controls:PageBase.Resources>
         <CollectionViewSource x:Key="thisWeekCvs" Source="{Binding ThisWeek}" d:Source="{Binding ThisWeek, Source={d:DesignInstance IsDesignTimeCreatable=True, Type=designTime:MainPageViewModel}}"  IsSourceGrouped="True" ItemsPath="Episodes"/>
 		<DataTemplate x:Key="ShowWithEpisodes">
-			<Grid Height="300" Margin="5">
+			<Grid Height="300" Margin="5" Width="204">
 				<Image Source="{Binding Key.Poster}"/>
 				<Border Background="#CC008000" Padding="5" HorizontalAlignment="Right" VerticalAlignment="Top">
-					<TextBlock TextWrapping="Wrap" Text="{Binding Episodes.Count}" Style="{StaticResource BodyTextBlockStyle}"/>
+					<TextBlock TextWrapping="Wrap" Text="{Binding Episodes.Count}" Style="{StaticResource BaseTextBlockStyle}"/>
 				</Border>
 			</Grid>
 		</DataTemplate>
@@ -77,10 +77,26 @@
 				<DataTemplate x:Key="HeaderTemplate">
 							<TextBlock>
 								<Run Text="{Binding}" FontWeight="ExtraBold" Foreground="Green"/>
-								<Run Text="shows with unwatched episodes"/>
+								<Run Text="show(s) with unwatched episodes"/>
 							</TextBlock>
 				</DataTemplate>
 			</HubSection.Resources>
+			<Interactivity:Interaction.Behaviors>
+				<Core:DataTriggerBehavior Binding="{Binding UnwatchedEpisodesByShow.Count, Mode=OneWay}" Value="0">
+					<Core:ChangePropertyAction PropertyName="Visibility">
+						<Core:ChangePropertyAction.Value>
+							<Visibility>Collapsed</Visibility>
+						</Core:ChangePropertyAction.Value>
+					</Core:ChangePropertyAction>
+				</Core:DataTriggerBehavior>
+				<Core:DataTriggerBehavior Binding="{Binding UnwatchedEpisodesByShow.Count, Mode=OneWay}" ComparisonCondition="NotEqual" Value="0">
+					<Core:ChangePropertyAction PropertyName="Visibility">
+						<Core:ChangePropertyAction.Value>
+							<Visibility>Visible</Visibility>
+						</Core:ChangePropertyAction.Value>
+					</Core:ChangePropertyAction>
+				</Core:DataTriggerBehavior>
+			</Interactivity:Interaction.Behaviors>
 			<HubSection.HeaderTemplate>
 				<StaticResource ResourceKey="HeaderTemplate"/>
 			</HubSection.HeaderTemplate>

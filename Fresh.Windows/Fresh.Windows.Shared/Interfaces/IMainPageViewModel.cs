@@ -10,7 +10,7 @@ namespace Fresh.Windows.Shared.Interfaces
     public interface IMainPageViewModel
     {
         ObservableCollection<TVShow> Library { get; set; }
-        IList<GroupedEpisodes<TVShow>> UnwatchedEpisodesByShow { get; set; }
+        ObservableCollection<GroupedEpisodes<TVShow>> UnwatchedEpisodesByShow { get; set; }
 
         IList<GroupedEpisodes<DayOfWeek>> ThisWeek { get; set; }
 

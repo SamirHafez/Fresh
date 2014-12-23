@@ -10,13 +10,13 @@
         	<Grid Margin="0, 0, 0, 10" Width="330" Height="185">
         		<Image Source="{Binding Screen}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Number}"/>
         		<StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal">
-        			<Border Background="#CC008000" Padding="5,0">
+        			<Border Background="#CC008000" Padding="5">
         				<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}">
         					<Run Text="#"/>
         					<Run Text="{Binding Number}"/>
         				</TextBlock>
         			</Border>
-        			<Border Background="#99090A09" MaxWidth="300" Padding="5,0">
+        			<Border Background="#99090A09" MaxWidth="300" Padding="5">
         				<TextBlock Margin="5, 0, 5, 0" Text="{Binding Title}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"/>
         			</Border>
         		</StackPanel>

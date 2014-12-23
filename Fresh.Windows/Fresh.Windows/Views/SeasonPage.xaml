@@ -29,7 +29,7 @@
     </d:DataContext>
 	<Hub>
 		<Hub.Header>
-			<Grid Background="Green" Height="60" Width="509">
+			<Grid Background="Green">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="80"/>
 					<ColumnDefinition Width="*"/>

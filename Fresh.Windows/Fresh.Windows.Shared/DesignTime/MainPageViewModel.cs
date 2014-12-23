@@ -19,7 +19,7 @@ namespace Fresh.Windows.Shared.DesignTime
                 new TVShow { Title = "House of Lies", Year = 2012, Poster = @"http://slurm.trakt.us/images/posters/11982.11.jpg" }
             };
 
-            UnwatchedEpisodesByShow = new List<GroupedEpisodes<TVShow>>
+            UnwatchedEpisodesByShow = new ObservableCollection<GroupedEpisodes<TVShow>>
             {
                 new GroupedEpisodes<TVShow>
                 {
@@ -87,7 +87,7 @@ namespace Fresh.Windows.Shared.DesignTime
         }
 
         public ObservableCollection<TVShow> Library { get; set; }
-        public IList<GroupedEpisodes<TVShow>> UnwatchedEpisodesByShow { get; set; }
+        public ObservableCollection<GroupedEpisodes<TVShow>> UnwatchedEpisodesByShow { get; set; }
         public IList<GroupedEpisodes<DayOfWeek>> ThisWeek { get; set; }
         public bool Loading { get; set; }
 

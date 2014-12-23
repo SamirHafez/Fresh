@@ -47,7 +47,7 @@ namespace Fresh.Windows.Shared.DesignTime
                         }
             };
 
-            Overview = "TVShow Overview ipsum lorem.";
+            Overview = "TVShow Overview Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras suscipit sem ante, sed volutpat sapien ultrices nec. Cras leo nunc, placerat ut est et, aliquam auctor nisi. Suspendisse elit sapien, finibus vitae venenatis et, gravida vitae justo. Aenean nec commodo ligula. Sed egestas sit amet dolor ut molestie. Etiam sed congue enim. Curabitur vitae finibus purus.";
         }
 
         public string Title { get; set; }
