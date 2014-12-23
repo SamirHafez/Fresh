@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using Fresh.Windows.Core.Services.Interfaces;
 using System.Net.Http;
 using Newtonsoft.Json;
-using Windows.Security.Cryptography;
-using Windows.Security.Cryptography.Core;
 using Fresh.Windows.Core.Models;
 using System.Collections.Generic;
 
