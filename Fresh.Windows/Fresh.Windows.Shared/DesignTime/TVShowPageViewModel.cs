@@ -1,5 +1,6 @@
 ﻿using Fresh.Windows.Shared.Interfaces;
 using Fresh.Windows.Shared.Models;
+using System;
 using System.Collections.ObjectModel;
 
 namespace Fresh.Windows.Shared.DesignTime
@@ -28,6 +29,16 @@ namespace Fresh.Windows.Shared.DesignTime
                 {
                     Number = 4,
                     Poster = "http://slurm.trakt.us/images/seasons/124-4.47.jpg"
+                },
+                new Season
+                {
+                    Number = 3,
+                    Poster = "http://slurm.trakt.us/images/seasons/124-3.47.jpg"
+                },
+                new Season
+                {
+                    Number = 2,
+                    Poster = "http://slurm.trakt.us/images/seasons/124-2.47.jpg"
                 }
             };
 
@@ -37,12 +48,14 @@ namespace Fresh.Windows.Shared.DesignTime
                         {
                             Number = 1,
                             Title = "Episode 1",
+                            AirDate = DateTime.Now,
                             Screen = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg",
                         },
                 new Episode
                         {
                             Number = 2,
                             Title = "Episode 3",
+                            AirDate = DateTime.Now,
                             Screen = "http://slurm.trakt.us/images/episodes/124-5-2.47.jpg",
                         }
             };

@@ -7,7 +7,7 @@
     >
     <prism:MvvmAppBase.Resources>
         <DataTemplate x:Key="EpisodeTemplate">
-        	<Grid Margin="0, 0, 0, 10" Width="330" Height="185">
+        	<Grid Width="330" Height="185">
         		<Grid.Background>
         			<ImageBrush Stretch="UniformToFill" ImageSource="{Binding Screen}"/>
         		</Grid.Background>
@@ -43,7 +43,7 @@
         	</Grid>
         </DataTemplate>
         <DataTemplate x:Key="TVShowTemplate">
-        	<Grid Height="200" Margin="0, 0, 0, 10" Width="350">
+        	<Grid Height="200" Width="350">
         		<Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}">
         			<Image Source="{Binding Poster}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
         		</Border>
@@ -54,9 +54,9 @@
         	</Grid>
         </DataTemplate>
         <DataTemplate x:Key="SeasonTemplate">
-        	<Grid Width="200" Height="300" Margin="0,0,10,10">
+        	<Grid Width="172" Height="247">
         		<Grid.Background>
-        			<ImageBrush ImageSource="{Binding Poster}" Stretch="UniformToFill"/>
+        			<ImageBrush ImageSource="{Binding Poster}" Stretch="Uniform"/>
         		</Grid.Background>
         		<Border HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="5" Background="Green">
         			<TextBlock TextWrapping="Wrap" Style="{StaticResource BaseTextBlockStyle}">

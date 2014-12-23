@@ -22,55 +22,34 @@
     </d:DataContext>
 	<Hub>
 		<Hub.Header>
-			<Grid Margin="0,0,-319,58" Background="Green">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="80"/>
-					<ColumnDefinition Width="*"/>
-				</Grid.ColumnDefinitions>
-				<Button  x:Name="backButton" Margin="-1,-1,39,0"
-					Style="{StaticResource NavigationBackButtonNormalStyle}"
-					VerticalAlignment="Center"
-					AutomationProperties.Name="Back"
-					AutomationProperties.AutomationId="BackButton"
-					AutomationProperties.ItemType="Navigation Button" HorizontalAlignment="Center">
-					<Interactivity:Interaction.Behaviors>
-						<Core:EventTriggerBehavior EventName="Click">
-							<Core:NavigateToPageAction TargetPage="Fresh.Windows.Views.MainPage"/>
-						</Core:EventTriggerBehavior>
-					</Interactivity:Interaction.Behaviors>
-				</Button>
-				<TextBlock x:Name="pageTitle" Text="{Binding Title}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" 
-					IsHitTestVisible="false" TextWrapping="NoWrap" Margin="0,10,10,10"/>
-			</Grid>
+			<Button
+				VerticalAlignment="Center"
+				HorizontalAlignment="Center"
+				Style="{ThemeResource NavigationBackButtonNormalStyle}" Height="41" Width="41">
+				<Interactivity:Interaction.Behaviors>
+					<Core:EventTriggerBehavior EventName="Click">
+						<Core:NavigateToPageAction TargetPage="Fresh.Windows.Views.MainPage"/>
+					</Core:EventTriggerBehavior>
+				</Interactivity:Interaction.Behaviors>
+			</Button>
 		</Hub.Header>
 		<HubSection Width="436">
 			<HubSection.Background>
 				<ImageBrush Stretch="UniformToFill" ImageSource="{Binding Poster}"/>
 			</HubSection.Background>
 			<DataTemplate>
-				<Grid Height="500">
-					<Grid.RowDefinitions>
-						<RowDefinition/>
-						<RowDefinition/>
-					</Grid.RowDefinitions>
-					<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,210">
-						<Border Background="Green" Padding="5" Margin="0,0,5,0">
-							<TextBlock TextWrapping="Wrap" Text="{Binding Rating}" Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
-						</Border>
-						<Border Background="Green" Padding="5">
-							<TextBlock TextWrapping="Wrap" Style="{StaticResource SubheaderTextBlockStyle}">
-								<Run Text="{Binding Loved}"/>
-								<Run Text="/"/>
-								<Run Text="{Binding Hated}"/>
-							</TextBlock>
-						</Border>
-					</StackPanel>
-					<ScrollViewer Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Left" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" HorizontalScrollMode="Disabled">
-						<Border Padding="5" Background="Green">
-							<TextBlock TextWrapping="Wrap" Text="{Binding Overview}" Style="{StaticResource SubtitleTextBlockStyle}" TextAlignment="Justify"/>
-						</Border>
-					</ScrollViewer>
-				</Grid>
+				<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+					<Border Background="Green" Padding="10" Margin="0,0,0,10" HorizontalAlignment="Left">
+						<TextBlock TextWrapping="Wrap" Text="{Binding Rating}" Style="{StaticResource HeaderTextBlockStyle}" HorizontalAlignment="Left"/>
+					</Border>
+					<Border Background="Green" Padding="5">
+						<TextBlock TextWrapping="Wrap" Style="{StaticResource SubheaderTextBlockStyle}">
+							<Run Text="{Binding Loved}"/>
+							<Run Text="/"/>
+							<Run Text="{Binding Hated}"/>
+						</TextBlock>
+					</Border>
+				</StackPanel>
 			</DataTemplate>
 		</HubSection>
 		<HubSection Header="unwatched episodes">
@@ -102,6 +81,13 @@
 						</Core:EventTriggerBehavior>
 					</Interactivity:Interaction.Behaviors>
 				</GridView>
+			</DataTemplate>
+		</HubSection>
+		<HubSection Header="info" Width="350">
+			<DataTemplate>
+				<Grid>
+					<TextBlock HorizontalAlignment="Left" TextWrapping="WrapWholeWords" Text="{Binding Overview}" VerticalAlignment="Top" Style="{StaticResource BodyTextBlockStyle}" TextAlignment="Justify"/>
+				</Grid>
 			</DataTemplate>
 		</HubSection>
 	</Hub>

@@ -15,7 +15,7 @@
 	<controls:PageBase.Resources>
         <CollectionViewSource x:Key="thisWeekCvs" Source="{Binding ThisWeek}" d:Source="{Binding ThisWeek, Source={d:DesignInstance IsDesignTimeCreatable=True, Type=designTime:MainPageViewModel}}"  IsSourceGrouped="True" ItemsPath="Episodes"/>
 		<DataTemplate x:Key="ShowWithEpisodes">
-			<Grid Height="300" Margin="5" Width="204">
+			<Grid Height="300" Width="204">
 				<Image Source="{Binding Key.Poster}"/>
 				<Border Background="#CC008000" Padding="5" HorizontalAlignment="Right" VerticalAlignment="Top">
 					<TextBlock TextWrapping="Wrap" Text="{Binding Episodes.Count}" Style="{StaticResource BaseTextBlockStyle}"/>
