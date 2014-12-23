@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using System.Linq;
 using Fresh.Windows.Shared.Configuration;
 
 namespace Fresh.Windows.ViewModels

@@ -18,7 +18,7 @@ namespace Fresh.Windows.ViewModels
         private readonly ITraktService traktService;
         private readonly ISession session;
 
-        private Episode episode;
+        public Episode episode { get; set; }
 
         public EpisodePageViewModel(IStorageService storageService, ICrawlerService crawlerService, ITraktService traktService, ISession session)
         {

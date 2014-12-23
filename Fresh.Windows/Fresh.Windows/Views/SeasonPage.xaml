@@ -29,7 +29,29 @@
     </d:DataContext>
 	<Hub>
 		<Hub.Header>
-			<Image Source="ms-appx:///Assets/Fresh.png" Stretch="Fill" Width="265"/>
+			<Grid Background="Green" Height="60" Width="509">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="80"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<Button  x:Name="backButton" Margin="-1,-1,39,0"
+					Style="{StaticResource NavigationBackButtonNormalStyle}"
+					VerticalAlignment="Center"
+					AutomationProperties.Name="Back"
+					AutomationProperties.AutomationId="BackButton"
+					AutomationProperties.ItemType="Navigation Button" HorizontalAlignment="Center">
+					<Interactivity:Interaction.Behaviors>
+						<Core:EventTriggerBehavior EventName="Click">
+							<Core:NavigateToPageAction TargetPage="Fresh.Windows.Views.TVShowPage" Parameter="{Binding Episodes[0].Season.ShowId}"/>
+						</Core:EventTriggerBehavior>
+					</Interactivity:Interaction.Behaviors>
+				</Button>
+				<TextBlock x:Name="pageTitle" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" 
+					IsHitTestVisible="false" TextWrapping="NoWrap" Margin="0,10,10,10">
+						<Run Text="Season"/>
+						<Run Text="{Binding Number}"/>
+					</TextBlock>
+			</Grid>
 		</Hub.Header>
 		<HubSection Width="436">
 			<HubSection.Background>
