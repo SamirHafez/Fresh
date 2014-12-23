@@ -55,10 +55,7 @@
 					</Grid.RowDefinitions>
 					<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,210">
 						<Border Background="Green" Padding="5" Margin="0,0,5,0">
-							<TextBlock TextWrapping="Wrap" Style="{StaticResource SubheaderTextBlockStyle}">
-								<Run Text="{Binding Rating}"/>
-								<Run Text="%"/>
-							</TextBlock>
+							<TextBlock TextWrapping="Wrap" Text="{Binding Rating}" Style="{StaticResource SubheaderTextBlockStyle}"></TextBlock>
 						</Border>
 						<Border Background="Green" Padding="5">
 							<TextBlock TextWrapping="Wrap" Style="{StaticResource SubheaderTextBlockStyle}">

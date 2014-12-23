@@ -29,6 +29,7 @@ namespace Fresh.Windows.Shared.DesignTime
                         new Episode
                         {
                             Title = "Episode Title 1", Screen = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg",
+                            AirDate = DateTime.Now,
                             Season = new Season { TVShow = new TVShow { Title = "The Walking Dead" } }
                         }
                     }
@@ -41,11 +42,13 @@ namespace Fresh.Windows.Shared.DesignTime
                         new Episode
                         {
                             Title = "Episode Title 2", Screen = "http://slurm.trakt.us/images/episodes/124-5-2.47.jpg", Watched = true,
+                            AirDate = DateTime.Now,
                             Season = new Season { TVShow = new TVShow { Title = "The Walking Dead" } }
                         },
                         new Episode
                         {
                             Title = "Episode Title 3", Screen = "http://slurm.trakt.us/images/episodes/124-5-3.47.jpg",
+                            AirDate = DateTime.Now,
                             Season = new Season { TVShow = new TVShow { Title = "The Walking Dead" } }
                         }
                     }
@@ -62,6 +65,7 @@ namespace Fresh.Windows.Shared.DesignTime
                         new Episode
                         {
                             Title = "Episode Title 1", Screen = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg",
+                            AirDate = DateTime.Now,
                             Season = new Season { TVShow = new TVShow { Title = "The Walking Dead" } }
                         }
                     }
@@ -74,11 +78,13 @@ namespace Fresh.Windows.Shared.DesignTime
                         new Episode
                         {
                             Title = "Episode Title 2", Screen = "http://slurm.trakt.us/images/episodes/124-5-2.47.jpg", Watched = true,
+                            AirDate = DateTime.Now,
                             Season = new Season { TVShow = new TVShow { Title = "The Walking Dead" } }
                         },
                         new Episode
                         {
                             Title = "Episode Title 3", Screen = "http://slurm.trakt.us/images/episodes/124-5-3.47.jpg",
+                            AirDate = DateTime.Now,
                             Season = new Season { TVShow = new TVShow { Title = "The Walking Dead" } }
                         }
                     }

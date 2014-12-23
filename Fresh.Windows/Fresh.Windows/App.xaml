@@ -8,7 +8,9 @@
     <prism:MvvmAppBase.Resources>
         <DataTemplate x:Key="EpisodeTemplate">
         	<Grid Margin="0, 0, 0, 10" Width="330" Height="185">
-        		<Image Source="{Binding Screen}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Number}"/>
+        		<Grid.Background>
+        			<ImageBrush Stretch="UniformToFill" ImageSource="{Binding Screen}"/>
+        		</Grid.Background>
         		<StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal">
         			<Border Background="#CC008000" Padding="5">
         				<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}">
@@ -17,13 +19,16 @@
         				</TextBlock>
         			</Border>
         			<Border Background="#99090A09" MaxWidth="300" Padding="5">
-        				<TextBlock Margin="5, 0, 5, 0" Text="{Binding Title}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"/>
+        				<TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"/>
         			</Border>
         		</StackPanel>
-        		<Border Background="#CC008000" MaxWidth="300" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top">
-        			<TextBlock Margin="5, 0, 5, 0" Text="{Binding Season.TVShow.Title}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}"/>
+        		<Border Background="#CC008000" MaxWidth="300" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="5">
+        			<TextBlock Text="{Binding Season.TVShow.Title}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}"/>
         		</Border>
-        		<Border VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="30" Background="#CC008000" Visibility="Collapsed">
+        		<Border Background="#CC008000" MaxWidth="300" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="5">
+        			<TextBlock Text="{Binding AirDate}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}"/>
+        		</Border>
+        		<Border VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="30" Background="#CC008000" Visibility="Collapsed" Padding="5">
         			<Interactivity:Interaction.Behaviors>
         				<Core:DataTriggerBehavior Binding="{Binding Watched}" Value="True">
         					<Core:ChangePropertyAction PropertyName="Visibility">
@@ -33,7 +38,7 @@
         					</Core:ChangePropertyAction>
         				</Core:DataTriggerBehavior>
         			</Interactivity:Interaction.Behaviors>
-        			<TextBlock Margin="5, 0, 5, 0" Text="Watched" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" Height="25" FontWeight="Bold"/>
+        			<TextBlock Text="Watched" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" Height="25" FontWeight="Bold"/>
         		</Border>
         	</Grid>
         </DataTemplate>
