@@ -16,7 +16,7 @@ namespace Fresh.Windows.ViewModels
     public class SeasonPageViewModel : ViewModel, ISeasonPageViewModel
     {
         private readonly IStorageService storageService;
-        private readonly INavigationService navigationService;
+        public INavigationService navigationService { get; private set; }
         private readonly ITraktService traktService;
         private readonly ISession session;
 

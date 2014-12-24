@@ -27,9 +27,8 @@ namespace Fresh.Windows.ViewModels
 
         public override void OnNavigatedFrom(Dictionary<string, object> viewModelState, bool suspending)
         {
-            base.OnNavigatedFrom(viewModelState, suspending);
-
             navigationService.ClearHistory();
+            base.OnNavigatedFrom(viewModelState, suspending);
         }
 
         string username = default(string);

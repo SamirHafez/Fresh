@@ -28,7 +28,7 @@
 				Style="{ThemeResource NavigationBackButtonNormalStyle}" Height="41" Width="41">
 				<Interactivity:Interaction.Behaviors>
 					<Core:EventTriggerBehavior EventName="Click">
-						<Core:NavigateToPageAction TargetPage="Fresh.Windows.Views.MainPage"/>
+						<Core:CallMethodAction TargetObject="{Binding navigationService}" MethodName="GoBack"/>
 					</Core:EventTriggerBehavior>
 				</Interactivity:Interaction.Behaviors>
 			</Button>

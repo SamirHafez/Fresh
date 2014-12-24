@@ -8,20 +8,23 @@ using Microsoft.Practices.Prism.Commands;
 using Fresh.Windows.Shared.Models;
 using System;
 using Fresh.Windows.Shared.Configuration;
+using Microsoft.Practices.Prism.Mvvm.Interfaces;
 
 namespace Fresh.Windows.ViewModels
 {
     public class EpisodePageViewModel : ViewModel, IEpisodePageViewModel
     {
+        public INavigationService navigationService { get; private set; }
         private readonly IStorageService storageService;
         private readonly ICrawlerService crawlerService;
         private readonly ITraktService traktService;
         private readonly ISession session;
 
-        public Episode episode { get; set; }
+        public Episode Episode { get; set; }
 
-        public EpisodePageViewModel(IStorageService storageService, ICrawlerService crawlerService, ITraktService traktService, ISession session)
+        public EpisodePageViewModel(IStorageService storageService, INavigationService navigationService, ICrawlerService crawlerService, ITraktService traktService, ISession session)
         {
+            this.navigationService = navigationService;
             this.storageService = storageService;
             this.crawlerService = crawlerService;
             this.traktService = traktService;
@@ -32,21 +35,21 @@ namespace Fresh.Windows.ViewModels
         {
             var episodeId = (int)navigationParameter;
 
-            episode = await storageService.GetEpisodeAsync(episodeId);
+            Episode = await storageService.GetEpisodeAsync(episodeId);
 
-            Number = episode.Number;
-            Title = episode.Title;
-            Overview = episode.Overview;
-            Screen = episode.Screen;
-            Watched = episode.Watched;
-            AirDate = episode.AirDate.GetValueOrDefault();
+            Number = Episode.Number;
+            Title = Episode.Title;
+            Overview = Episode.Overview;
+            Screen = Episode.Screen;
+            Watched = Episode.Watched;
+            AirDate = Episode.AirDate.GetValueOrDefault();
 
-            if (episode.Link == null && episode.AirDate < DateTime.UtcNow)
+            if (Episode.Link == null && Episode.AirDate < DateTime.UtcNow)
             {
                 try
                 {
-                    episode.Link = await crawlerService.GetLink(episode.Season.TVShow.Title, episode.Season.Number, episode.Number);
-                    await storageService.UpdateEpisodeAsync(episode);
+                    Episode.Link = await crawlerService.GetLink(Episode.Season.TVShow.Title, Episode.Season.Number, Episode.Number);
+                    await storageService.UpdateEpisodeAsync(Episode);
                 }
                 catch
                 {
@@ -54,7 +57,7 @@ namespace Fresh.Windows.ViewModels
                 }
             }
 
-            Link = episode.Link;
+            Link = Episode.Link;
         }
 
         public DelegateCommand ToggleWatchedCommand
@@ -67,15 +70,15 @@ namespace Fresh.Windows.ViewModels
 
         private async void ToggleWatched()
         {
-            episode.Watched = Watched;
+            Episode.Watched = Watched;
 
             await traktService.WatchEpisodeAsync(session.User.Username,
                 session.User.Credential,
-                episode.Season.TVShow.Title,
-                episode.Season.TVShow.Year,
-                episode.Season.Number,
-                episode.Number);
-            await storageService.UpdateEpisodeAsync(episode);
+                Episode.Season.TVShow.Title,
+                Episode.Season.TVShow.Year,
+                Episode.Season.Number,
+                Episode.Number);
+            await storageService.UpdateEpisodeAsync(Episode);
         }
 
         int number = default(int);

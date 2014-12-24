@@ -12,17 +12,5 @@
     
 	<Grid Width="400" Height="300">
 		<MediaElement x:Name="mediaElement" Height="300" AudioCategory="BackgroundCapableMedia" AutoPlay="False" Source="{Binding Link}" AreTransportControlsEnabled="True" Width="400"/>
-		<Border x:Name="border" Background="Green">
-			<Interactivity:Interaction.Behaviors>
-				<Core:EventTriggerBehavior EventName="MediaOpened" SourceObject="{Binding ElementName=mediaElement}">
-					<Core:ChangePropertyAction PropertyName="Visibility" TargetObject="{Binding ElementName=border}">
-						<Core:ChangePropertyAction.Value>
-							<Visibility>Collapsed</Visibility>
-						</Core:ChangePropertyAction.Value>
-					</Core:ChangePropertyAction>
-				</Core:EventTriggerBehavior>
-			</Interactivity:Interaction.Behaviors>
-			<TextBlock TextWrapping="Wrap" Text="LOADING EPISODE" Style="{StaticResource SubheaderTextBlockStyle}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-		</Border>
 	</Grid>
 </UserControl>

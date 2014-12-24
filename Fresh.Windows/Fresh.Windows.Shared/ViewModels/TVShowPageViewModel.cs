@@ -15,7 +15,7 @@ namespace Fresh.Windows.ViewModels
 {
     public class TVShowPageViewModel : ViewModel, ITVShowPageViewModel
     {
-        private readonly INavigationService navigationService;
+        public INavigationService navigationService { get; private set; }
         private readonly IStorageService storageService;
 
         public TVShowPageViewModel(INavigationService navigationService, IStorageService storageService)
