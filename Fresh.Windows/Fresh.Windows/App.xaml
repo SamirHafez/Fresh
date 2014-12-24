@@ -7,10 +7,8 @@
     >
     <prism:MvvmAppBase.Resources>
         <DataTemplate x:Key="EpisodeTemplate">
-        	<Grid Width="330" Height="185">
-        		<Grid.Background>
-        			<ImageBrush Stretch="UniformToFill" ImageSource="{Binding Screen}"/>
-        		</Grid.Background>
+        	<Grid Width="330" Height="185" Background="#33008000">
+        		<Image Source="{Binding Screen}" Stretch="UniformToFill"/>
         		<StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal">
         			<Border Background="#CC008000" Padding="5">
         				<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}">
@@ -54,15 +52,13 @@
         	</Grid>
         </DataTemplate>
         <DataTemplate x:Key="SeasonTemplate">
-        	<Grid Width="172" Height="247">
-        		<Grid.Background>
-        			<ImageBrush ImageSource="{Binding Poster}" Stretch="Uniform"/>
-        		</Grid.Background>
+        	<Grid Width="172" Height="247" Background="#33008000">
+        		<Image Source="{Binding Poster}" Stretch="UniformToFill"/>
         		<Border HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="5" Background="Green">
         			<TextBlock TextWrapping="Wrap" Style="{StaticResource BaseTextBlockStyle}">
-						<Run Text="Season"/>
-						<Run Text="{Binding Number}"/>
-					</TextBlock>
+        				<Run Text="Season"/>
+        				<Run Text="{Binding Number}"/>
+        			</TextBlock>
         		</Border>
         	</Grid>
         </DataTemplate>

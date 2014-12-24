@@ -61,6 +61,13 @@
 						</Core:ChangePropertyAction.Value>
 					</Core:ChangePropertyAction>
 				</Core:DataTriggerBehavior>
+				<Core:DataTriggerBehavior Binding="{Binding UnwatchedEpisodes.Count, Mode=OneWay}" ComparisonCondition="NotEqual" Value="0">
+					<Core:ChangePropertyAction PropertyName="Visibility">
+						<Core:ChangePropertyAction.Value>
+							<Visibility>Visible</Visibility>
+						</Core:ChangePropertyAction.Value>
+					</Core:ChangePropertyAction>
+				</Core:DataTriggerBehavior>
 			</Interactivity:Interaction.Behaviors>
 			<DataTemplate>
 				<ListView ItemsSource="{Binding UnwatchedEpisodes}" ItemTemplate="{StaticResource EpisodeTemplate}" IsItemClickEnabled="True">
@@ -72,9 +79,17 @@
 				</ListView>
 			</DataTemplate>
 		</HubSection>
-		<HubSection Header="seasons">
+		<HubSection Header="seasons" Width="450">
 			<DataTemplate>
-				<GridView ItemsSource="{Binding Seasons}" IsItemClickEnabled="True" ItemTemplate="{StaticResource SeasonTemplate}">
+				<GridView ItemsSource="{Binding Seasons}" IsItemClickEnabled="True" ItemTemplate="{StaticResource SeasonTemplate}" SelectionMode="None">
+					<GridView.Resources>
+						<ItemsPanelTemplate x:Key="ItemsPanelTemplate">
+							<ItemsWrapGrid Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</GridView.Resources>
+					<GridView.ItemsPanel>
+						<StaticResource ResourceKey="ItemsPanelTemplate"/>
+					</GridView.ItemsPanel>
 					<Interactivity:Interaction.Behaviors>
 						<Core:EventTriggerBehavior EventName="ItemClick">
 							<Core:InvokeCommandAction Command="{Binding EnterSeasonCommand}"/>
@@ -83,7 +98,7 @@
 				</GridView>
 			</DataTemplate>
 		</HubSection>
-		<HubSection Header="info" Width="350">
+		<HubSection Header="info" Width="400">
 			<DataTemplate>
 				<Grid>
 					<TextBlock HorizontalAlignment="Left" TextWrapping="WrapWholeWords" Text="{Binding Overview}" VerticalAlignment="Top" Style="{StaticResource BodyTextBlockStyle}" TextAlignment="Justify"/>
