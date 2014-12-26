@@ -1,9 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Fresh.Windows.Core.Services.Interfaces
 {
     public interface ICrawlerService
     {
-        Task<string> GetLink(string tvShow, int season, int episode);
+        Task<string> GetLink(string tvShow, int season, int episode, params string[] exclude);
     }
 }

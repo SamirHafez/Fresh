@@ -22,6 +22,8 @@ namespace Fresh.Windows.ViewModels
 
         public Episode Episode { get; set; }
 
+        private List<string> excludedLinks;
+
         public EpisodePageViewModel(IStorageService storageService, INavigationService navigationService, ICrawlerService crawlerService, ITraktService traktService, ISession session)
         {
             this.navigationService = navigationService;
@@ -29,6 +31,8 @@ namespace Fresh.Windows.ViewModels
             this.crawlerService = crawlerService;
             this.traktService = traktService;
             this.session = session;
+
+            this.excludedLinks = new List<string>();
         }
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
@@ -58,6 +62,27 @@ namespace Fresh.Windows.ViewModels
             }
 
             Link = Episode.Link;
+        }
+
+        public DelegateCommand LinkFailedCommand
+        {
+            get
+            {
+                return new DelegateCommand(async () =>
+                {
+                    excludedLinks.Add(Episode.Link);
+                    try
+                    {
+                        Episode.Link = await crawlerService.GetLink(Episode.Season.TVShow.Title, Episode.Season.Number, Episode.Number, excludedLinks.ToArray());
+                        await storageService.UpdateEpisodeAsync(Episode);
+                        Link = Episode.Link;
+                    }
+                    catch
+                    {
+
+                    } 
+                });
+            }
         }
 
         public DelegateCommand ToggleWatchedCommand

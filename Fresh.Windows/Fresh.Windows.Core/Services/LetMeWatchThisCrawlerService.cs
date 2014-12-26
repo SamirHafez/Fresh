@@ -15,7 +15,7 @@ namespace Fresh.Windows.Core.Services
         private const string LetMeWatchThis = @"http://www.primewire.ag";
         private const string LetMeWatchThisQuery = @"{0}/index.php?search_keywords={1}&key=c0950867e511cf04&search_section=2";
 
-        public async Task<string> GetLink(string tvShow, int season, int episode)
+        public async Task<string> GetLink(string tvShow, int season, int episode, params string[] exclude)
         {
             var encodedString = WebUtility.UrlEncode(tvShow);
             var httpClient = new HttpClient();
@@ -33,7 +33,7 @@ namespace Fresh.Windows.Core.Services
                 {
                     var videoLink = await GetVideoLink(link);
 
-                    if (videoLink == null)
+                    if (videoLink == null || exclude.Contains(videoLink))
                         continue;
 
                     return videoLink;

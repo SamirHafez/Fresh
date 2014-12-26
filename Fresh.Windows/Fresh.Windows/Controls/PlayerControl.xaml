@@ -11,6 +11,12 @@
     d:DesignWidth="400">
     
 	<Grid Width="400" Height="300">
-		<MediaElement x:Name="mediaElement" Height="300" AudioCategory="BackgroundCapableMedia" AutoPlay="False" Source="{Binding Link}" AreTransportControlsEnabled="True" Width="400"/>
+		<MediaElement x:Name="mediaElement" Height="300" Source="{Binding Link}" AreTransportControlsEnabled="True" Width="400" AutoPlay="False">
+			<Interactivity:Interaction.Behaviors>
+				<Core:EventTriggerBehavior EventName="MediaFailed">
+					<Core:InvokeCommandAction Command="{Binding LinkFailedCommand}"/>
+				</Core:EventTriggerBehavior>
+			</Interactivity:Interaction.Behaviors>
+		</MediaElement>
 	</Grid>
 </UserControl>

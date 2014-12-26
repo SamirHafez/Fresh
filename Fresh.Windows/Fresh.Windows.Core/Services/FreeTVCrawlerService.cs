@@ -14,7 +14,7 @@ namespace Fresh.Windows.Core.Services
         private const string FreeTvQuery = @"{0}/search/?q={1}&md=shows";
         private const string FreeTvSeason = @"/season_{0}.html";
 
-        public async Task<string> GetLink(string tvShow, int season, int episode)
+        public async Task<string> GetLink(string tvShow, int season, int episode, params string[] exclude)
         {
             tvShow = tvShow.Replace("&", "and");
 
