@@ -160,6 +160,15 @@ namespace Fresh.Windows.ViewModels
             return fullShows;
         }
 
+        public DelegateCommand<SearchBoxQuerySubmittedEventArgs> EnterSearchCommand
+        {
+            get
+            {
+                return new DelegateCommand<SearchBoxQuerySubmittedEventArgs>(args =>
+                    navigationService.Navigate(App.Experience.SearchResults.ToString(), args.QueryText));
+            }
+        }
+
         public DelegateCommand<ItemClickEventArgs> EpisodeSelectedCommand
         {
             get

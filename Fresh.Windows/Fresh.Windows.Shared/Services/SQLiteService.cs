@@ -42,7 +42,7 @@ namespace Fresh.Windows.Shared.Services
         }
 
         public async Task UpdateLibraryAsync(IList<TVShow> library)
-        { 
+        {
             await context.CreateTablesAsync<TVShow, Season, Episode>();
 
             connection.InsertOrReplaceAllWithChildren(library, recursive: true);
@@ -60,12 +60,18 @@ namespace Fresh.Windows.Shared.Services
         {
             await context.CreateTablesAsync<TVShow, Season, Episode>();
 
-            var show = connection.GetWithChildren<TVShow>(showId);
+            try {
+                var show = connection.GetWithChildren<TVShow>(showId);
 
-            foreach (var season in show.Seasons)
-                connection.GetChildren(season, recursive: true);
+                foreach (var season in show.Seasons)
+                    connection.GetChildren(season, recursive: true);
 
-            return show;
+                return show;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public async Task UpdateShowAsync(TVShow dbShow)

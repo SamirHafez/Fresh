@@ -10,6 +10,8 @@ using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Fresh.Windows.Shared.Configuration;
+using System.Linq;
+using System;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -62,19 +64,23 @@ namespace Fresh.Windows.ViewModels
 
         private async void SeasonWatched()
         {
-            foreach (var episode in  Episodes)
+            var episodes = (from episode in Episodes
+                            where episode.Watched == false
+                            select episode).ToList();
+
+            if (episodes.Count == 0)
+                return;
+
+            await traktService.WatchEpisodesAsync(session.User.Username,
+                session.User.Credential,
+                episodes[0].Season.TVShow.Title,
+                episodes[0].Season.TVShow.Year,
+                new List<dynamic>(from episode in episodes
+                                  select new { season = episode.Season.Number, episode = episode.Number, last_Played = DateTime.UtcNow }));
+
+            foreach (var episode in episodes)
             {
-                if(episode.Watched == true)
-                    continue;
-
                 episode.Watched = true;
-
-                await traktService.WatchEpisodeAsync(session.User.Username,
-                                session.User.Credential,
-                                episode.Season.TVShow.Title,
-                                episode.Season.TVShow.Year,
-                                episode.Season.Number,
-                                episode.Number);
                 await storageService.UpdateEpisodeAsync(episode);
             }
         }

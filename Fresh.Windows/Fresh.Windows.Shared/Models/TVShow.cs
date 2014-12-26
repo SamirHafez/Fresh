@@ -37,7 +37,7 @@ namespace Fresh.Windows.Shared.Models
                 Loved = trakt.Ratings != null ? trakt.Ratings.Loved : 0,
                 Hated = trakt.Ratings != null ? trakt.Ratings.Hated : 0,
                 Poster = trakt.Images != null ? trakt.Images.Poster : null,
-                AirDay = trakt.Air_day != null ? (DayOfWeek)Enum.Parse(typeof(DayOfWeek), trakt.Air_day, ignoreCase: true) : (DayOfWeek?)null,
+                AirDay = !string.IsNullOrWhiteSpace(trakt.Air_day) && trakt.Air_day != "Daily" ? (DayOfWeek)Enum.Parse(typeof(DayOfWeek), trakt.Air_day, ignoreCase: true) : (DayOfWeek?)null,
                 Seasons = trakt.Seasons != null ? new List<Season>(trakt.Seasons.Select(Season.FromTrakt)) : null
             };
         }

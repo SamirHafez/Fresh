@@ -5,6 +5,7 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using Fresh.Windows.Core.Models;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Fresh.Windows.Core.Services
 {
@@ -76,6 +77,8 @@ namespace Fresh.Windows.Core.Services
         {
             return asPost ?
                 TRAKT_API_URL + path + "/" + apiKey + (extended ? "/extended" : string.Empty) :
+                parameters.GetType().GetProperty("query") != null ?
+                TRAKT_API_URL + path + "/" + apiKey + "?query=" + WebUtility.UrlEncode(parameters.query) :
                 TRAKT_API_URL + path + "/" + apiKey + "/" + parameters.username + (parameters.GetType().GetProperty("season") != null ? "/" + parameters.season : "") + (extended ? "/extended" : string.Empty);
         }
 
@@ -93,6 +96,21 @@ namespace Fresh.Windows.Core.Services
         public TraktService(string apiKey)
         {
             this.apiKey = apiKey;
+        }
+
+        public async Task AddShowToLibraryAsync(string username, string password, string showTitle, int year)
+        {
+            await new TraktIO<dynamic>(apiKey).
+                ForPath("show/library").
+                AsPost().
+                WithParameters(new
+                {
+                    username,
+                    password,
+                    title = showTitle,
+                    year
+                }).
+                Execute();
         }
 
         public Task<IList<TraktTVShow>> GetLibraryAsync(string username, bool extended = false)
@@ -141,10 +159,19 @@ namespace Fresh.Windows.Core.Services
                 Execute();
         }
 
-
-        public Task WatchEpisodeAsync(string username, string password, string showTitle, int year, int season, int episode)
+        public Task<IList<TraktTVShow>> SearchTVShowAsync(string query)
         {
-            var result = new TraktIO<dynamic>(apiKey).
+            return new TraktIO<IList<TraktTVShow>>(apiKey).
+                ForPath("search/shows").
+                WithParameters(new { query }).
+                Extended(false).
+                Execute();
+
+        }
+
+        public async Task WatchEpisodesAsync(string username, string password, string showTitle, int year, IList<dynamic> episodes)
+        {
+            await new TraktIO<dynamic>(apiKey).
                 ForPath("show/episode/seen").
                 AsPost().
                 WithParameters(new
@@ -153,14 +180,9 @@ namespace Fresh.Windows.Core.Services
                     password,
                     title = showTitle,
                     year,
-                    episodes = new[] 
-                    {
-                        new { season, episode, last_played = DateTime.UtcNow }
-                    }
+                    episodes
                 }).
                 Execute();
-
-            return Task.FromResult<object>(null);
         }
     }
 }
