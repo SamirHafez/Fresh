@@ -1,11 +1,9 @@
 ﻿using Fresh.Windows.Core.Services.Interfaces;
 using HtmlAgilityPack;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Fresh.Windows.Core.Services

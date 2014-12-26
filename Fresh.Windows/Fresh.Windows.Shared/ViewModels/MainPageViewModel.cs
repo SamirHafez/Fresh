@@ -62,7 +62,7 @@ namespace Fresh.Windows.ViewModels
 
         private async Task Update()
         {
-            var incompleteSeasons = from episode in await storageService.GetEpisodesAsync(e => e.AirDate == null)
+            var incompleteSeasons = from episode in await storageService.GetEpisodesAsync(e => e.AirDate == null || e.AirDate > DateTime.UtcNow || e.Title == null)
                                     where episode.Season.Number != 0
                                     group episode by new { episode.SeasonId, episode.Season.ShowId, episode.Season.Number } into season
                                     select season;
