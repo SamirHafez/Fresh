@@ -46,10 +46,12 @@
         		<Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}">
         			<Image Source="{Binding Poster}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
         		</Border>
-        		<StackPanel VerticalAlignment="Bottom" Background="#CC008000">
-        			<TextBlock Text="{Binding Title}" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BodyTextBlockStyle}" FontWeight="SemiBold" Margin="5,0"/>
-        			<TextBlock Text="{Binding Year}" Foreground="{ThemeResource ListViewItemOverlaySecondaryForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap" FontSize="12" Margin="5,0"/>
-        		</StackPanel>
+        		<Border VerticalAlignment="Bottom" Padding="5" Background="#CC008000" >
+        			<StackPanel>
+        				<TextBlock Text="{Binding Title}" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BodyTextBlockStyle}" FontWeight="SemiBold"/>
+        				<TextBlock Text="{Binding Year}" Foreground="{ThemeResource ListViewItemOverlaySecondaryForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap" FontSize="12"/>
+        			</StackPanel>
+        		</Border>
         	</Grid>
         </DataTemplate>
         <DataTemplate x:Key="SeasonTemplate">
