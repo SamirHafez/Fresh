@@ -58,6 +58,8 @@ namespace Fresh.Windows.ViewModels
             UnwatchedEpisodesByShow = new ObservableCollection<GroupedEpisodes<TVShow>>(await GetUnwatchedEpisodesByShow());
 
             Loading = false;
+
+            base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
         }
 
         private async Task Update()

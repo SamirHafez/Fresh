@@ -42,9 +42,9 @@
 					</Interactivity:Interaction.Behaviors>
 				</Button>
 				<TextBlock TextWrapping="Wrap">
-					<Run Text="search for '"/>
+					<Run Text="search for &quot;"/>
 					<Run Text="{Binding SearchQuery}"/>
-					<Run Text="'"/>
+					<Run Text="&quot;"/>
 				</TextBlock>
 			</StackPanel>
 		</Hub.Header>

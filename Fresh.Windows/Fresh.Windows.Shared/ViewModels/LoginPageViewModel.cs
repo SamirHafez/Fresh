@@ -25,12 +25,6 @@ namespace Fresh.Windows.ViewModels
                     () => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password));
         }
 
-        public override void OnNavigatedFrom(Dictionary<string, object> viewModelState, bool suspending)
-        {
-            navigationService.ClearHistory();
-            base.OnNavigatedFrom(viewModelState, suspending);
-        }
-
         string username = default(string);
         public string Username { get { return username; } set { SetProperty(ref username, value); loginCommand.RaiseCanExecuteChanged(); } }
 
