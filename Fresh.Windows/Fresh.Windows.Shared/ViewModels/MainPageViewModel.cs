@@ -13,7 +13,6 @@ using Windows.UI.Xaml.Navigation;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
-using Microsoft.Practices.Unity;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -30,8 +29,6 @@ namespace Fresh.Windows.ViewModels
             this.storageService = storageService;
             this.navigationService = navigationService;
             this.configurationService = configurationService;
-
-            Loading = true;
         }
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
@@ -137,11 +134,6 @@ namespace Fresh.Windows.ViewModels
                 return new DelegateCommand<ItemClickEventArgs>(args =>
                     navigationService.Navigate(App.Experience.Episode.ToString(), ((Episode)args.ClickedItem).Id));
             }
-        }
-
-        private void EpisodeSelected(Episode episode)
-        {
-            navigationService.Navigate(App.Experience.Episode.ToString(), episode.Id);
         }
 
         public static DateTime StartOfWeek(DateTime dt, DayOfWeek startOfWeek)
