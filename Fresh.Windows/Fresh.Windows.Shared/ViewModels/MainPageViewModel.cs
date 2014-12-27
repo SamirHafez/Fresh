@@ -40,16 +40,10 @@ namespace Fresh.Windows.ViewModels
             if (string.IsNullOrWhiteSpace(username))
                 throw new ArgumentException("Username not provided.");
 
-            Loading = true;
 
             Library = new ObservableCollection<TVShow>(from show in await storageService.GetLibraryAsync()
                                                        orderby show.Title
                                                        select show);
-
-            if (Library.Count == 0)
-                Library = new ObservableCollection<TVShow>(await FirstLoadAsync(username));
-            else
-                await Update();
 
             var lastMonday = StartOfWeek(DateTime.Now, DayOfWeek.Monday);
             var nextSunday = lastMonday.AddDays(7);
@@ -57,51 +51,39 @@ namespace Fresh.Windows.ViewModels
 
             UnwatchedEpisodesByShow = new ObservableCollection<GroupedEpisodes<TVShow>>(await GetUnwatchedEpisodesByShow());
 
+            Loading = true;
+
+            if (navigationMode == NavigationMode.New)
+                foreach (var watchedShow in from show in await traktService.GetWatchedEpisodesAsync(username)
+                                            select TVShow.FromTrakt(show))
+                    await UpdateShowAsync(watchedShow);
+
             Loading = false;
 
             base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
         }
 
-        private async Task Update()
+        private async Task UpdateShowAsync(TVShow watchedShow)
         {
-            var incompleteSeasons = from episode in await storageService.GetEpisodesAsync(e => e.AirDate == null || e.AirDate > DateTime.UtcNow || e.Title == null)
-                                    where episode.Season.Number != 0
-                                    group episode by new { episode.SeasonId, episode.Season.ShowId, episode.Season.Number } into season
-                                    select season;
+            var fullShow = await storageService.GetShowAsync(watchedShow.Id);
 
-            foreach (var season in incompleteSeasons)
+            if (fullShow == null)
             {
-                var traktEpisodes = (await traktService.GetSeasonEpisodesAsync(season.Key.ShowId, season.Key.Number, extended: true)).ToList();
-
-                int highestEpisode = 1;
-                foreach (var episode in season)
-                {
-                    var traktEpisode = traktEpisodes.FirstOrDefault(e => e.Number == episode.Number);
-                    highestEpisode = highestEpisode > episode.Number ? highestEpisode : episode.Number;
-
-                    if (traktEpisode == null)
-                        continue;
-
-                    var recentEpisode = Episode.FromTrakt(traktEpisode);
-
-                    episode.Overview = recentEpisode.Overview;
-                    episode.AirDate = recentEpisode.AirDate;
-                    episode.Screen = recentEpisode.Screen;
-                    episode.Title = recentEpisode.Title;
-
-                    traktEpisodes.Remove(traktEpisode);
-
-                    await storageService.UpdateEpisodeAsync(episode);
-                }
-
-                foreach (var episode in from te in traktEpisodes
-                                        where te.Number > highestEpisode
-                                        select Episode.FromTrakt(te))
-                {
-                    episode.SeasonId = season.Key.SeasonId;
-                    await storageService.UpdateEpisodeAsync(episode);
-                }
+                fullShow = TVShow.FromTrakt(await traktService.GetShowAsync(watchedShow.Id, extended: true));
+                Library.Add(fullShow);
             }
+
+            foreach (var episode in from watchedSeason in watchedShow.Seasons
+                                    from watchedEpisode in watchedSeason.Episodes
+                                    from season in fullShow.Seasons
+                                    where season.Number == watchedSeason.Number
+                                    from episode in season.Episodes
+                                    where episode.Number == watchedEpisode.Number
+                                    where episode.Watched == false
+                                    select episode)
+                episode.Watched = true;
+
+            await storageService.UpdateShowAsync(fullShow);
         }
 
         private async Task<IEnumerable<GroupedEpisodes<TVShow>>> GetUnwatchedEpisodesByShow()
@@ -130,36 +112,6 @@ namespace Fresh.Windows.ViewModels
                         Key = g.Key,
                         Episodes = g.ToList()
                     }).ToList();
-        }
-
-        private async Task<IList<TVShow>> FirstLoadAsync(string username)
-        {
-            var traktFullShowTasks = from show in await traktService.GetLibraryAsync(username, extended: false)
-                                     let id = TVShow.FromTrakt(show).Id
-                                     select traktService.GetShowAsync(id, extended: true);
-
-            var fullShows = (from show in await Task.WhenAll(traktFullShowTasks)
-                             orderby show.Title
-                             select TVShow.FromTrakt(show)).ToList();
-
-            var watchedEpisodesbyShow = await traktService.GetWatchedEpisodesAsync(username);
-
-            var watchedEpisodes = from watchedShow in watchedEpisodesbyShow
-                                  from watchedSeason in watchedShow.Seasons
-                                  from watchedEpisode in watchedSeason.Episodes
-                                  join show in fullShows on watchedShow.Title equals show.Title
-                                  from season in show.Seasons
-                                  where season.Number == watchedSeason.Season
-                                  from episode in season.Episodes
-                                  where episode.Number == watchedEpisode.Number
-                                  select episode;
-
-            foreach (var episode in watchedEpisodes)
-                episode.Watched = true;
-
-            await storageService.UpdateLibraryAsync(fullShows);
-
-            return fullShows;
         }
 
         public DelegateCommand<SearchBoxQuerySubmittedEventArgs> EnterSearchCommand

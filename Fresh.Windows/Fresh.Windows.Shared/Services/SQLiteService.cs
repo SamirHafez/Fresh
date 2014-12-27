@@ -45,7 +45,7 @@ namespace Fresh.Windows.Shared.Services
         {
             await context.CreateTablesAsync<TVShow, Season, Episode>();
 
-            connection.InsertOrReplaceAllWithChildren(library, recursive: true);
+            await Task.Factory.StartNew(() => connection.InsertOrReplaceAllWithChildren(library, recursive: true));
         }
 
         public async Task<User> GetUserAsync()
@@ -61,10 +61,10 @@ namespace Fresh.Windows.Shared.Services
             await context.CreateTablesAsync<TVShow, Season, Episode>();
 
             try {
-                var show = connection.GetWithChildren<TVShow>(showId);
+                var show = await Task.Factory.StartNew<TVShow>(() => connection.GetWithChildren<TVShow>(showId));
 
                 foreach (var season in show.Seasons)
-                    connection.GetChildren(season, recursive: true);
+                    await Task.Factory.StartNew(() => connection.GetChildren(season, recursive: true));
 
                 return show;
             }
@@ -78,7 +78,7 @@ namespace Fresh.Windows.Shared.Services
         {
             await context.CreateTablesAsync<TVShow, Season, Episode>();
 
-            connection.InsertOrReplaceWithChildren(dbShow, recursive: true);
+            await Task.Factory.StartNew(() => connection.InsertOrReplaceWithChildren(dbShow, recursive: true));
         }
 
         public async Task<Season> GetSeasonAsync(string showId, int seasonNumber)
@@ -96,7 +96,7 @@ namespace Fresh.Windows.Shared.Services
         {
             await context.CreateTablesAsync<TVShow, Season, Episode>();
 
-            return connection.GetWithChildren<Season>(seasonId, recursive: true);
+            return await Task.Factory.StartNew<Season>(() => connection.GetWithChildren<Season>(seasonId, recursive: true));
         }
 
         public async Task UpdateEpisodeAsync(Episode episode)
@@ -110,9 +110,9 @@ namespace Fresh.Windows.Shared.Services
         {
             await context.CreateTablesAsync<TVShow, Season, Episode>();
 
-            var episode = connection.GetWithChildren<Episode>(episodeId, recursive: true);
+            var episode = await Task.Factory.StartNew<Episode>(() => connection.GetWithChildren<Episode>(episodeId, recursive: true));
 
-            connection.GetChildren(episode.Season, recursive: false);
+            await Task.Factory.StartNew(() => connection.GetChildren(episode.Season, recursive: false));
 
             return episode;
         }
@@ -121,10 +121,10 @@ namespace Fresh.Windows.Shared.Services
         {
             await context.CreateTablesAsync<TVShow, Season, Episode>();
 
-            var episodes = connection.GetAllWithChildren(predicate, recursive: true);
+            var episodes = await Task.Factory.StartNew<IList<Episode>>(() => connection.GetAllWithChildren(predicate, recursive: true));
 
             foreach (var episode in episodes)
-                connection.GetChildren(episode.Season);
+                await Task.Factory.StartNew(() => connection.GetChildren(episode.Season));
 
             return episodes;
         }
