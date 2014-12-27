@@ -12,7 +12,7 @@ namespace Fresh.Windows.Shared.Services.Interfaces
 
         Task<User> CreateOrUpdateUserAsync(User user);
 
-        Task<IList<TVShow>> GetLibraryAsync();
+        Task<List<TVShow>> GetLibraryAsync();
 
         Task<TVShow> GetShowAsync(string showId);
 

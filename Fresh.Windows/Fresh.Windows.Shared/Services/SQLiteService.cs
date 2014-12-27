@@ -18,6 +18,8 @@ namespace Fresh.Windows.Shared.Services
 
         private bool isDisposed;
 
+        private static object _lock = new Object();
+
         public SQLiteService(ISQLitePlatform platform, SQLiteConnectionString connectionString)
         {
             connection = new SQLiteConnectionWithLock(platform, connectionString);
@@ -27,106 +29,123 @@ namespace Fresh.Windows.Shared.Services
 
         public async Task<User> CreateOrUpdateUserAsync(User user)
         {
-            await context.CreateTableAsync<User>();
+            await context.CreateTablesAsync<User, TVShow, Season, Episode>();
 
             await context.InsertOrReplaceAsync(user);
 
             return user;
         }
 
-        public async Task<IList<TVShow>> GetLibraryAsync()
+        public Task<List<TVShow>> GetLibraryAsync()
         {
-            await context.CreateTablesAsync<TVShow, Season, Episode>();
-
-            return await context.Table<TVShow>().ToListAsync();
+            return context.Table<TVShow>().ToListAsync();
         }
 
-        public async Task UpdateLibraryAsync(IList<TVShow> library)
+        public Task UpdateLibraryAsync(IList<TVShow> library)
         {
-            await context.CreateTablesAsync<TVShow, Season, Episode>();
-
-            await Task.Factory.StartNew(() => connection.InsertOrReplaceAllWithChildren(library, recursive: true));
+            return Task.Run(delegate
+            {
+                lock (_lock)
+                    connection.InsertOrReplaceAllWithChildren(library, recursive: true);
+            });
         }
 
         public async Task<User> GetUserAsync()
         {
-            await context.CreateTableAsync<User>();
+            await context.CreateTablesAsync<User, TVShow, Season, Episode>();
 
             return await context.Table<User>().
                 FirstOrDefaultAsync();
         }
 
-        public async Task<TVShow> GetShowAsync(string showId)
+        public Task<TVShow> GetShowAsync(string showId)
         {
-            await context.CreateTablesAsync<TVShow, Season, Episode>();
-
-            try {
-                var show = await Task.Factory.StartNew<TVShow>(() => connection.GetWithChildren<TVShow>(showId));
-
-                foreach (var season in show.Seasons)
-                    await Task.Factory.StartNew(() => connection.GetChildren(season, recursive: true));
-
-                return show;
-            }
-            catch
+            return Task.Run<TVShow>(delegate
             {
-                return null;
-            }
+                try
+                {
+                    lock (_lock)
+                    {
+                        var show = connection.GetWithChildren<TVShow>(showId);
+
+                        foreach (var season in show.Seasons)
+                            connection.GetChildren(season, recursive: true);
+
+                        return show;
+                    }
+                }
+                catch
+                {
+                    return null;
+                }
+            });
+
         }
 
-        public async Task UpdateShowAsync(TVShow dbShow)
+        public Task UpdateShowAsync(TVShow dbShow)
         {
-            await context.CreateTablesAsync<TVShow, Season, Episode>();
-
-            await Task.Factory.StartNew(() => connection.InsertOrReplaceWithChildren(dbShow, recursive: true));
+            return Task.Run(delegate
+            {
+                lock (_lock)
+                    connection.InsertOrReplaceWithChildren(dbShow, recursive: true);
+            });
         }
 
         public async Task<Season> GetSeasonAsync(string showId, int seasonNumber)
         {
-            await context.CreateTablesAsync<TVShow, Season, Episode>();
-
             var season = await context.Table<Season>().
-                Where(s => s.ShowId == showId && s.Number == seasonNumber)
-                .FirstAsync();
+                Where(s => s.ShowId == showId && s.Number == seasonNumber).
+                FirstAsync();
 
             return await GetSeasonAsync(season.Id);
         }
 
-        public async Task<Season> GetSeasonAsync(int seasonId)
+        public Task<Season> GetSeasonAsync(int seasonId)
         {
-            await context.CreateTablesAsync<TVShow, Season, Episode>();
+            return Task.Run(delegate
+            {
+                lock (_lock)
+                    return connection.GetWithChildren<Season>(seasonId, recursive: true);
+            });
 
-            return await Task.Factory.StartNew<Season>(() => connection.GetWithChildren<Season>(seasonId, recursive: true));
         }
 
-        public async Task UpdateEpisodeAsync(Episode episode)
+        public Task UpdateEpisodeAsync(Episode episode)
         {
-            await context.CreateTablesAsync<TVShow, Season, Episode>();
-
-            await context.InsertOrReplaceAsync(episode);
+            return context.InsertOrReplaceAsync(episode);
         }
 
-        public async Task<Episode> GetEpisodeAsync(int episodeId)
+        public Task<Episode> GetEpisodeAsync(int episodeId)
         {
-            await context.CreateTablesAsync<TVShow, Season, Episode>();
+            return Task.Run<Episode>(delegate
+            {
+                lock (_lock)
+                {
+                    var episode = connection.GetWithChildren<Episode>(episodeId, recursive: true);
 
-            var episode = await Task.Factory.StartNew<Episode>(() => connection.GetWithChildren<Episode>(episodeId, recursive: true));
+                    connection.GetChildren(episode.Season, recursive: false);
 
-            await Task.Factory.StartNew(() => connection.GetChildren(episode.Season, recursive: false));
+                    return episode;
+                }
+            });
 
-            return episode;
         }
 
-        public async Task<IList<Episode>> GetEpisodesAsync(Expression<Func<Episode, bool>> predicate = null)
+        public Task<IList<Episode>> GetEpisodesAsync(Expression<Func<Episode, bool>> predicate = null)
         {
-            await context.CreateTablesAsync<TVShow, Season, Episode>();
+            return Task.Run<IList<Episode>>(delegate
+            {
+                lock (_lock)
+                {
+                    var episodes = connection.GetAllWithChildren(predicate, recursive: true);
 
-            var episodes = await Task.Factory.StartNew<IList<Episode>>(() => connection.GetAllWithChildren(predicate, recursive: true));
+                    foreach (var episode in episodes)
+                        connection.GetChildren(episode.Season);
 
-            foreach (var episode in episodes)
-                await Task.Factory.StartNew(() => connection.GetChildren(episode.Season));
+                    return episodes;
+                }
+            });
 
-            return episodes;
         }
 
         public void Dispose()
