@@ -129,7 +129,7 @@ namespace Fresh.Windows.Helpers
             [DllImport("sqlite3", EntryPoint = "sqlite3_bind_double", CallingConvention = CallingConvention.Cdecl)]
             public static extern int BindDouble(IntPtr stmt, int index, double val);
 
-            [DllImport("sqlite3", EntryPoint = "sqlite3_bind_text16", CallingConvention = CallingConvention.Cdecl, BestFitMapping = true, ThrowOnUnmappableChar = true)]
+            [DllImport("sqlite3", EntryPoint = "sqlite3_bind_text16", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl, BestFitMapping = true, ThrowOnUnmappableChar = true)]
             public static extern int BindText(IntPtr stmt, int index, [MarshalAs(UnmanagedType.LPWStr)] string val, int n, IntPtr free);
 
             [DllImport("sqlite3", EntryPoint = "sqlite3_bind_blob", CallingConvention = CallingConvention.Cdecl)]
