@@ -45,13 +45,15 @@ namespace Fresh.Windows.ViewModels
                                                        select show);
 
             if (navigationMode == NavigationMode.New)
-            {
-                var updateTasks = from show in await traktService.GetWatchedEpisodesAsync(username)
-                                  let tvShow = TVShow.FromTrakt(show)
-                                  select UpdateShowAsync(tvShow);
+                try
+                {
+                    var updateTasks = from show in await traktService.GetWatchedEpisodesAsync(username)
+                                      let tvShow = TVShow.FromTrakt(show)
+                                      select UpdateShowAsync(tvShow);
 
-                await Task.WhenAll(updateTasks);
-            }
+                    await Task.WhenAll(updateTasks);
+                }
+                catch { }
 
             var lastMonday = StartOfWeek(DateTime.Now, DayOfWeek.Monday);
             var nextSunday = lastMonday.AddDays(7);
@@ -123,8 +125,9 @@ namespace Fresh.Windows.ViewModels
 
             if (!hasNewEpisodes)
             {
-                var traktNextSeasonEpisodes = await traktService.GetSeasonEpisodesAsync(fullShow.Id, latestSeasonEpisodes.First().SeasonNumber + 1, extended: true);
-                fullShow.Episodes.AddRange(traktNextSeasonEpisodes.Select(Episode.FromTrakt));
+                var traktNextSeasonEpisodes = from episode in await traktService.GetSeasonEpisodesAsync(fullShow.Id, latestSeasonEpisodes.First().SeasonNumber + 1, extended: true)
+                                              select Episode.FromTrakt(episode);
+                fullShow.Episodes.AddRange(traktNextSeasonEpisodes);
             }
         }
 
