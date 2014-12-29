@@ -50,7 +50,7 @@ namespace Fresh.Windows.ViewModels
                                   let tvShow = TVShow.FromTrakt(show)
                                   select UpdateShowAsync(tvShow);
 
-                await Task.WhenAll(updateTasks.ToArray());
+                await Task.WhenAll(updateTasks);
             }
 
             var lastMonday = StartOfWeek(DateTime.Now, DayOfWeek.Monday);
@@ -70,15 +70,14 @@ namespace Fresh.Windows.ViewModels
 
             bool isNew = fullShow == null;
 
-            if (fullShow == null)
+            if (isNew)
                 fullShow = TVShow.FromTrakt(await traktService.GetShowAsync(watchedShow.Id, extended: true));
+            else
+                await FindNewEpisodesAsync(fullShow);
 
-            foreach (var episode in from watchedSeason in watchedShow.Seasons
-                                    from watchedEpisode in watchedSeason.Episodes
-                                    from season in fullShow.Seasons
-                                    where season.Number == watchedSeason.Number
-                                    from episode in season.Episodes
-                                    where episode.Number == watchedEpisode.Number
+            foreach (var episode in from watchedEpisode in watchedShow.Episodes
+                                    from episode in fullShow.Episodes
+                                    where episode.SeasonNumber == watchedEpisode.SeasonNumber && episode.Number == watchedEpisode.Number
                                     where episode.Watched == false
                                     select episode)
                 episode.Watched = true;
@@ -89,12 +88,40 @@ namespace Fresh.Windows.ViewModels
                 Library.Add(fullShow);
         }
 
+        private async Task FindNewEpisodesAsync(TVShow fullShow)
+        {
+            var latestSeasonEpisodes = from episode in fullShow.Episodes
+                                       let latestSeason = (from ep in fullShow.Episodes
+                                                          orderby ep.SeasonNumber descending
+                                                          select ep.SeasonNumber).First()
+                                       where episode.SeasonNumber == latestSeason
+                                       select episode;
+
+            var traktLatestSeasonEpisodes = await traktService.GetSeasonEpisodesAsync(fullShow.Id, latestSeasonEpisodes.First().SeasonNumber);
+
+            foreach (var traktEpisode in from ep in traktLatestSeasonEpisodes
+                                         select Episode.FromTrakt(ep))
+            {
+                var episode = latestSeasonEpisodes.FirstOrDefault(e => e.Number == traktEpisode.Number);
+
+
+                if (episode == null)
+                    fullShow.Episodes.Add(traktEpisode);
+                else
+                {
+                    episode.Title = traktEpisode.Title;
+                    episode.Overview = traktEpisode.Overview;
+                    episode.Screen = traktEpisode.Screen;
+                    episode.AirDate = traktEpisode.AirDate;
+                }
+            }
+        }
+
         private async Task<IEnumerable<GroupedEpisodes<TVShow>>> GetUnwatchedEpisodesByShow()
         {
-            return from episode in await storageService.GetEpisodesAsync(e => e.Watched == false && e.AirDate != null && e.AirDate <= DateTime.UtcNow)
-                   where episode.Season.Number > 0
-                   group episode by episode.Season.ShowId into g
-                   let tvShow = g.First().Season.TVShow
+            return from episode in await storageService.GetEpisodesAsync(e => e.Watched == false && e.AirDate != null && e.AirDate <= DateTime.UtcNow && e.SeasonNumber > 0)
+                   group episode by episode.TVShowId into g
+                   let tvShow = g.First().TVShow
                    orderby g.Count() descending
                    select new GroupedEpisodes<TVShow>
                    {

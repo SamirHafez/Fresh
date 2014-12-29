@@ -32,13 +32,12 @@ namespace Fresh.Windows.ViewModels
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
-            var seasonId = (int)navigationParameter;
+            dynamic parameters = navigationParameter;
+            var seasonNumber = (int)parameters.season;
+            var showId = (string)parameters.showId;
 
-            var season = await storageService.GetSeasonAsync(seasonId);
-
-            Number = season.Number;
-            Poster = season.Poster;
-            Episodes = new ObservableCollection<Episode>(season.Episodes);
+            Number = seasonNumber;
+            Episodes = new ObservableCollection<Episode>(await storageService.GetSeasonAsync(showId, seasonNumber));
         }
 
         public DelegateCommand<ItemClickEventArgs> EpisodeSelectedCommand
@@ -73,10 +72,10 @@ namespace Fresh.Windows.ViewModels
 
             await traktService.WatchEpisodesAsync(session.User.Username,
                 session.User.Credential,
-                episodes[0].Season.TVShow.Title,
-                episodes[0].Season.TVShow.Year,
+                episodes[0].TVShow.Title,
+                episodes[0].TVShow.Year,
                 new List<dynamic>(from episode in episodes
-                                  select new { season = episode.Season.Number, episode = episode.Number, last_Played = DateTime.UtcNow }));
+                                  select new { season = episode.SeasonNumber, episode = episode.Number, last_Played = DateTime.UtcNow }));
 
             foreach (var episode in episodes)
             {

@@ -18,6 +18,8 @@ namespace Fresh.Windows.ViewModels
         public INavigationService navigationService { get; private set; }
         private readonly IStorageService storageService;
 
+        private string showId;
+
         public TVShowPageViewModel(INavigationService navigationService, IStorageService storageService)
         {
             this.navigationService = navigationService;
@@ -26,7 +28,7 @@ namespace Fresh.Windows.ViewModels
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
-            var showId = navigationParameter as string;
+            showId = navigationParameter as string;
 
             var dbShow = await storageService.GetShowAsync(showId);
 
@@ -37,13 +39,13 @@ namespace Fresh.Windows.ViewModels
         {
             get
             {
-                return new DelegateCommand<ItemClickEventArgs>(args => EnterSeason((Season)args.ClickedItem));
+                return new DelegateCommand<ItemClickEventArgs>(arg => EnterSeason((int)arg.ClickedItem));
             }
         }
 
-        private void EnterSeason(Season season)
+        private void EnterSeason(int season)
         {
-            navigationService.Navigate(App.Experience.Season.ToString(), season.Id);
+            navigationService.Navigate(App.Experience.Season.ToString(), new { season, showId });
         }
 
         private void Update(TVShow fullShow)
@@ -55,14 +57,15 @@ namespace Fresh.Windows.ViewModels
             Loved = fullShow.Loved;
             Hated = fullShow.Hated;
 
-            Seasons = new ObservableCollection<Season>(fullShow.Seasons);
-            UnwatchedEpisodes = new ObservableCollection<Episode>(from season in fullShow.Seasons
-                                                                  from episode in season.Episodes
+            Seasons = new ObservableCollection<int>((from episode in fullShow.Episodes
+                                                     select episode.SeasonNumber).Distinct());
+
+            UnwatchedEpisodes = new ObservableCollection<Episode>(from episode in fullShow.Episodes
                                                                   where episode.Watched == false &&
                                                                     episode.AirDate.HasValue &&
                                                                     episode.AirDate <= DateTime.UtcNow &&
-                                                                    episode.Season.Number != 0
-                                                                  orderby episode.Season.Number, episode.Number
+                                                                    episode.SeasonNumber != 0
+                                                                  orderby episode.SeasonNumber, episode.Number
                                                                   select episode);
         }
 
@@ -98,8 +101,8 @@ namespace Fresh.Windows.ViewModels
         int hated = default(int);
         public int Hated { get { return hated; } set { SetProperty(ref hated, value); } }
 
-        ObservableCollection<Season> seasons = default(ObservableCollection<Season>);
-        public ObservableCollection<Season> Seasons { get { return seasons; } set { SetProperty(ref seasons, value); } }
+        ObservableCollection<int> seasons = default(ObservableCollection<int>);
+        public ObservableCollection<int> Seasons { get { return seasons; } set { SetProperty(ref seasons, value); } }
 
         ObservableCollection<Episode> unwatchedEpisodes = new ObservableCollection<Episode>(Enumerable.Empty<Episode>());
         public ObservableCollection<Episode> UnwatchedEpisodes { get { return unwatchedEpisodes; } set { SetProperty(ref unwatchedEpisodes, value); } }

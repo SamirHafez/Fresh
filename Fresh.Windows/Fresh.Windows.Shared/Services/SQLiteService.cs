@@ -29,7 +29,7 @@ namespace Fresh.Windows.Shared.Services
 
         public async Task<User> CreateOrUpdateUserAsync(User user)
         {
-            await context.CreateTablesAsync<User, TVShow, Season, Episode>();
+            await context.CreateTablesAsync<User, TVShow, Episode>();
 
             await context.InsertOrReplaceAsync(user);
 
@@ -38,7 +38,11 @@ namespace Fresh.Windows.Shared.Services
 
         public Task<List<TVShow>> GetLibraryAsync()
         {
-            return context.Table<TVShow>().ToListAsync();
+            return Task.Run<List<TVShow>>(delegate 
+            {
+                lock (_lock)
+                    return connection.GetAllWithChildren<TVShow>(recursive: true);
+            });
         }
 
         public Task UpdateLibraryAsync(IList<TVShow> library)
@@ -52,7 +56,7 @@ namespace Fresh.Windows.Shared.Services
 
         public async Task<User> GetUserAsync()
         {
-            await context.CreateTablesAsync<User, TVShow, Season, Episode>();
+            await context.CreateTablesAsync<User, TVShow, Episode>();
 
             return await context.Table<User>().
                 FirstOrDefaultAsync();
@@ -65,14 +69,7 @@ namespace Fresh.Windows.Shared.Services
                 try
                 {
                     lock (_lock)
-                    {
-                        var show = connection.GetWithChildren<TVShow>(showId);
-
-                        foreach (var season in show.Seasons)
-                            connection.GetChildren(season, recursive: true);
-
-                        return show;
-                    }
+                        return connection.GetWithChildren<TVShow>(showId);
                 }
                 catch
                 {
@@ -91,23 +88,13 @@ namespace Fresh.Windows.Shared.Services
             });
         }
 
-        public async Task<Season> GetSeasonAsync(string showId, int seasonNumber)
+        public Task<List<Episode>> GetSeasonAsync(string showId, int seasonNumber)
         {
-            var season = await context.Table<Season>().
-                Where(s => s.ShowId == showId && s.Number == seasonNumber).
-                FirstAsync();
-
-            return await GetSeasonAsync(season.Id);
-        }
-
-        public Task<Season> GetSeasonAsync(int seasonId)
-        {
-            return Task.Run(delegate
+            return Task.Run<List<Episode>>(delegate
             {
                 lock (_lock)
-                    return connection.GetWithChildren<Season>(seasonId, recursive: true);
+                    return connection.GetAllWithChildren<Episode>(e => e.TVShowId == showId && e.SeasonNumber == seasonNumber);
             });
-
         }
 
         public Task UpdateEpisodeAsync(Episode episode)
@@ -120,13 +107,7 @@ namespace Fresh.Windows.Shared.Services
             return Task.Run<Episode>(delegate
             {
                 lock (_lock)
-                {
-                    var episode = connection.GetWithChildren<Episode>(episodeId, recursive: true);
-
-                    connection.GetChildren(episode.Season, recursive: false);
-
-                    return episode;
-                }
+                    return connection.GetWithChildren<Episode>(episodeId, recursive: true);
             });
 
         }
@@ -136,14 +117,7 @@ namespace Fresh.Windows.Shared.Services
             return Task.Run<IList<Episode>>(delegate
             {
                 lock (_lock)
-                {
-                    var episodes = connection.GetAllWithChildren(predicate, recursive: true);
-
-                    foreach (var episode in episodes)
-                        connection.GetChildren(episode.Season);
-
-                    return episodes;
-                }
+                    return connection.GetAllWithChildren(predicate, recursive: true);
             });
 
         }

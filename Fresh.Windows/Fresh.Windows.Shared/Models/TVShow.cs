@@ -22,7 +22,7 @@ namespace Fresh.Windows.Shared.Models
         public int Hated { get; set; }
 
         [OneToMany(CascadeOperations = CascadeOperation.All)]
-        public List<Season> Seasons { get; set; }
+        public List<Episode> Episodes { get; set; }
 
         public static TVShow FromTrakt(TraktTVShow trakt)
         {
@@ -38,7 +38,10 @@ namespace Fresh.Windows.Shared.Models
                 Hated = trakt.Ratings != null ? trakt.Ratings.Hated : 0,
                 Poster = trakt.Images != null ? trakt.Images.Poster : null,
                 AirDay = !string.IsNullOrWhiteSpace(trakt.Air_day) && trakt.Air_day != "Daily" ? (DayOfWeek)Enum.Parse(typeof(DayOfWeek), trakt.Air_day, ignoreCase: true) : (DayOfWeek?)null,
-                Seasons = trakt.Seasons != null ? new List<Season>(trakt.Seasons.Select(Season.FromTrakt)) : null
+                Episodes = trakt.Seasons != null ? new List<Episode>(from season in trakt.Seasons
+                                                                     where season.Episodes != null
+                                                                     from episode in season.Episodes
+                                                                     select Episode.FromTrakt(episode)) : null
             };
         }
     }

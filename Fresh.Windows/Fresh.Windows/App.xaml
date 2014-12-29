@@ -22,7 +22,7 @@
         			</Border>
         		</StackPanel>
         		<Border Background="#CC008000" MaxWidth="300" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="5">
-        			<TextBlock Text="{Binding Season.TVShow.Title}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}"/>
+        			<TextBlock Text="{Binding TVShow.Title}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}"/>
         		</Border>
         		<Border Background="#CC008000" MaxWidth="300" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="5">
         			<TextBlock Text="{Binding AirDate}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}"/>
@@ -56,11 +56,11 @@
         </DataTemplate>
         <DataTemplate x:Key="SeasonTemplate">
         	<Grid Width="172" Height="247" Background="#33008000">
-        		<Image Source="{Binding Poster}" Stretch="UniformToFill"/>
+        		<Image Stretch="UniformToFill"/>
         		<Border HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="5" Background="Green">
         			<TextBlock TextWrapping="Wrap" Style="{StaticResource BaseTextBlockStyle}">
         				<Run Text="Season"/>
-        				<Run Text="{Binding Number}"/>
+        				<Run Text="{Binding}"/>
         			</TextBlock>
         		</Border>
         	</Grid>

@@ -1,7 +1,9 @@
 ﻿using Fresh.Windows.Shared.Interfaces;
 using Fresh.Windows.Shared.Models;
+using Microsoft.Practices.Prism.Commands;
 using System;
 using System.Collections.ObjectModel;
+using Windows.UI.Xaml.Controls;
 
 namespace Fresh.Windows.Shared.DesignTime
 {
@@ -18,29 +20,7 @@ namespace Fresh.Windows.Shared.DesignTime
             Loved = 12000;
             Hated = 3200;
 
-            Seasons = new ObservableCollection<Season>
-            {
-                new Season
-                {
-                    Number = 5,
-                    Poster = "http://slurm.trakt.us/images/seasons/124-5.47.jpg"
-                },
-                new Season
-                {
-                    Number = 4,
-                    Poster = "http://slurm.trakt.us/images/seasons/124-4.47.jpg"
-                },
-                new Season
-                {
-                    Number = 3,
-                    Poster = "http://slurm.trakt.us/images/seasons/124-3.47.jpg"
-                },
-                new Season
-                {
-                    Number = 2,
-                    Poster = "http://slurm.trakt.us/images/seasons/124-2.47.jpg"
-                }
-            };
+            Seasons = new ObservableCollection<int> { 5, 4, 3, 2, 1 };
 
             UnwatchedEpisodes = new ObservableCollection<Episode>
             {
@@ -65,7 +45,7 @@ namespace Fresh.Windows.Shared.DesignTime
 
         public string Title { get; set; }
         public string Poster { get; set; }
-        public ObservableCollection<Season> Seasons { get; set; }
+        public ObservableCollection<int> Seasons { get; set; }
         public ObservableCollection<Episode> UnwatchedEpisodes { get; set; }
 
         public string Overview { get; set; }
@@ -75,5 +55,8 @@ namespace Fresh.Windows.Shared.DesignTime
         public int Loved { get; set; }
 
         public int Hated { get; set; }
+
+        public DelegateCommand<ItemClickEventArgs> EpisodeSelectedCommand { get; set; }
+        public DelegateCommand<ItemClickEventArgs> EnterSeasonCommand { get; set; }
     }
 }
