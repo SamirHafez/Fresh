@@ -92,21 +92,26 @@ namespace Fresh.Windows.ViewModels
         {
             var latestSeasonEpisodes = from episode in fullShow.Episodes
                                        let latestSeason = (from ep in fullShow.Episodes
-                                                          orderby ep.SeasonNumber descending
-                                                          select ep.SeasonNumber).First()
+                                                           orderby ep.SeasonNumber descending
+                                                           select ep.SeasonNumber).First()
                                        where episode.SeasonNumber == latestSeason
                                        select episode;
 
             var traktLatestSeasonEpisodes = await traktService.GetSeasonEpisodesAsync(fullShow.Id, latestSeasonEpisodes.First().SeasonNumber);
 
+            bool hasNewEpisodes = false;
             foreach (var traktEpisode in from ep in traktLatestSeasonEpisodes
                                          select Episode.FromTrakt(ep))
             {
-                var episode = latestSeasonEpisodes.FirstOrDefault(e => e.Number == traktEpisode.Number);
-
+                var episode = (from ep in latestSeasonEpisodes
+                               where ep.Number == traktEpisode.Number
+                               select ep).FirstOrDefault();
 
                 if (episode == null)
+                {
+                    hasNewEpisodes = true;
                     fullShow.Episodes.Add(traktEpisode);
+                }
                 else
                 {
                     episode.Title = traktEpisode.Title;
@@ -114,6 +119,12 @@ namespace Fresh.Windows.ViewModels
                     episode.Screen = traktEpisode.Screen;
                     episode.AirDate = traktEpisode.AirDate;
                 }
+            }
+
+            if (!hasNewEpisodes)
+            {
+                var traktNextSeasonEpisodes = await traktService.GetSeasonEpisodesAsync(fullShow.Id, latestSeasonEpisodes.First().SeasonNumber + 1, extended: true);
+                fullShow.Episodes.AddRange(traktNextSeasonEpisodes.Select(Episode.FromTrakt));
             }
         }
 
