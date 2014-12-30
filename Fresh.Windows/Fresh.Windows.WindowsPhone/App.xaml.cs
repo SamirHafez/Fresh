@@ -22,8 +22,6 @@ namespace Fresh.Windows
 
         private readonly UnityContainer container = new UnityContainer();
 
-        private readonly string TRAKT_APIKEY = "68d5502c616356a5a844d284c546032d";
-
         private static readonly string APPLICATION_PATH = ApplicationData.Current.LocalFolder.Path;
 
         public App()
@@ -40,7 +38,7 @@ namespace Fresh.Windows
             container.RegisterType<ISQLitePlatform, SQLitePlatformWP81>(new ContainerControlledLifetimeManager());
             container.RegisterType<IStorageService, SQLiteService>();
             container.RegisterType<ICrawlerService, LetMeWatchThisCrawlerService>();
-            container.RegisterInstance<ITraktService>(new TraktService(TRAKT_APIKEY), new ContainerControlledLifetimeManager());
+            container.RegisterType<ITraktService, TraktService>(new ContainerControlledLifetimeManager());
 
             return Task.FromResult<object>(null);
         }

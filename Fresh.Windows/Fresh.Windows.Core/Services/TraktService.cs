@@ -6,25 +6,20 @@ using Newtonsoft.Json;
 using Fresh.Windows.Core.Models;
 using System.Collections.Generic;
 using System.Net;
+using RestSharp.Portable;
 
 namespace Fresh.Windows.Core.Services
 {
     internal class TraktIO<T>
     {
-        private const string TRAKT_API_URL = @"http://api.trakt.tv/";
+        private const string TRAKT_API_URL = @"https://api.trakt.tv/";
 
-        private readonly string apiKey;
         private bool asPost;
         private bool extended;
         private string path;
         private Func<dynamic, dynamic> withSelect;
 
         private dynamic parameters;
-
-        public TraktIO(string apiKey)
-        {
-            this.apiKey = apiKey;
-        }
 
         public TraktIO<T> ForPath(string path)
         {
@@ -76,10 +71,10 @@ namespace Fresh.Windows.Core.Services
         private string GenerateQueryString()
         {
             return asPost ?
-                TRAKT_API_URL + path + "/" + apiKey + (extended ? "/extended" : string.Empty) :
+                TRAKT_API_URL + path + (extended ? "/extended" : string.Empty) :
                 parameters.GetType().GetProperty("query") != null ?
-                TRAKT_API_URL + path + "/" + apiKey + "?query=" + WebUtility.UrlEncode(parameters.query) :
-                TRAKT_API_URL + path + "/" + apiKey + "/" + parameters.username + (parameters.GetType().GetProperty("season") != null ? "/" + parameters.season : "") + (extended ? "/extended" : string.Empty);
+                TRAKT_API_URL + path + "?query=" + WebUtility.UrlEncode(parameters.query) :
+                TRAKT_API_URL + path + "/" + parameters.username + (parameters.GetType().GetProperty("season") != null ? "/" + parameters.season : "") + (extended ? "/extended" : string.Empty);
         }
 
         private HttpContent GeneratePostBody()
@@ -89,33 +84,67 @@ namespace Fresh.Windows.Core.Services
         }
     }
 
+    public class OAuthResponse
+    {
+        public string Access_Token { get; set; }
+        public string Token_type { get; set; }
+        public int Expires_In { get; set; }
+        public string Refresh_Token { get; set; }
+        public string Scope { get; set; }
+    }
+
+    public class OAuthRequest
+    {
+        public string code { get; set; }
+        public string client_id { get; set; }
+        public string client_secret { get; set; }
+        public string redirect_uri { get; set; }
+        public string grant_type { get; set; }
+    }
+
     public class TraktService : ITraktService
     {
-        private readonly string apiKey;
+        public readonly RestClient RestClient;
 
-        public TraktService(string apiKey)
+        public TraktService()
         {
-            this.apiKey = apiKey;
+            RestClient = new RestClient("https://api.trakt.tv");
         }
 
-        public async Task AddShowToLibraryAsync(string username, string password, string showTitle, int year)
+        public async Task<OAuthResponse> LoginAsync(OAuthRequest oauthRequest)
         {
-            await new TraktIO<dynamic>(apiKey).
+            var request = new RestRequest("oauth/token", HttpMethod.Post).
+                AddJsonBody(oauthRequest);
+
+            var response = await RestClient.Execute<OAuthResponse>(request);
+
+            await LoginAsync(response.Data);
+
+            return response.Data;
+        }
+
+        public async Task LoginAsync(OAuthResponse oauthResponse)
+        {
+            // TODO - SET AUTH FOR THE RESTCLIENT BASED ON THE OAUTHRESPONSE
+        }
+
+        public async Task AddShowToLibraryAsync(string username, string showTitle, int year)
+        {
+            await new TraktIO<dynamic>().
                 ForPath("show/library").
                 AsPost().
                 WithParameters(new
-                {
-                    username,
-                    password,
-                    title = showTitle,
-                    year
-                }).
+            {
+                username,
+                title = showTitle,
+                year
+            }).
                 Execute();
         }
 
         public Task<IList<TraktTVShow>> GetLibraryAsync(string username, bool extended = false)
         {
-            return new TraktIO<IList<TraktTVShow>>(apiKey).
+            return new TraktIO<IList<TraktTVShow>>().
                 ForPath("user/library/shows/collection.json").
                 WithParameters(new { username }).
                 Extended(extended).
@@ -124,25 +153,25 @@ namespace Fresh.Windows.Core.Services
 
         public Task<IList<TraktEpisode>> GetSeasonEpisodesAsync(string showId, int seasonNumber, bool extended = false)
         {
-            return new TraktIO<IList<TraktEpisode>>(apiKey).
+            return new TraktIO<IList<TraktEpisode>>().
                 ForPath("show/season.json").
                 WithParameters(new { username = showId, season = seasonNumber }).
                 Execute();
         }
 
-        public Task<dynamic> GetSettingsAsync(string username, string password)
+        public Task<dynamic> GetSettingsAsync(string username)
         {
-            return new TraktIO<dynamic>(apiKey).
+            return new TraktIO<dynamic>().
                 ForPath("account/settings").
                 AsPost().
-                WithParameters(new { username, password }).
+                WithParameters(new { username }).
                 Select(content => content["profile"]).
                 Execute();
         }
 
         public Task<TraktTVShow> GetShowAsync(string showId, bool extended = false)
         {
-            return new TraktIO<TraktTVShow>(apiKey).
+            return new TraktIO<TraktTVShow>().
                 ForPath("show/summary.json").
                 WithParameters(new { username = showId }).
                 Extended(extended).
@@ -152,7 +181,7 @@ namespace Fresh.Windows.Core.Services
 
         public Task<IList<TraktTVShow>> GetWatchedEpisodesAsync(string username)
         {
-            return new TraktIO<IList<TraktTVShow>>(apiKey).
+            return new TraktIO<IList<TraktTVShow>>().
                 ForPath("user/library/shows/watched.json").
                 WithParameters(new { username }).
                 Extended(false).
@@ -161,7 +190,7 @@ namespace Fresh.Windows.Core.Services
 
         public Task<IList<TraktTVShow>> SearchTVShowAsync(string query)
         {
-            return new TraktIO<IList<TraktTVShow>>(apiKey).
+            return new TraktIO<IList<TraktTVShow>>().
                 ForPath("search/shows").
                 WithParameters(new { query }).
                 Extended(false).
@@ -169,19 +198,18 @@ namespace Fresh.Windows.Core.Services
 
         }
 
-        public async Task WatchEpisodesAsync(string username, string password, string showTitle, int year, IList<dynamic> episodes)
+        public async Task WatchEpisodesAsync(string username, string showTitle, int year, IList<dynamic> episodes)
         {
-            await new TraktIO<dynamic>(apiKey).
+            await new TraktIO<dynamic>().
                 ForPath("show/episode/seen").
                 AsPost().
                 WithParameters(new
-                {
-                    username,
-                    password,
-                    title = showTitle,
-                    year,
-                    episodes
-                }).
+            {
+                username,
+                title = showTitle,
+                year,
+                episodes
+            }).
                 Execute();
         }
     }

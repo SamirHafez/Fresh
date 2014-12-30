@@ -69,8 +69,7 @@ namespace Fresh.Windows.ViewModels
 
             var fullShow = TVShow.FromTrakt(await traktService.GetShowAsync(SelectedTVShow.Id, extended: true));
 
-            await traktService.AddShowToLibraryAsync(session.User.Username,
-                session.User.Credential, fullShow.Title, fullShow.Year);
+            await traktService.AddShowToLibraryAsync(session.User.Username, fullShow.Title, fullShow.Year);
 
             await storageService.UpdateShowAsync(fullShow);
 

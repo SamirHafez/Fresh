@@ -24,66 +24,29 @@
     <d:DataContext>
         <designTime:LoginPageViewModel/>
     </d:DataContext>
-	<Grid x:Name="grid" Background="Green">
-		<Interactivity:Interaction.Behaviors>
-			<Core:DataTriggerBehavior Binding="{Binding Working}" Value="True">
-				<Core:GoToStateAction StateName="WorkingState"/>
-			</Core:DataTriggerBehavior>
-			<Core:DataTriggerBehavior Binding="{Binding Working}" Value="False">
-				<Core:GoToStateAction StateName="InitialState"/>
-			</Core:DataTriggerBehavior>
-		</Interactivity:Interaction.Behaviors>
-		<VisualStateManager.VisualStateGroups>
-			<VisualStateGroup x:Name="LoginStateGroup">
-				<VisualStateGroup.Transitions>
-					<VisualTransition GeneratedDuration="0"/>
-					<VisualTransition GeneratedDuration="0:0:0.5" To="WorkingState">
-						<VisualTransition.GeneratedEasingFunction>
-							<CircleEase EasingMode="EaseOut"/>
-						</VisualTransition.GeneratedEasingFunction>
-					</VisualTransition>
-					<VisualTransition GeneratedDuration="0:0:0.2" To="InitialState">
-						<VisualTransition.GeneratedEasingFunction>
-							<CircleEase EasingMode="EaseIn"/>
-						</VisualTransition.GeneratedEasingFunction>
-					</VisualTransition>
-				</VisualStateGroup.Transitions>
-				<VisualState x:Name="InitialState"/>
-				<VisualState x:Name="WorkingState">
-					<Storyboard>
-						<DoubleAnimation Duration="0" To="520" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="stackPanel" d:IsOptimized="True"/>
-						<DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="stackPanel" d:IsOptimized="True"/>
-						<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="progressBar">
-							<DiscreteObjectKeyFrame KeyTime="0">
-								<DiscreteObjectKeyFrame.Value>
-									<Visibility>Visible</Visibility>
-								</DiscreteObjectKeyFrame.Value>
-							</DiscreteObjectKeyFrame>
-						</ObjectAnimationUsingKeyFrames>
-						<DoubleAnimation Duration="0" To="257.42" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="border" d:IsOptimized="True"/>
-					</Storyboard>
-				</VisualState>
-			</VisualStateGroup>
-		</VisualStateManager.VisualStateGroups>
+	<Grid x:Name="grid">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="130"/>
 			<RowDefinition/>
 		</Grid.RowDefinitions>
 
-		<Border x:Name="border" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+		<Border x:Name="border" Grid.Row="0" Background="Green">
 			<Border.RenderTransform>
 				<CompositeTransform/>
 			</Border.RenderTransform>
 			<Image Height="104" Source="ms-appx:///Assets/Fresh.png" Width="265" Stretch="None"/>
 		</Border>
-		<StackPanel x:Name="stackPanel" Grid.Row="1" Background="Black" RenderTransformOrigin="0.5,0.5">
+		<StackPanel x:Name="stackPanel" Grid.Row="1" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Stretch" VerticalAlignment="Center">
 			<StackPanel.RenderTransform>
 				<CompositeTransform/>
-			</StackPanel.RenderTransform><TextBlock TextWrapping="Wrap" Text="login with Trakt.tv" Style="{StaticResource HeaderTextBlockStyle}" Margin="12"/>
-			<TextBox Text="{Binding Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" PlaceholderText="username" Margin="12,5" Height="50" FontWeight="Light" FontSize="32"/>
-			<PasswordBox Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" FontSize="32" HorizontalContentAlignment="Center" PlaceholderText="password" Margin="12,0,12,5" Height="50" FontWeight="Light"/>
-			<Button FontSize="50" Command="{Binding LoginCommand}" Content="login" HorizontalAlignment="Center" Foreground="White" BorderThickness="0" Background="Green"/>
+			</StackPanel.RenderTransform><TextBlock TextWrapping="Wrap" Text="Fresh works by syncing information with Trakt" Style="{StaticResource HeaderTextBlockStyle}" Margin="12" HorizontalAlignment="Center"/>
+			<Button FontSize="50" Command="{Binding LoginCommand}" Content="Login with Trakt" HorizontalAlignment="Center" Foreground="White" BorderThickness="0" Background="Green">
+				<Interactivity:Interaction.Behaviors>
+					<Core:EventTriggerBehavior EventName="Click">
+						<Core:InvokeCommandAction Command="{Binding LoginCommand, Mode=OneWay}"/>
+					</Core:EventTriggerBehavior>
+				</Interactivity:Interaction.Behaviors>
+			</Button>
 		</StackPanel>
-		<ProgressBar x:Name="progressBar" IsEnabled="True" Foreground="White" Background="Transparent" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Height="10" Width="400" Visibility="Collapsed" Margin="0,228,0,0" IsIndeterminate="True"/>
 	</Grid>
 </controls:PageBase>

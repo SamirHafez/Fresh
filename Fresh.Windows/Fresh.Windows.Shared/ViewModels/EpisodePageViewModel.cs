@@ -98,7 +98,6 @@ namespace Fresh.Windows.ViewModels
             Episode.Watched = Watched;
 
             await traktService.WatchEpisodesAsync(session.User.Username,
-                session.User.Credential,
                 Episode.TVShow.Title,
                 Episode.TVShow.Year,
                 new List<object> { new { season = Episode.SeasonNumber, episode = Episode.Number, last_Played = DateTime.UtcNow } });

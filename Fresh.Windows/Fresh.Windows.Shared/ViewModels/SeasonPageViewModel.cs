@@ -71,7 +71,6 @@ namespace Fresh.Windows.ViewModels
                 return;
 
             await traktService.WatchEpisodesAsync(session.User.Username,
-                session.User.Credential,
                 episodes[0].TVShow.Title,
                 episodes[0].TVShow.Year,
                 new List<dynamic>(from episode in episodes

@@ -3,9 +3,8 @@ using System.Threading.Tasks;
 using Fresh.Windows.Core.Services.Interfaces;
 using Fresh.Windows.Shared.Services.Interfaces;
 using Fresh.Windows.Shared.Configuration;
+using Fresh.Windows.Core.Services;
 using Fresh.Windows.Shared.Models;
-using Windows.Security.Cryptography;
-using Windows.Security.Cryptography.Core;
 
 namespace Fresh.Windows.Shared.Services
 {
@@ -22,25 +21,20 @@ namespace Fresh.Windows.Shared.Services
             this.session = session;
         }
 
-        public async Task LoginAsync(string username, string password)
+        public async Task LoginAsync(OAuthRequest oauthRequest)
         {
-            try
+            var response = await traktService.LoginAsync(oauthRequest);
+
+            var user = new User
             {
-                var passVector = CryptographicBuffer.ConvertStringToBinary(password, BinaryStringEncoding.Utf8);
-                var digest = HashAlgorithmProvider.OpenAlgorithm("SHA1").HashData(passVector);
+                Username = string.Empty,
+                AccessToken = response.Access_Token,
+                Refresh_Token = response.Refresh_Token
+            };
 
-                password = CryptographicBuffer.EncodeToHexString(digest);
+            await storageService.CreateOrUpdateUserAsync(user);
 
-                dynamic settings = await traktService.GetSettingsAsync(username, password);
-                var user = new User { Username = settings["username"].Value, Credential = password };
-                await storageService.CreateOrUpdateUserAsync(user);
-
-                session.User = user;
-            }
-            catch (Exception exception)
-            {
-                throw new AggregateException("Login failed.", exception);
-            }
+            session.User = user;
         }
 
         public Task LogoutAsync()
@@ -53,7 +47,13 @@ namespace Fresh.Windows.Shared.Services
             var user = await storageService.GetUserAsync();
 
             if (user != null)
+            {
                 session.User = user;
+                await traktService.LoginAsync(new OAuthResponse
+                {
+                    Access_Token = user.AccessToken
+                });
+            }
 
             return user != null;
         }

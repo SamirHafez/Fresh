@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using Fresh.Windows.Core.Services;
+using System.Threading.Tasks;
 
 namespace Fresh.Windows.Shared.Services.Interfaces
 {
@@ -6,7 +7,7 @@ namespace Fresh.Windows.Shared.Services.Interfaces
     {
         Task<bool> SilentLoginAsync();
 
-        Task LoginAsync(string username, string password);
+        Task LoginAsync(OAuthRequest oauthRequest);
 
         Task LogoutAsync();
     }
