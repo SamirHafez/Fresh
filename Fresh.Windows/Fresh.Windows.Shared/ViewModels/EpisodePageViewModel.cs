@@ -52,7 +52,7 @@ namespace Fresh.Windows.ViewModels
             {
                 try
                 {
-                    Episode.Link = await crawlerService.GetLink(Episode.TVShow.Title, Episode.SeasonNumber, Episode.Number);
+                    Episode.Link = await crawlerService.GetLink(Episode.Season.TVShow.Title, Episode.Season.Number, Episode.Number);
                     await storageService.UpdateEpisodeAsync(Episode);
                 }
                 catch
@@ -73,7 +73,7 @@ namespace Fresh.Windows.ViewModels
                     excludedLinks.Add(Episode.Link);
                     try
                     {
-                        Episode.Link = await crawlerService.GetLink(Episode.TVShow.Title, Episode.SeasonNumber, Episode.Number, excludedLinks.ToArray());
+                        Episode.Link = await crawlerService.GetLink(Episode.Season.TVShow.Title, Episode.Season.Number, Episode.Number, excludedLinks.ToArray());
                         await storageService.UpdateEpisodeAsync(Episode);
                         Link = Episode.Link;
                     }
@@ -97,10 +97,8 @@ namespace Fresh.Windows.ViewModels
         {
             Episode.Watched = Watched;
 
-            await traktService.WatchEpisodesAsync(session.User.Username,
-                Episode.TVShow.Title,
-                Episode.TVShow.Year,
-                new List<object> { new { season = Episode.SeasonNumber, episode = Episode.Number, last_Played = DateTime.UtcNow } });
+            await traktService.WatchEpisodesAsync(Episode.Season.TVShowId,
+                new List<object> { new { season = Episode.Season.Number, episode = Episode.Number, last_Played = DateTime.UtcNow } });
             await storageService.UpdateEpisodeAsync(Episode);
         }
 

@@ -3,45 +3,36 @@ using SQLite.Net.Attributes;
 using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Fresh.Windows.Shared.Models
 {
     public class TVShow
     {
         [PrimaryKey]
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; }
         public int Year { get; set; }
         public string Overview { get; set; }
         public string Network { get; set; }
         public string Poster { get; set; }
         public DayOfWeek? AirDay { get; set; }
-        public int Rating { get; set; }
-        public int Loved { get; set; }
-        public int Hated { get; set; }
+        public double Rating { get; set; }
 
         [OneToMany(CascadeOperations = CascadeOperation.All)]
-        public List<Episode> Episodes { get; set; }
+        public List<Season> Seasons { get; set; }
 
         public static TVShow FromTrakt(TraktTVShow trakt)
         {
             return new TVShow
             {
-                Id = trakt.Url.Substring(trakt.Url.LastIndexOf("/") + 1),
+                Id = trakt.Ids.Tvdb,
                 Title = trakt.Title,
                 Year = trakt.Year,
                 Overview = trakt.Overview,
                 Network = trakt.Network,
-                Rating = trakt.Ratings != null ? trakt.Ratings.Percentage : 0,
-                Loved = trakt.Ratings != null ? trakt.Ratings.Loved : 0,
-                Hated = trakt.Ratings != null ? trakt.Ratings.Hated : 0,
-                Poster = trakt.Images != null ? trakt.Images.Poster : null,
-                AirDay = !string.IsNullOrWhiteSpace(trakt.Air_day) && trakt.Air_day != "Daily" ? (DayOfWeek)Enum.Parse(typeof(DayOfWeek), trakt.Air_day, ignoreCase: true) : (DayOfWeek?)null,
-                Episodes = trakt.Seasons != null ? new List<Episode>(from season in trakt.Seasons
-                                                                     where season.Episodes != null
-                                                                     from episode in season.Episodes
-                                                                     select Episode.FromTrakt(episode)) : null
+                Rating = trakt.Rating,
+                Poster = trakt.Images.Poster.Full,
+                AirDay = !string.IsNullOrWhiteSpace(trakt.Airs.Day) && trakt.Airs.Day != "Daily" ? (DayOfWeek)Enum.Parse(typeof(DayOfWeek), trakt.Airs.Day, ignoreCase: true) : (DayOfWeek?)null,
             };
         }
     }

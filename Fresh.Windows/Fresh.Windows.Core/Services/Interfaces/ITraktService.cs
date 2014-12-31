@@ -4,6 +4,15 @@ using System.Threading.Tasks;
 
 namespace Fresh.Windows.Core.Services.Interfaces
 {
+    public enum TraktExtendEnum
+    {
+        MIN,
+        IMAGES,
+        FULL,
+        FULL_IMAGES,
+        METADATA
+    }
+
     public interface ITraktService
     {
         void SetAuthenticator(OAuthResponse oauthResponse);
@@ -12,16 +21,14 @@ namespace Fresh.Windows.Core.Services.Interfaces
 
         Task<TraktUser> GetSettingsAsync();
 
-        Task<TraktTVShow> GetShowAsync(string showId, bool extended = false);
+        Task<TraktTVShow> GetShowAsync(int showId, TraktExtendEnum extended = TraktExtendEnum.MIN);
 
-        Task<IList<TraktEpisode>> GetSeasonEpisodesAsync(string showId, int seasonNumber, bool extended = false);
+        Task<IList<TraktEpisode>> GetSeasonEpisodesAsync(int showId, int seasonNumber, TraktExtendEnum extended = TraktExtendEnum.MIN);
 
-        Task<IList<TraktTVShow>> GetWatchedEpisodesAsync(string username);
+        Task<IList<TraktWatchedShow>> GetWatchedEpisodesAsync(TraktExtendEnum extended = TraktExtendEnum.MIN);
 
-        Task WatchEpisodesAsync(string username, string showTitle, int year, IList<dynamic> episodes);
+        Task WatchEpisodesAsync(int showId, IList<dynamic> episodes);
 
         Task<IList<TraktTVShow>> SearchTVShowAsync(string query);
-
-        Task AddShowToLibraryAsync(string username, string showTitle, int year);
     }
 }

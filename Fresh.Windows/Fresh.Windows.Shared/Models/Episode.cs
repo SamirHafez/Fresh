@@ -2,7 +2,6 @@
 using SQLite.Net.Attributes;
 using SQLiteNetExtensions.Attributes;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -10,15 +9,14 @@ namespace Fresh.Windows.Shared.Models
 {
     public class Episode : INotifyPropertyChanged
     {
-        [PrimaryKey, AutoIncrement]
+        [PrimaryKey]
         public int Id { get; set; }
 
-        [ForeignKey(typeof(TVShow))]
-        public string TVShowId { get; set; }
+        [ForeignKey(typeof(Season))]
+        public int SeasonId { get; set; }
 
         public string Title { get; set; }
         public int Number { get; set; }
-        public int SeasonNumber { get; set; }
         public string Overview { get; set; }
         public string Screen { get; set; }
         private DateTime? airDate;
@@ -43,7 +41,7 @@ namespace Fresh.Windows.Shared.Models
         public string Link { get; set; }
 
         [ManyToOne]
-        public TVShow TVShow { get; set; }
+        public Season Season { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -51,12 +49,12 @@ namespace Fresh.Windows.Shared.Models
         {
             return new Episode
             {
+                Id = trakt.Ids.Tvdb,
                 Title = trakt.Title,
                 Number = trakt.Number,
-                SeasonNumber = trakt.Season,
                 Overview = trakt.Overview,
-                Screen = trakt.Screen,
-                AirDate = trakt.First_aired_utc != 0 ? new DateTime(1970, 1, 1).AddSeconds(trakt.First_aired_utc) : (DateTime?)null
+                Screen = trakt.Images.Screenshot.Full,
+                AirDate = DateTime.Parse(trakt.First_Aired)
             };
         }
     }

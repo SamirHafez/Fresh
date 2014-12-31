@@ -67,9 +67,7 @@ namespace Fresh.Windows.ViewModels
                 return;
             }
 
-            var fullShow = TVShow.FromTrakt(await traktService.GetShowAsync(SelectedTVShow.Id, extended: true));
-
-            await traktService.AddShowToLibraryAsync(session.User.Username, fullShow.Title, fullShow.Year);
+            var fullShow = TVShow.FromTrakt(await traktService.GetShowAsync(SelectedTVShow.Id, extended: TraktExtendEnum.FULL_IMAGES));
 
             await storageService.UpdateShowAsync(fullShow);
 

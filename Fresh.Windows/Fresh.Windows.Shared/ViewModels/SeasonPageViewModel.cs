@@ -34,7 +34,7 @@ namespace Fresh.Windows.ViewModels
         {
             dynamic parameters = navigationParameter;
             var seasonNumber = (int)parameters.season;
-            var showId = (string)parameters.showId;
+            var showId = (int)parameters.showId;
 
             Number = seasonNumber;
             Episodes = new ObservableCollection<Episode>(await storageService.GetSeasonAsync(showId, seasonNumber));
@@ -70,11 +70,9 @@ namespace Fresh.Windows.ViewModels
             if (episodes.Count == 0)
                 return;
 
-            await traktService.WatchEpisodesAsync(session.User.Username,
-                episodes[0].TVShow.Title,
-                episodes[0].TVShow.Year,
+            await traktService.WatchEpisodesAsync(episodes[0].Season.TVShowId,
                 new List<dynamic>(from episode in episodes
-                                  select new { season = episode.SeasonNumber, episode = episode.Number, last_Played = DateTime.UtcNow }));
+                                  select new { season = episode.Season.Number, episode = episode.Number, last_Played = DateTime.UtcNow }));
 
             foreach (var episode in episodes)
             {

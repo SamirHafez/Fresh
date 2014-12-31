@@ -50,13 +50,6 @@
 					<Border Background="Green" Padding="10" Margin="0,0,0,10" HorizontalAlignment="Left">
 						<TextBlock TextWrapping="Wrap" Text="{Binding Rating}" Style="{StaticResource HeaderTextBlockStyle}" HorizontalAlignment="Left"/>
 					</Border>
-					<Border Background="Green" Padding="5">
-						<TextBlock TextWrapping="Wrap" Style="{StaticResource SubheaderTextBlockStyle}">
-							<Run Text="{Binding Loved}"/>
-							<Run Text="/"/>
-							<Run Text="{Binding Hated}"/>
-						</TextBlock>
-					</Border>
 				</StackPanel>
 			</DataTemplate>
 		</HubSection>

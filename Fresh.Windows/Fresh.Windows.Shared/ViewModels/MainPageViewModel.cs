@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Navigation;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
+using Fresh.Windows.Core.Models;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -47,13 +48,13 @@ namespace Fresh.Windows.ViewModels
             if (navigationMode == NavigationMode.New)
                 try
                 {
-                    var updateTasks = from show in await traktService.GetWatchedEpisodesAsync(username)
-                                      let tvShow = TVShow.FromTrakt(show)
-                                      select UpdateShowAsync(tvShow);
+                    var updateTasks = from show in await traktService.GetWatchedEpisodesAsync(extended: TraktExtendEnum.MIN)
+                                      select UpdateShowAsync(show);
 
                     await Task.WhenAll(updateTasks);
                 }
-                catch { }
+                catch
+                { }
 
             //var lastMonday = StartOfWeek(DateTime.Now, DayOfWeek.Monday);
             //var nextSunday = lastMonday.AddDays(7);
@@ -66,20 +67,21 @@ namespace Fresh.Windows.ViewModels
             base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
         }
 
-        private async Task UpdateShowAsync(TVShow watchedShow)
+        private async Task UpdateShowAsync(TraktWatchedShow watchedShow)
         {
-            var fullShow = await storageService.GetShowAsync(watchedShow.Id);
+            var fullShow = await storageService.GetShowAsync(watchedShow.Show.Ids.Tvdb);
 
             bool isNew = fullShow == null;
 
             if (isNew)
-                fullShow = TVShow.FromTrakt(await traktService.GetShowAsync(watchedShow.Id, extended: true));
+                fullShow = TVShow.FromTrakt(await traktService.GetShowAsync(watchedShow.Show.Ids.Tvdb, extended: TraktExtendEnum.FULL_IMAGES));
             else
                 await FindNewEpisodesAsync(fullShow);
 
-            foreach (var episode in from watchedEpisode in watchedShow.Episodes
+            foreach (var episode in from watchedSeason in watchedShow.Seasons
+                                    from watchedEpisode in watchedSeason.Episodes
                                     from episode in fullShow.Episodes
-                                    where episode.SeasonNumber == watchedEpisode.SeasonNumber && episode.Number == watchedEpisode.Number
+                                    where episode.SeasonNumber == watchedEpisode.Season && episode.Number == watchedEpisode.Number
                                     where episode.Watched == false
                                     select episode)
                 episode.Watched = true;
@@ -125,7 +127,7 @@ namespace Fresh.Windows.ViewModels
 
             if (!hasNewEpisodes)
             {
-                var traktNextSeasonEpisodes = from episode in await traktService.GetSeasonEpisodesAsync(fullShow.Id, latestSeasonEpisodes.First().SeasonNumber + 1, extended: true)
+                var traktNextSeasonEpisodes = from episode in await traktService.GetSeasonEpisodesAsync(fullShow.Id, latestSeasonEpisodes.First().SeasonNumber + 1, extended: TraktExtendEnum.FULL_IMAGES)
                                               select Episode.FromTrakt(episode);
                 fullShow.Episodes.AddRange(traktNextSeasonEpisodes);
             }

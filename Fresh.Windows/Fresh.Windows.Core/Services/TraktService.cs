@@ -139,13 +139,13 @@ namespace Fresh.Windows.Core.Services
         {
             var request = new RestRequest("oauth/token", HttpMethod.Post).
                 AddJsonBody(new
-                {
-                    oauthRequest.code,
-                    oauthRequest.redirect_uri,
-                    oauthRequest.grant_type,
-                    client_id = Client,
-                    client_secret = Secret
-                });
+            {
+                oauthRequest.code,
+                oauthRequest.redirect_uri,
+                oauthRequest.grant_type,
+                client_id = Client,
+                client_secret = Secret
+            });
 
             var response = await RestClient.Execute<OAuthResponse>(request);
 
@@ -159,21 +159,7 @@ namespace Fresh.Windows.Core.Services
             RestClient.Authenticator = new OAuthAuthenticator(this.Client, oauthResponse.Access_Token);
         }
 
-        public async Task AddShowToLibraryAsync(string username, string showTitle, int year)
-        {
-            await new TraktIO<dynamic>().
-                ForPath("show/library").
-                AsPost().
-                WithParameters(new
-            {
-                username,
-                title = showTitle,
-                year
-            }).
-                Execute();
-        }
-
-        public Task<IList<TraktEpisode>> GetSeasonEpisodesAsync(string showId, int seasonNumber, bool extended = false)
+        public Task<IList<TraktEpisode>> GetSeasonEpisodesAsync(int showId, int seasonNumber, TraktExtendEnum extended = TraktExtendEnum.MIN)
         {
             return new TraktIO<IList<TraktEpisode>>().
                 ForPath("show/season.json").
@@ -190,20 +176,25 @@ namespace Fresh.Windows.Core.Services
             return response.Data;
         }
 
-        public Task<TraktTVShow> GetShowAsync(string showId, bool extended = false)
+        public async Task<TraktTVShow> GetShowAsync(int showId, TraktExtendEnum extended = TraktExtendEnum.MIN)
         {
-            return new TraktIO<TraktTVShow>().
-                ForPath("show/summary.json").
-                WithParameters(new { username = showId }).
-                Extended(extended).
-                Execute();
+            var request = new RestRequest("shows/{id}").
+                AddUrlSegment("id", showId);
+
+            FillExtended(request, extended);
+
+            var response = await RestClient.Execute<TraktTVShow>(request);
+
+            return response.Data;
         }
 
-        public async Task<IList<TraktTVShow>> GetWatchedEpisodesAsync(string username)
+        public async Task<IList<TraktWatchedShow>> GetWatchedEpisodesAsync(TraktExtendEnum extended = TraktExtendEnum.MIN)
         {
             var request = new RestRequest("sync/watched/shows");
 
-            var response = await RestClient.Execute<IList<TraktTVShow>>(request);
+            FillExtended(request, extended);
+
+            var response = await RestClient.Execute<IList<TraktWatchedShow>>(request);
 
             return response.Data;
         }
@@ -218,19 +209,45 @@ namespace Fresh.Windows.Core.Services
 
         }
 
-        public async Task WatchEpisodesAsync(string username, string showTitle, int year, IList<dynamic> episodes)
+        public async Task WatchEpisodesAsync(int showId, IList<dynamic> episodes)
         {
             await new TraktIO<dynamic>().
                 ForPath("show/episode/seen").
                 AsPost().
                 WithParameters(new
             {
-                username,
-                title = showTitle,
-                year,
+                id = showId,
                 episodes
             }).
                 Execute();
+        }
+
+        private IRestRequest FillExtended(IRestRequest request, TraktExtendEnum extended)
+        {
+            string extendedText;
+            switch (extended)
+            {
+                case TraktExtendEnum.MIN:
+                    extendedText = "min";
+                    break;
+                case TraktExtendEnum.IMAGES:
+                    extendedText = "images";
+                    break;
+                case TraktExtendEnum.FULL:
+                    extendedText = "full";
+                    break;
+                case TraktExtendEnum.FULL_IMAGES:
+                    extendedText = "full,images";
+                    break;
+                case TraktExtendEnum.METADATA:
+                    extendedText = "metadata";
+                    break;
+                default:
+                    extendedText = "min";
+                    break;
+            }
+
+            return request.AddQueryParameter("extended", extendedText);
         }
     }
 }

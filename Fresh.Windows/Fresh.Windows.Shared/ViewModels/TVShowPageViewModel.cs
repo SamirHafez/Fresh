@@ -18,7 +18,7 @@ namespace Fresh.Windows.ViewModels
         public INavigationService navigationService { get; private set; }
         private readonly IStorageService storageService;
 
-        private string showId;
+        private int showId;
 
         public TVShowPageViewModel(INavigationService navigationService, IStorageService storageService)
         {
@@ -28,7 +28,7 @@ namespace Fresh.Windows.ViewModels
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
-            showId = navigationParameter as string;
+            showId = (int)navigationParameter;
 
             var dbShow = await storageService.GetShowAsync(showId);
 
@@ -54,8 +54,6 @@ namespace Fresh.Windows.ViewModels
             Poster = fullShow.Poster;
             Overview = fullShow.Overview;
             Rating = fullShow.Rating;
-            Loved = fullShow.Loved;
-            Hated = fullShow.Hated;
 
             Seasons = new ObservableCollection<int>((from episode in fullShow.Episodes
                                                      select episode.SeasonNumber).Distinct());
@@ -92,14 +90,8 @@ namespace Fresh.Windows.ViewModels
         string overview = default(string);
         public string Overview { get { return overview; } set { SetProperty(ref overview, value); } }
 
-        int rating = default(int);
-        public int Rating { get { return rating; } set { SetProperty(ref rating, value); } }
-
-        int loved = default(int);
-        public int Loved { get { return loved; } set { SetProperty(ref loved, value); } }
-
-        int hated = default(int);
-        public int Hated { get { return hated; } set { SetProperty(ref hated, value); } }
+        double rating = default(double);
+        public double Rating { get { return rating; } set { SetProperty(ref rating, value); } }
 
         ObservableCollection<int> seasons = default(ObservableCollection<int>);
         public ObservableCollection<int> Seasons { get { return seasons; } set { SetProperty(ref seasons, value); } }

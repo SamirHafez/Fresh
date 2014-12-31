@@ -23,7 +23,6 @@ namespace Fresh.Windows.Shared.DesignTime
                             Number = 1,
                             Title = "Episode 1",
                             Screen = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg",
-                            SeasonNumber = Number
                         },
                         new Episode
                         {
@@ -31,14 +30,12 @@ namespace Fresh.Windows.Shared.DesignTime
                             Title = "Episode 2",
                             Screen = "http://slurm.trakt.us/images/episodes/124-5-3.47.jpg",
                             Watched = true, 
-                            SeasonNumber = Number 
                         },
                         new Episode
                         {
                             Number = 2,
                             Title = "Episode 3",
                             Screen = "http://slurm.trakt.us/images/episodes/124-5-2.47.jpg",
-                            SeasonNumber = Number
                         }
                     };
         }

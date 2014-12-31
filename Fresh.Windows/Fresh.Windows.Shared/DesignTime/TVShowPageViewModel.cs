@@ -15,10 +15,7 @@ namespace Fresh.Windows.Shared.DesignTime
 
             Poster = "http://slurm.trakt.us/images/posters/124.47.jpg";
 
-            Rating = 85;
-
-            Loved = 12000;
-            Hated = 3200;
+            Rating = 8.5;
 
             Seasons = new ObservableCollection<int> { 5, 4, 3, 2, 1 };
 
@@ -50,11 +47,7 @@ namespace Fresh.Windows.Shared.DesignTime
 
         public string Overview { get; set; }
 
-        public int Rating { get; set; }
-
-        public int Loved { get; set; }
-
-        public int Hated { get; set; }
+        public double Rating { get; set; }
 
         public DelegateCommand<ItemClickEventArgs> EpisodeSelectedCommand { get; set; }
         public DelegateCommand<ItemClickEventArgs> EnterSeasonCommand { get; set; }

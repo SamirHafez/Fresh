@@ -62,7 +62,7 @@ namespace Fresh.Windows.Shared.Services
                 FirstOrDefaultAsync();
         }
 
-        public Task<TVShow> GetShowAsync(string showId)
+        public Task<TVShow> GetShowAsync(int showId)
         {
             return Task.Run<TVShow>(delegate
             {
@@ -88,7 +88,7 @@ namespace Fresh.Windows.Shared.Services
             });
         }
 
-        public Task<List<Episode>> GetSeasonAsync(string showId, int seasonNumber)
+        public Task<List<Episode>> GetSeasonAsync(int showId, int seasonNumber)
         {
             return Task.Run<List<Episode>>(delegate
             {

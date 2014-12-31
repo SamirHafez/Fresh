@@ -2,94 +2,97 @@
 
 namespace Fresh.Windows.Core.Models
 {
+    public class TraktIds
+    {
+        public int Trakt { get; set; }
+        public string Slug { get; set; }
+        public int Tvdb { get; set; }
+        public string Imdb { get; set; }
+        public int Tmdb { get; set; }
+        public int? Tvrage { get; set; }
+    }
+
+    public class TraktAirs
+    {
+        public string Day { get; set; }
+        public string Time { get; set; }
+        public string Timezone { get; set; }
+    }
+
+    public class TraktFanart
+    {
+        public string Full { get; set; }
+        public string Medium { get; set; }
+        public string Thumb { get; set; }
+    }
+
+    public class TraktPoster
+    {
+        public string Full { get; set; }
+        public string Medium { get; set; }
+        public string Thumb { get; set; }
+    }
+
+    public class TraktScreenshot
+    {
+        public string Full { get; set; }
+        public string Medium { get; set; }
+        public string Thumb { get; set; }
+    }
+
+    public class TraktLogo
+    {
+        public string Full { get; set; }
+    }
+
+    public class TraktClearart
+    {
+        public string Full { get; set; }
+    }
+
+    public class TraktBanner
+    {
+        public string Full { get; set; }
+    }
+
+    public class TraktThumb
+    {
+        public string Full { get; set; }
+    }
+
     public class TraktImages
     {
-        public string Poster { get; set; }
-        public string Fanart { get; set; }
-        public string Banner { get; set; }
-    }
-
-    public class TraktTopWatcher
-    {
-        public int Plays { get; set; }
-        public string Username { get; set; }
-        public string Full_name { get; set; }
-        public string Gender { get; set; }
-        public int? Age { get; set; }
-        public string Location { get; set; }
-        public string About { get; set; }
-        public long Joined { get; set; }
-        public string Avatar { get; set; }
-        public string Url { get; set; }
-    }
-
-    public class TraktRatings
-    {
-        public int Percentage { get; set; }
-        public int Votes { get; set; }
-        public int Loved { get; set; }
-        public int Hated { get; set; }
-    }
-
-    public class TraktStats
-    {
-        public int Watchers { get; set; }
-        public int Plays { get; set; }
-        public int Scrobbles { get; set; }
-        public int Scrobbles_unique { get; set; }
-        public int Checkins { get; set; }
-        public int Checkins_unique { get; set; }
-        public int Collection { get; set; }
-        public int Collection_unique { get; set; }
-    }
-
-    public class TraktActorImage
-    {
-        public string Headshot { get; set; }
-    }
-
-    public class TraktActor
-    {
-        public string Name { get; set; }
-        public string Character { get; set; }
-        public TraktActorImage Images { get; set; }
-    }
-
-    public class TraktPeople
-    {
-        public IList<TraktActor> Actors { get; set; }
+        public TraktFanart Fanart { get; set; }
+        public TraktPoster Poster { get; set; }
+        public TraktLogo Logo { get; set; }
+        public TraktClearart Clearart { get; set; }
+        public TraktBanner Banner { get; set; }
+        public TraktThumb Thumb { get; set; }
+        public TraktScreenshot Screenshot { get; set; }
     }
 
     public class TraktTVShow
     {
         public string Title { get; set; }
         public int Year { get; set; }
-        public string Url { get; set; }
-        public int First_aired { get; set; }
-        public string First_aired_iso { get; set; }
-        public int First_aired_utc { get; set; }
-        public string Country { get; set; }
+        public TraktIds Ids { get; set; }
         public string Overview { get; set; }
+        public string First_Aired { get; set; }
+        public TraktAirs Airs { get; set; }
         public int Runtime { get; set; }
-        public string Status { get; set; }
-        public string Network { get; set; }
-        public string Air_day { get; set; }
-        public string Air_day_utc { get; set; }
-        public string Air_time { get; set; }
-        public string Air_time_utc { get; set; }
         public string Certification { get; set; }
-        public string Imdb_id { get; set; }
-        public int Tvdb_id { get; set; }
-        public int Tvrage_id { get; set; }
-        public int Last_updated { get; set; }
-        public string Poster { get; set; }
+        public string Network { get; set; }
+        public string Country { get; set; }
+        public string Updated_At { get; set; }
+        public object Trailer { get; set; }
+        public string Homepage { get; set; }
+        public string Status { get; set; }
+        public double Rating { get; set; }
+        public int Votes { get; set; }
+        public string Language { get; set; }
+        public List<string> Available_Translations { get; set; }
+        public List<string> Genres { get; set; }
+        public int Aired_Episodes { get; set; }
         public TraktImages Images { get; set; }
-        public IList<TraktTopWatcher> Top_watchers { get; set; }
-        public IList<TraktEpisode> Top_episodes { get; set; }
-        public TraktRatings Ratings { get; set; }
-        public TraktStats Stats { get; set; }
-        public TraktPeople People { get; set; }
-        public IList<string> Genres { get; set; }
-        public IList<TraktSeason> Seasons { get; set; }
     }
 }
