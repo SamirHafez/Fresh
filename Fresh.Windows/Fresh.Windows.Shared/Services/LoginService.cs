@@ -25,9 +25,11 @@ namespace Fresh.Windows.Shared.Services
         {
             var response = await traktService.LoginAsync(oauthRequest);
 
+            var userSettings = await traktService.GetSettingsAsync();
+
             var user = new User
             {
-                Username = string.Empty,
+                Username = userSettings.User.Username,
                 AccessToken = response.Access_Token,
                 Refresh_Token = response.Refresh_Token
             };
@@ -49,7 +51,7 @@ namespace Fresh.Windows.Shared.Services
             if (user != null)
             {
                 session.User = user;
-                await traktService.LoginAsync(new OAuthResponse
+                traktService.SetAuthenticator(new OAuthResponse
                 {
                     Access_Token = user.AccessToken
                 });

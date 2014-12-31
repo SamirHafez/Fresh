@@ -7,6 +7,7 @@ using System;
 using Windows.UI.Popups;
 using Windows.Security.Authentication.Web;
 using Fresh.Windows.Core.Services;
+using Windows.UI.Core;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -25,16 +26,14 @@ namespace Fresh.Windows.ViewModels
 
         private async void Login()
         {
-            var clientId = "cad18e7e5ba53d5cd88652204a774d1e5c3bd69a20ca04899102d616df58f71f";
-            var uri = new Uri(string.Format("https://api.trakt.tv/oauth/authorize?response_type=code&client_id={0}&redirect_uri={1}", clientId, WebAuthenticationBroker.GetCurrentApplicationCallbackUri().AbsoluteUri));
+            var callbackUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri();
+            var uri = new Uri(string.Format("https://api.trakt.tv/oauth/authorize?response_type=code&client_id={0}&redirect_uri={1}",
+                App.TRAKT_CLIENT_ID, callbackUri.AbsoluteUri));
 
-            var response = await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None, uri);
+            var response = await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None, uri, callbackUri);
 
             if (response.ResponseStatus != WebAuthenticationStatus.Success)
-            {
-                await new MessageDialog("Login failed.", "Error").ShowAsync();
                 return;
-            }
 
             var code = response.ResponseData.Substring(response.ResponseData.LastIndexOf("code=") + "code=".Length);
 
@@ -42,9 +41,7 @@ namespace Fresh.Windows.ViewModels
             var oauthRequest = new OAuthRequest
             {
                 code = code,
-                client_id = "cad18e7e5ba53d5cd88652204a774d1e5c3bd69a20ca04899102d616df58f71f",
-                client_secret = "9f2e811e93c05e29d61812146fa2e12dbf6cbf9caff639b1de23465b2e2817cb",
-                redirect_uri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri().AbsoluteUri,
+                redirect_uri = callbackUri.AbsoluteUri,
                 grant_type = "authorization_code"
             };
 

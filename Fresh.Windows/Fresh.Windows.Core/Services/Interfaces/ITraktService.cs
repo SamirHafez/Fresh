@@ -6,13 +6,11 @@ namespace Fresh.Windows.Core.Services.Interfaces
 {
     public interface ITraktService
     {
-        Task LoginAsync(OAuthResponse oauthResponse);
+        void SetAuthenticator(OAuthResponse oauthResponse);
 
         Task<OAuthResponse> LoginAsync(OAuthRequest oauthRequest);
 
-        Task<dynamic> GetSettingsAsync(string username);
-
-        Task<IList<TraktTVShow>> GetLibraryAsync(string username, bool extended = false);
+        Task<TraktUser> GetSettingsAsync();
 
         Task<TraktTVShow> GetShowAsync(string showId, bool extended = false);
 

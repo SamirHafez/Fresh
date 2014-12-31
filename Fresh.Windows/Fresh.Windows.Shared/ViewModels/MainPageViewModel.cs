@@ -55,11 +55,11 @@ namespace Fresh.Windows.ViewModels
                 }
                 catch { }
 
-            var lastMonday = StartOfWeek(DateTime.Now, DayOfWeek.Monday);
-            var nextSunday = lastMonday.AddDays(7);
-            ThisWeek = await GetSchedule(lastMonday, nextSunday);
+            //var lastMonday = StartOfWeek(DateTime.Now, DayOfWeek.Monday);
+            //var nextSunday = lastMonday.AddDays(7);
+            //ThisWeek = await GetSchedule(lastMonday, nextSunday);
 
-            UnwatchedEpisodesByShow = new ObservableCollection<GroupedEpisodes<TVShow>>(await GetUnwatchedEpisodesByShow());
+            //UnwatchedEpisodesByShow = new ObservableCollection<GroupedEpisodes<TVShow>>(await GetUnwatchedEpisodesByShow());
 
             Loading = false;
 

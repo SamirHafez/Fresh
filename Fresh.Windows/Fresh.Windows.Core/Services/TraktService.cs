@@ -7,6 +7,7 @@ using Fresh.Windows.Core.Models;
 using System.Collections.Generic;
 using System.Net;
 using RestSharp.Portable;
+using RestSharp.Portable.Authenticators;
 
 namespace Fresh.Windows.Core.Services
 {
@@ -96,36 +97,66 @@ namespace Fresh.Windows.Core.Services
     public class OAuthRequest
     {
         public string code { get; set; }
-        public string client_id { get; set; }
-        public string client_secret { get; set; }
         public string redirect_uri { get; set; }
         public string grant_type { get; set; }
     }
 
+    internal class OAuthAuthenticator : IAuthenticator
+    {
+        private readonly string ClientId;
+        private readonly string Token;
+
+        public OAuthAuthenticator(string clientId, string token)
+        {
+            this.ClientId = clientId;
+            this.Token = token;
+        }
+
+        public void Authenticate(IRestClient client, IRestRequest request)
+        {
+            request.AddHeader("authorization", string.Format("Bearer {0}", Token)).
+                AddHeader("trakt-api-version", 2).
+                AddHeader("trakt-api-key", ClientId);
+        }
+    }
+
     public class TraktService : ITraktService
     {
-        public readonly RestClient RestClient;
+        private readonly RestClient RestClient;
 
-        public TraktService()
+        private readonly string Client;
+        private readonly string Secret;
+
+        public TraktService(string client, string secret)
         {
             RestClient = new RestClient("https://api.trakt.tv");
+
+            this.Client = client;
+            this.Secret = secret;
         }
 
         public async Task<OAuthResponse> LoginAsync(OAuthRequest oauthRequest)
         {
             var request = new RestRequest("oauth/token", HttpMethod.Post).
-                AddJsonBody(oauthRequest);
+                AddJsonBody(new
+                {
+                    oauthRequest.code,
+                    oauthRequest.redirect_uri,
+                    oauthRequest.grant_type,
+                    client_id = Client,
+                    client_secret = Secret
+                });
 
             var response = await RestClient.Execute<OAuthResponse>(request);
 
-            await LoginAsync(response.Data);
+            SetAuthenticator(response.Data);
 
             return response.Data;
         }
 
-        public async Task LoginAsync(OAuthResponse oauthResponse)
+        public void SetAuthenticator(OAuthResponse oauthResponse)
         {
-            // TODO - SET AUTH FOR THE RESTCLIENT BASED ON THE OAUTHRESPONSE
+            RestClient.Authenticator = new OAuthAuthenticator(this.Client, oauthResponse.Access_Token);
         }
 
         public async Task AddShowToLibraryAsync(string username, string showTitle, int year)
@@ -142,15 +173,6 @@ namespace Fresh.Windows.Core.Services
                 Execute();
         }
 
-        public Task<IList<TraktTVShow>> GetLibraryAsync(string username, bool extended = false)
-        {
-            return new TraktIO<IList<TraktTVShow>>().
-                ForPath("user/library/shows/collection.json").
-                WithParameters(new { username }).
-                Extended(extended).
-                Execute();
-        }
-
         public Task<IList<TraktEpisode>> GetSeasonEpisodesAsync(string showId, int seasonNumber, bool extended = false)
         {
             return new TraktIO<IList<TraktEpisode>>().
@@ -159,14 +181,13 @@ namespace Fresh.Windows.Core.Services
                 Execute();
         }
 
-        public Task<dynamic> GetSettingsAsync(string username)
+        public async Task<TraktUser> GetSettingsAsync()
         {
-            return new TraktIO<dynamic>().
-                ForPath("account/settings").
-                AsPost().
-                WithParameters(new { username }).
-                Select(content => content["profile"]).
-                Execute();
+            var request = new RestRequest("users/settings");
+
+            var response = await RestClient.Execute<TraktUser>(request);
+
+            return response.Data;
         }
 
         public Task<TraktTVShow> GetShowAsync(string showId, bool extended = false)
@@ -178,14 +199,13 @@ namespace Fresh.Windows.Core.Services
                 Execute();
         }
 
-
-        public Task<IList<TraktTVShow>> GetWatchedEpisodesAsync(string username)
+        public async Task<IList<TraktTVShow>> GetWatchedEpisodesAsync(string username)
         {
-            return new TraktIO<IList<TraktTVShow>>().
-                ForPath("user/library/shows/watched.json").
-                WithParameters(new { username }).
-                Extended(false).
-                Execute();
+            var request = new RestRequest("sync/watched/shows");
+
+            var response = await RestClient.Execute<IList<TraktTVShow>>(request);
+
+            return response.Data;
         }
 
         public Task<IList<TraktTVShow>> SearchTVShowAsync(string query)
