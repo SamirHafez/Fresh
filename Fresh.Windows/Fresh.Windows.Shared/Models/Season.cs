@@ -33,7 +33,8 @@ namespace Fresh.Windows.Shared.Models
                 Number = trakt.Number,
                 Overview = trakt.Overview,
                 Rating = trakt.Rating,
-                Poster = trakt.Images.Poster.Full
+                Poster = trakt.Images.Poster.Full,
+                Episodes = new List<Episode>()
             };
         }
     }

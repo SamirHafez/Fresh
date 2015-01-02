@@ -55,15 +55,15 @@ namespace Fresh.Windows.ViewModels
             Overview = fullShow.Overview;
             Rating = fullShow.Rating;
 
-            Seasons = new ObservableCollection<int>((from episode in fullShow.Episodes
-                                                     select episode.SeasonNumber).Distinct());
+            Seasons = new ObservableCollection<Season>(fullShow.Seasons);
 
-            UnwatchedEpisodes = new ObservableCollection<Episode>(from episode in fullShow.Episodes
+            UnwatchedEpisodes = new ObservableCollection<Episode>(from season in fullShow.Seasons
+                                                                  from episode in season.Episodes
                                                                   where episode.Watched == false &&
                                                                     episode.AirDate.HasValue &&
                                                                     episode.AirDate <= DateTime.UtcNow &&
-                                                                    episode.SeasonNumber != 0
-                                                                  orderby episode.SeasonNumber, episode.Number
+                                                                    season.Number != 0
+                                                                  orderby season.Number, episode.Number
                                                                   select episode);
         }
 
@@ -93,8 +93,8 @@ namespace Fresh.Windows.ViewModels
         double rating = default(double);
         public double Rating { get { return rating; } set { SetProperty(ref rating, value); } }
 
-        ObservableCollection<int> seasons = default(ObservableCollection<int>);
-        public ObservableCollection<int> Seasons { get { return seasons; } set { SetProperty(ref seasons, value); } }
+        ObservableCollection<Season> seasons = default(ObservableCollection<Season>);
+        public ObservableCollection<Season> Seasons { get { return seasons; } set { SetProperty(ref seasons, value); } }
 
         ObservableCollection<Episode> unwatchedEpisodes = new ObservableCollection<Episode>(Enumerable.Empty<Episode>());
         public ObservableCollection<Episode> UnwatchedEpisodes { get { return unwatchedEpisodes; } set { SetProperty(ref unwatchedEpisodes, value); } }

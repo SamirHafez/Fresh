@@ -17,7 +17,12 @@ namespace Fresh.Windows.Shared.DesignTime
 
             Rating = 8.5;
 
-            Seasons = new ObservableCollection<int> { 5, 4, 3, 2, 1 };
+            Seasons = new ObservableCollection<Season>
+            {
+                new Season { Number = 1 },
+                new Season { Number = 2 },
+                new Season { Number = 3 }
+            };
 
             UnwatchedEpisodes = new ObservableCollection<Episode>
             {
@@ -42,7 +47,7 @@ namespace Fresh.Windows.Shared.DesignTime
 
         public string Title { get; set; }
         public string Poster { get; set; }
-        public ObservableCollection<int> Seasons { get; set; }
+        public ObservableCollection<Season> Seasons { get; set; }
         public ObservableCollection<Episode> UnwatchedEpisodes { get; set; }
 
         public string Overview { get; set; }

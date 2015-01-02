@@ -38,7 +38,7 @@ namespace Fresh.Windows.Shared.Services
 
         public Task<List<TVShow>> GetLibraryAsync()
         {
-            return Task.Run<List<TVShow>>(delegate 
+            return Task.Run<List<TVShow>>(delegate
             {
                 lock (_lock)
                     return connection.GetAllWithChildren<TVShow>(recursive: true);
@@ -88,12 +88,12 @@ namespace Fresh.Windows.Shared.Services
             });
         }
 
-        public Task<List<Episode>> GetSeasonAsync(int showId, int seasonNumber)
+        public Task<Season> GetSeasonAsync(int showId, int seasonNumber)
         {
-            return Task.Run<List<Episode>>(delegate
+            return Task.Run<Season>(delegate
             {
                 lock (_lock)
-                    return connection.GetAllWithChildren<Episode>(e => e.TVShowId == showId && e.SeasonNumber == seasonNumber);
+                    return connection.GetAllWithChildren<Season>(s => s.TVShowId == showId && s.Number == seasonNumber, recursive: true)[0];
             });
         }
 

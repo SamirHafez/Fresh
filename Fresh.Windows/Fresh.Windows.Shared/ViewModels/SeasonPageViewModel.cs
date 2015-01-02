@@ -36,8 +36,10 @@ namespace Fresh.Windows.ViewModels
             var seasonNumber = (int)parameters.season;
             var showId = (int)parameters.showId;
 
+            var season = await storageService.GetSeasonAsync(showId, seasonNumber);
+
             Number = seasonNumber;
-            Episodes = new ObservableCollection<Episode>(await storageService.GetSeasonAsync(showId, seasonNumber));
+            Episodes = new ObservableCollection<Episode>(season.Episodes);
         }
 
         public DelegateCommand<ItemClickEventArgs> EpisodeSelectedCommand

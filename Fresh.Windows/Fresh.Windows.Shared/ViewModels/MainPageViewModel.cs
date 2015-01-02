@@ -13,7 +13,6 @@ using Windows.UI.Xaml.Navigation;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
-using Fresh.Windows.Core.Models;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -22,19 +21,19 @@ namespace Fresh.Windows.ViewModels
         private readonly ITraktService traktService;
         private readonly IStorageService storageService;
         private readonly INavigationService navigationService;
-        private readonly ISession configurationService;
+        private readonly ISession session;
 
-        public MainPageViewModel(ITraktService traktService, IStorageService storageService, INavigationService navigationService, ISession configurationService)
+        public MainPageViewModel(ITraktService traktService, IStorageService storageService, INavigationService navigationService, ISession session)
         {
             this.traktService = traktService;
             this.storageService = storageService;
             this.navigationService = navigationService;
-            this.configurationService = configurationService;
+            this.session = session;
         }
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
-            var username = configurationService.User.Username;
+            var username = session.User.Username;
 
             if (string.IsNullOrWhiteSpace(username))
                 throw new ArgumentException("Username not provided.");
@@ -48,10 +47,26 @@ namespace Fresh.Windows.ViewModels
             if (navigationMode == NavigationMode.New)
                 try
                 {
-                    var updateTasks = from show in await traktService.GetWatchedEpisodesAsync(extended: TraktExtendEnum.MIN)
-                                      select UpdateShowAsync(show);
+                    var updateTasks = from show in Library
+                                      select show.UpdateAsync(traktService);
+
+                    var watchedShows = await traktService.GetWatchedEpisodesAsync(extended: TraktExtendEnum.MIN);
 
                     await Task.WhenAll(updateTasks);
+
+                    foreach (var watchedShow in watchedShows)
+                    {
+                        var show = Library.FirstOrDefault(s => s.Id == watchedShow.Show.Ids.Trakt);
+
+                        if (show == null)
+                        {
+                            show = TVShow.FromTrakt(await traktService.GetShowAsync(watchedShow.Show.Ids.Trakt, extended: TraktExtendEnum.FULL_IMAGES));
+                        }
+
+                        show.UpdateWatched(watchedShow);
+                    }
+
+                    await storageService.UpdateLibraryAsync(Library);
                 }
                 catch
                 { }
@@ -67,77 +82,11 @@ namespace Fresh.Windows.ViewModels
             base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
         }
 
-        private async Task UpdateShowAsync(TraktWatchedShow watchedShow)
-        {
-            var fullShow = await storageService.GetShowAsync(watchedShow.Show.Ids.Tvdb);
-
-            bool isNew = fullShow == null;
-
-            if (isNew)
-                fullShow = TVShow.FromTrakt(await traktService.GetShowAsync(watchedShow.Show.Ids.Tvdb, extended: TraktExtendEnum.FULL_IMAGES));
-            else
-                await FindNewEpisodesAsync(fullShow);
-
-            foreach (var episode in from watchedSeason in watchedShow.Seasons
-                                    from watchedEpisode in watchedSeason.Episodes
-                                    from episode in fullShow.Episodes
-                                    where episode.SeasonNumber == watchedEpisode.Season && episode.Number == watchedEpisode.Number
-                                    where episode.Watched == false
-                                    select episode)
-                episode.Watched = true;
-
-            await storageService.UpdateShowAsync(fullShow);
-
-            if (isNew)
-                Library.Add(fullShow);
-        }
-
-        private async Task FindNewEpisodesAsync(TVShow fullShow)
-        {
-            var latestSeasonEpisodes = from episode in fullShow.Episodes
-                                       let latestSeason = (from ep in fullShow.Episodes
-                                                           orderby ep.SeasonNumber descending
-                                                           select ep.SeasonNumber).First()
-                                       where episode.SeasonNumber == latestSeason
-                                       select episode;
-
-            var traktLatestSeasonEpisodes = await traktService.GetSeasonEpisodesAsync(fullShow.Id, latestSeasonEpisodes.First().SeasonNumber);
-
-            bool hasNewEpisodes = false;
-            foreach (var traktEpisode in from ep in traktLatestSeasonEpisodes
-                                         select Episode.FromTrakt(ep))
-            {
-                var episode = (from ep in latestSeasonEpisodes
-                               where ep.Number == traktEpisode.Number
-                               select ep).FirstOrDefault();
-
-                if (episode == null)
-                {
-                    hasNewEpisodes = true;
-                    fullShow.Episodes.Add(traktEpisode);
-                }
-                else
-                {
-                    episode.Title = traktEpisode.Title;
-                    episode.Overview = traktEpisode.Overview;
-                    episode.Screen = traktEpisode.Screen;
-                    episode.AirDate = traktEpisode.AirDate;
-                }
-            }
-
-            if (!hasNewEpisodes)
-            {
-                var traktNextSeasonEpisodes = from episode in await traktService.GetSeasonEpisodesAsync(fullShow.Id, latestSeasonEpisodes.First().SeasonNumber + 1, extended: TraktExtendEnum.FULL_IMAGES)
-                                              select Episode.FromTrakt(episode);
-                fullShow.Episodes.AddRange(traktNextSeasonEpisodes);
-            }
-        }
-
         private async Task<IEnumerable<GroupedEpisodes<TVShow>>> GetUnwatchedEpisodesByShow()
         {
-            return from episode in await storageService.GetEpisodesAsync(e => e.Watched == false && e.AirDate != null && e.AirDate <= DateTime.UtcNow && e.SeasonNumber > 0)
-                   group episode by episode.TVShowId into g
-                   let tvShow = g.First().TVShow
+            return from episode in await storageService.GetEpisodesAsync(e => e.Watched == false && e.AirDate != null && e.AirDate <= DateTime.UtcNow && e.Season.Number > 0)
+                   group episode by episode.Season.TVShowId into g
+                   let tvShow = g.First().Season.TVShow
                    orderby g.Count() descending
                    select new GroupedEpisodes<TVShow>
                    {

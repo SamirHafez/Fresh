@@ -12,7 +12,7 @@ namespace Fresh.Windows.Shared.Interfaces
         string Overview { get; set; }
         double Rating { get; set; }
 
-        ObservableCollection<int> Seasons { get; set; }
+        ObservableCollection<Season> Seasons { get; set; }
         ObservableCollection<Episode> UnwatchedEpisodes { get; set; }
 
         DelegateCommand<ItemClickEventArgs> EnterSeasonCommand { get; }

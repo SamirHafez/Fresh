@@ -8,7 +8,7 @@ namespace Fresh.Windows.Core.Models
         public string Slug { get; set; }
         public int Tvdb { get; set; }
         public string Imdb { get; set; }
-        public int Tmdb { get; set; }
+        public int? Tmdb { get; set; }
         public int? Tvrage { get; set; }
     }
 
