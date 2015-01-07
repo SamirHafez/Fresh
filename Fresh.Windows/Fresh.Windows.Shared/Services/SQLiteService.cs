@@ -106,7 +106,12 @@ namespace Fresh.Windows.Shared.Services
             return Task.Run<Episode>(delegate
             {
                 lock (_lock)
-                    return connection.GetWithChildren<Episode>(episodeId, recursive: true);
+                {
+                    var episode = connection.GetWithChildren<Episode>(episodeId, recursive: true);
+                    connection.GetChildren(episode.Season, recursive: true);
+
+                    return episode;
+                }
             });
 
         }

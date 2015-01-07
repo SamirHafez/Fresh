@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using System;
+using System.Globalization;
 
 namespace Fresh.Windows.Shared.Models
 {
@@ -61,7 +62,7 @@ namespace Fresh.Windows.Shared.Models
                         var fullTraktEpisode = await traktService.GetEpisodeAsync(TVShowId, Number, traktEpisode.Number, extended: TraktExtendEnum.FULL_IMAGES);
                         Episodes.Add(Episode.FromTrakt(fullTraktEpisode));
                     }
-                    else if (traktEpisode.Updated_At != null && DateTime.Parse(traktEpisode.Updated_At) > episode.LastUpdated)
+                    else if (traktEpisode.Updated_At != null && DateTime.Parse(traktEpisode.Updated_At, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal) > episode.LastUpdated)
                         episode.Update(await traktService.GetEpisodeAsync(TVShowId, Number, traktEpisode.Number, extended: TraktExtendEnum.FULL_IMAGES));
                 }
         }

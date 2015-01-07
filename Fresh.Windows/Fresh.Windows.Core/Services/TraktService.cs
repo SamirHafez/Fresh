@@ -242,6 +242,17 @@ namespace Fresh.Windows.Core.Services
             return response.Data;
         }
 
+        public async Task<TraktActivity> GetLastActivityAsync()
+        {
+            var request = new RestRequest("sync/last_activities");
+
+            Debug.WriteLine("Requesting {0}", request.Resource);
+
+            var response = await RestClient.Execute<TraktActivity>(request);
+
+            return response.Data;
+        }
+
         public Task<IList<TraktTVShow>> SearchTVShowAsync(string query)
         {
             return new TraktIO<IList<TraktTVShow>>().

@@ -19,7 +19,7 @@
     </d:DataContext>
 
     <controls:PageBase.BottomAppBar>
-        <CommandBar x:Name="commandBar" Background="Green" IsSticky="True" IsOpen="True">
+        <CommandBar x:Name="commandBar" Background="Green" IsOpen="True">
         	<AppBarToggleButton IsChecked="{Binding Watched, Mode=TwoWay}" IsThreeState="False" Label="Watched" Command="{Binding ToggleWatchedCommand}" Icon="Accept"/>
         	<AppBarButton x:Name="playButton" Icon="Play" Label="Play"/>
         	<AppBarButton x:Name="moreButton" Icon="More" Label="More" Visibility="Collapsed"/>
@@ -28,7 +28,17 @@
 	<Grid x:Name="grid">
 		<VisualStateManager.VisualStateGroups>
 			<VisualStateGroup x:Name="EpisodePageStates">
-				<VisualState x:Name="Idle"/>
+				<VisualState x:Name="Idle">
+					<Storyboard>
+						<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(MediaPlayer.IsInteractive)" Storyboard.TargetName="mediaPlayer">
+							<DiscreteObjectKeyFrame KeyTime="0">
+								<DiscreteObjectKeyFrame.Value>
+									<x:Boolean>False</x:Boolean>
+								</DiscreteObjectKeyFrame.Value>
+							</DiscreteObjectKeyFrame>
+						</ObjectAnimationUsingKeyFrames>
+					</Storyboard>
+				</VisualState>
 				<VisualState x:Name="Playing">
 					<Storyboard>
 						<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="hub">
@@ -49,6 +59,27 @@
 							<DiscreteObjectKeyFrame KeyTime="0">
 								<DiscreteObjectKeyFrame.Value>
 									<Visibility>Visible</Visibility>
+								</DiscreteObjectKeyFrame.Value>
+							</DiscreteObjectKeyFrame>
+						</ObjectAnimationUsingKeyFrames>
+						<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(AppBar.IsOpen)" Storyboard.TargetName="commandBar">
+							<DiscreteObjectKeyFrame KeyTime="0">
+								<DiscreteObjectKeyFrame.Value>
+									<x:Boolean>False</x:Boolean>
+								</DiscreteObjectKeyFrame.Value>
+							</DiscreteObjectKeyFrame>
+						</ObjectAnimationUsingKeyFrames>
+						<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(MediaPlayer.AutoPlay)" Storyboard.TargetName="mediaPlayer">
+							<DiscreteObjectKeyFrame KeyTime="0">
+								<DiscreteObjectKeyFrame.Value>
+									<x:Boolean>True</x:Boolean>
+								</DiscreteObjectKeyFrame.Value>
+							</DiscreteObjectKeyFrame>
+						</ObjectAnimationUsingKeyFrames>
+						<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(MediaPlayer.IsInteractive)" Storyboard.TargetName="mediaPlayer">
+							<DiscreteObjectKeyFrame KeyTime="0">
+								<DiscreteObjectKeyFrame.Value>
+									<x:Boolean>True</x:Boolean>
 								</DiscreteObjectKeyFrame.Value>
 							</DiscreteObjectKeyFrame>
 						</ObjectAnimationUsingKeyFrames>

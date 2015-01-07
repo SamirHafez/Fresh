@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Fresh.Windows.Shared.Models
 {
@@ -59,7 +60,7 @@ namespace Fresh.Windows.Shared.Models
         {
             var show = await traktService.GetShowAsync(Id, extended: TraktExtendEnum.FULL);
 
-            if (DateTime.Parse(show.Updated_At) == LastUpdated)
+            if (DateTime.Parse(show.Updated_At, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal) == LastUpdated)
                 return;
 
             var traktSeasons = await traktService.GetSeasonsAsync(Id, extended: TraktExtendEnum.FULL_IMAGES);
@@ -81,7 +82,7 @@ namespace Fresh.Windows.Shared.Models
                     await season.UpdateAsync(traktService);
             }
 
-            LastUpdated = !string.IsNullOrWhiteSpace(show.Updated_At) ? DateTime.Parse(show.Updated_At) : (DateTime?)null;
+            LastUpdated = !string.IsNullOrWhiteSpace(show.Updated_At) ? DateTime.Parse(show.Updated_At, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal) : (DateTime?)null;
         }
     }
 }

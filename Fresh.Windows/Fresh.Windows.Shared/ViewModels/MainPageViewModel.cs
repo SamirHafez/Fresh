@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Navigation;
 using System.Linq;
 using Windows.UI.Xaml.Controls;
+using System.Globalization;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -45,36 +46,46 @@ namespace Fresh.Windows.ViewModels
 
             if (navigationMode == NavigationMode.New)
             {
-                var updateTasks = (from show in Library
-                                   select new { ShowId = show.Id, Task = show.UpdateAsync(traktService) }).ToList();
+                var lastActivity = await traktService.GetLastActivityAsync();
 
-                var watchedShows = await traktService.GetWatchedEpisodesAsync(extended: TraktExtendEnum.MIN);
-
-                foreach (var watchedShow in watchedShows)
+                var lastActivityEpisodes = DateTime.Parse(lastActivity.Episodes.Watched_At, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal); 
+                lastActivityEpisodes = lastActivityEpisodes.AddTicks( - (lastActivityEpisodes.Ticks % TimeSpan.TicksPerSecond));
+                if (lastActivityEpisodes > (session.User.ActivityUpdated ?? DateTime.MinValue))
                 {
-                    var show = Library.FirstOrDefault(s => s.Id == watchedShow.Show.Ids.Trakt);
+                    var updateTasks = (from show in Library
+                                       select new { ShowId = show.Id, Task = show.UpdateAsync(traktService) }).ToList();
 
-                    bool isNew = show == null;
-                    if (isNew)
+                    var watchedShows = await traktService.GetWatchedEpisodesAsync(extended: TraktExtendEnum.MIN);
+
+                    foreach (var watchedShow in watchedShows)
                     {
-                        show = TVShow.FromTrakt(await traktService.GetShowAsync(watchedShow.Show.Ids.Trakt, extended: TraktExtendEnum.FULL_IMAGES));
-                        await show.UpdateAsync(traktService);
-                    }
-                    else
-                    {
-                        var task = (from updateTask in updateTasks
-                                    where updateTask.ShowId == show.Id
-                                    select updateTask.Task).First();
-                        await task;
+                        var show = Library.FirstOrDefault(s => s.Id == watchedShow.Show.Ids.Trakt);
+
+                        bool isNew = show == null;
+                        if (isNew)
+                        {
+                            show = TVShow.FromTrakt(await traktService.GetShowAsync(watchedShow.Show.Ids.Trakt, extended: TraktExtendEnum.FULL_IMAGES));
+                            await show.UpdateAsync(traktService);
+                        }
+                        else
+                        {
+                            var task = (from updateTask in updateTasks
+                                        where updateTask.ShowId == show.Id
+                                        select updateTask.Task).First();
+                            await task;
+                        }
+
+                        show.UpdateWatched(watchedShow);
+
+                        if (isNew)
+                            Library.Add(show);
                     }
 
-                    show.UpdateWatched(watchedShow);
+                    await storageService.UpdateLibraryAsync(Library);
 
-                    if (isNew)
-                        Library.Add(show);
+                    session.User.ActivityUpdated = lastActivityEpisodes;
+                    await storageService.CreateOrUpdateUserAsync(session.User);
                 }
-
-                await storageService.UpdateLibraryAsync(Library);
             }
 
             var lastMonday = StartOfWeek(DateTime.Now, DayOfWeek.Monday);

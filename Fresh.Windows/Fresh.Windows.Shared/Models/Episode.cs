@@ -4,6 +4,7 @@ using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace Fresh.Windows.Shared.Models
 {
@@ -50,7 +51,7 @@ namespace Fresh.Windows.Shared.Models
                 Number = trakt.Number,
                 Overview = trakt.Overview,
                 Screen = trakt.Images.Screenshot.Full,
-                AirDate = !string.IsNullOrWhiteSpace(trakt.First_Aired) ? DateTime.Parse(trakt.First_Aired) : (DateTime?)null
+                AirDate = !string.IsNullOrWhiteSpace(trakt.First_Aired) ? DateTime.Parse(trakt.First_Aired, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal) : (DateTime?)null
             };
         }
 
@@ -60,8 +61,8 @@ namespace Fresh.Windows.Shared.Models
             Number = trakt.Number;
             Overview = trakt.Overview;
             Screen = trakt.Images.Screenshot.Full;
-            AirDate = !string.IsNullOrWhiteSpace(trakt.First_Aired) ? DateTime.Parse(trakt.First_Aired) : (DateTime?)null;
-            LastUpdated = !string.IsNullOrWhiteSpace(trakt.Updated_At) ? DateTime.Parse(trakt.Updated_At) : (DateTime?)null;
+            AirDate = !string.IsNullOrWhiteSpace(trakt.First_Aired) ? DateTime.Parse(trakt.First_Aired, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal) : (DateTime?)null;
+            LastUpdated = !string.IsNullOrWhiteSpace(trakt.Updated_At) ? DateTime.Parse(trakt.Updated_At, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal) : (DateTime?)null;
         }
     }
 

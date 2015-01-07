@@ -35,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Models\TraktActivity.cs" />
     <Compile Include="Models\TraktEpisode.cs" />
     <Compile Include="Models\TraktSeason.cs" />
     <Compile Include="Models\TraktTVShow.cs" />
