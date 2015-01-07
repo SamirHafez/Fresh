@@ -6,7 +6,7 @@ namespace Fresh.Windows.Core.Models
     {
         public int Trakt { get; set; }
         public string Slug { get; set; }
-        public int Tvdb { get; set; }
+        public int? Tvdb { get; set; }
         public string Imdb { get; set; }
         public int? Tmdb { get; set; }
         public int? Tvrage { get; set; }
@@ -79,7 +79,7 @@ namespace Fresh.Windows.Core.Models
         public string Overview { get; set; }
         public string First_Aired { get; set; }
         public TraktAirs Airs { get; set; }
-        public int Runtime { get; set; }
+        public int? Runtime { get; set; }
         public string Certification { get; set; }
         public string Network { get; set; }
         public string Country { get; set; }

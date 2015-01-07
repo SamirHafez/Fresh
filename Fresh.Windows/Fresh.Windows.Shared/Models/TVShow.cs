@@ -21,6 +21,7 @@ namespace Fresh.Windows.Shared.Models
         public string Poster { get; set; }
         public DayOfWeek? AirDay { get; set; }
         public double Rating { get; set; }
+        public DateTime? LastUpdated { get; set; }
 
         [OneToMany(CascadeOperations = CascadeOperation.All)]
         public List<Season> Seasons { get; set; }
@@ -56,41 +57,31 @@ namespace Fresh.Windows.Shared.Models
 
         public async Task UpdateAsync(ITraktService traktService)
         {
-            var latestSeason = (from season in Seasons
-                                orderby season.Number descending
-                                select season).First();
+            var show = await traktService.GetShowAsync(Id, extended: TraktExtendEnum.FULL);
 
-            var traktLatestSeasonEpisodes = await traktService.GetSeasonEpisodesAsync(Id, latestSeason.Number);
+            if (DateTime.Parse(show.Updated_At) == LastUpdated)
+                return;
 
-            bool hasNewEpisodes = false;
-            foreach (var traktEpisode in from ep in traktLatestSeasonEpisodes
-                                         select Episode.FromTrakt(ep))
+            var traktSeasons = await traktService.GetSeasonsAsync(Id, extended: TraktExtendEnum.FULL_IMAGES);
+
+            foreach (var traktSeason in traktSeasons)
             {
-                var episode = (from ep in latestSeason.Episodes
-                               where ep.Number == traktEpisode.Number
-                               select ep).FirstOrDefault();
+                var season = (from s in Seasons
+                              where s.Number == traktSeason.Number
+                              select s).FirstOrDefault();
 
-                if (episode == null)
+                if (season == null)
                 {
-                    hasNewEpisodes = true;
-                    latestSeason.Episodes.Add(traktEpisode);
+                    var newSeason = Season.FromTrakt(traktSeason);
+                    newSeason.TVShowId = Id;
+                    await newSeason.UpdateAsync(traktService);
+                    Seasons.Add(newSeason);
                 }
-                else
-                {
-                    episode.Title = traktEpisode.Title;
-                    episode.Overview = traktEpisode.Overview;
-                    episode.Screen = traktEpisode.Screen;
-                    episode.AirDate = traktEpisode.AirDate;
-                }
+                else if (season.Episodes.Count < traktSeason.Episode_Count)
+                    await season.UpdateAsync(traktService);
             }
 
-            if (!hasNewEpisodes)
-            {
-                //var traktNextSeasonEpisodes = from episode in await traktService.GetSeasonEpisodesAsync(fullShow.Id, latestSeason.Number + 1, extended: TraktExtendEnum.FULL_IMAGES)
-                //                              select Episode.FromTrakt(episode);
-                //fullShow.Seasons.Add()
-                //fullShow.Episodes.AddRange(traktNextSeasonEpisodes);
-            }
+            LastUpdated = !string.IsNullOrWhiteSpace(show.Updated_At) ? DateTime.Parse(show.Updated_At) : (DateTime?)null;
         }
     }
 }

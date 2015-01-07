@@ -19,12 +19,8 @@ namespace Fresh.Windows.Shared.Models
         public int Number { get; set; }
         public string Overview { get; set; }
         public string Screen { get; set; }
-        private DateTime? airDate;
-        public DateTime? AirDate 
-        {
-            get { return airDate != null ? DateTime.SpecifyKind(airDate.Value, DateTimeKind.Utc) : (DateTime?)null; }
-            set { airDate = value; }
-        }
+        public DateTime? AirDate { get; set; }
+        public DateTime? LastUpdated { get; set; }
 
         private bool watched;
         public bool Watched
@@ -49,13 +45,23 @@ namespace Fresh.Windows.Shared.Models
         {
             return new Episode
             {
-                Id = trakt.Ids.Tvdb,
+                Id = trakt.Ids.Trakt,
                 Title = trakt.Title,
                 Number = trakt.Number,
                 Overview = trakt.Overview,
                 Screen = trakt.Images.Screenshot.Full,
-                AirDate = DateTime.Parse(trakt.First_Aired)
+                AirDate = !string.IsNullOrWhiteSpace(trakt.First_Aired) ? DateTime.Parse(trakt.First_Aired) : (DateTime?)null
             };
+        }
+
+        public void Update(TraktEpisode trakt)
+        {
+            Title = trakt.Title;
+            Number = trakt.Number;
+            Overview = trakt.Overview;
+            Screen = trakt.Images.Screenshot.Full;
+            AirDate = !string.IsNullOrWhiteSpace(trakt.First_Aired) ? DateTime.Parse(trakt.First_Aired) : (DateTime?)null;
+            LastUpdated = !string.IsNullOrWhiteSpace(trakt.Updated_At) ? DateTime.Parse(trakt.Updated_At) : (DateTime?)null;
         }
     }
 

@@ -39,7 +39,10 @@ namespace Fresh.Windows.ViewModels
             var season = await storageService.GetSeasonAsync(showId, seasonNumber);
 
             Number = seasonNumber;
-            Episodes = new ObservableCollection<Episode>(season.Episodes);
+            Poster = season.Poster;
+            Episodes = new ObservableCollection<Episode>(from episode in season.Episodes
+                                                         orderby episode.Number
+                                                         select episode);
         }
 
         public DelegateCommand<ItemClickEventArgs> EpisodeSelectedCommand
@@ -72,9 +75,8 @@ namespace Fresh.Windows.ViewModels
             if (episodes.Count == 0)
                 return;
 
-            await traktService.WatchEpisodesAsync(episodes[0].Season.TVShowId,
-                new List<dynamic>(from episode in episodes
-                                  select new { season = episode.Season.Number, episode = episode.Number, last_Played = DateTime.UtcNow }));
+            await traktService.WatchEpisodesAsync((from episode in episodes
+                                                   select episode.Id).ToList());
 
             foreach (var episode in episodes)
             {

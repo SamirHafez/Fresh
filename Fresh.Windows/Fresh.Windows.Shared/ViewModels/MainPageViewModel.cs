@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Navigation;
 using System.Linq;
-using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 
 namespace Fresh.Windows.ViewModels
@@ -45,49 +44,59 @@ namespace Fresh.Windows.ViewModels
                                                        select show);
 
             if (navigationMode == NavigationMode.New)
-                try
+            {
+                var updateTasks = (from show in Library
+                                   select new { ShowId = show.Id, Task = show.UpdateAsync(traktService) }).ToList();
+
+                var watchedShows = await traktService.GetWatchedEpisodesAsync(extended: TraktExtendEnum.MIN);
+
+                foreach (var watchedShow in watchedShows)
                 {
-                    var updateTasks = from show in Library
-                                      select show.UpdateAsync(traktService);
+                    var show = Library.FirstOrDefault(s => s.Id == watchedShow.Show.Ids.Trakt);
 
-                    var watchedShows = await traktService.GetWatchedEpisodesAsync(extended: TraktExtendEnum.MIN);
-
-                    await Task.WhenAll(updateTasks);
-
-                    foreach (var watchedShow in watchedShows)
+                    bool isNew = show == null;
+                    if (isNew)
                     {
-                        var show = Library.FirstOrDefault(s => s.Id == watchedShow.Show.Ids.Trakt);
-
-                        if (show == null)
-                        {
-                            show = TVShow.FromTrakt(await traktService.GetShowAsync(watchedShow.Show.Ids.Trakt, extended: TraktExtendEnum.FULL_IMAGES));
-                        }
-
-                        show.UpdateWatched(watchedShow);
+                        show = TVShow.FromTrakt(await traktService.GetShowAsync(watchedShow.Show.Ids.Trakt, extended: TraktExtendEnum.FULL_IMAGES));
+                        await show.UpdateAsync(traktService);
+                    }
+                    else
+                    {
+                        var task = (from updateTask in updateTasks
+                                    where updateTask.ShowId == show.Id
+                                    select updateTask.Task).First();
+                        await task;
                     }
 
-                    await storageService.UpdateLibraryAsync(Library);
+                    show.UpdateWatched(watchedShow);
+
+                    if (isNew)
+                        Library.Add(show);
                 }
-                catch
-                { }
 
-            //var lastMonday = StartOfWeek(DateTime.Now, DayOfWeek.Monday);
-            //var nextSunday = lastMonday.AddDays(7);
-            //ThisWeek = await GetSchedule(lastMonday, nextSunday);
+                await storageService.UpdateLibraryAsync(Library);
+            }
 
-            //UnwatchedEpisodesByShow = new ObservableCollection<GroupedEpisodes<TVShow>>(await GetUnwatchedEpisodesByShow());
+            var lastMonday = StartOfWeek(DateTime.Now, DayOfWeek.Monday);
+            var nextSunday = lastMonday.AddDays(7);
+            ThisWeek = GetSchedule(lastMonday, nextSunday).ToList();
+
+            UnwatchedEpisodesByShow = new ObservableCollection<GroupedEpisodes<TVShow>>(GetUnwatchedEpisodesByShow());
 
             Loading = false;
 
             base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
         }
 
-        private async Task<IEnumerable<GroupedEpisodes<TVShow>>> GetUnwatchedEpisodesByShow()
+        private IEnumerable<GroupedEpisodes<TVShow>> GetUnwatchedEpisodesByShow()
         {
-            return from episode in await storageService.GetEpisodesAsync(e => e.Watched == false && e.AirDate != null && e.AirDate <= DateTime.UtcNow && e.Season.Number > 0)
+            return from show in Library
+                   from season in show.Seasons
+                   from episode in season.Episodes
+                   where episode.Watched == false && episode.AirDate != null && episode.AirDate <= DateTime.UtcNow && season.Number > 0
                    group episode by episode.Season.TVShowId into g
                    let tvShow = g.First().Season.TVShow
-                   orderby g.Count() descending
+                   orderby g.Count()
                    select new GroupedEpisodes<TVShow>
                    {
                        Key = tvShow,
@@ -95,19 +104,22 @@ namespace Fresh.Windows.ViewModels
                    };
         }
 
-        private async Task<IList<GroupedEpisodes<DayOfWeek>>> GetSchedule(DateTime lastMonday, DateTime nextSunday)
+        private IEnumerable<GroupedEpisodes<DayOfWeek>> GetSchedule(DateTime lastMonday, DateTime nextSunday)
         {
             var utcLastMonday = lastMonday.ToUniversalTime();
             var utcNextSunday = nextSunday.ToUniversalTime();
 
-            return (from episode in await storageService.GetEpisodesAsync(e => e.AirDate != null && e.AirDate >= utcLastMonday && e.AirDate <= utcNextSunday)
-                    group episode by episode.AirDate.Value.ToLocalTime().DayOfWeek into g
-                    orderby g.Key
-                    select new GroupedEpisodes<DayOfWeek>
-                    {
-                        Key = g.Key,
-                        Episodes = g.ToList()
-                    }).ToList();
+            return from show in Library
+                   from season in show.Seasons
+                   from episode in season.Episodes
+                   where episode.AirDate != null && episode.AirDate >= utcLastMonday && episode.AirDate <= utcNextSunday
+                   group episode by episode.AirDate.Value.ToLocalTime().DayOfWeek into g
+                   orderby g.Key
+                   select new GroupedEpisodes<DayOfWeek>
+                   {
+                       Key = g.Key,
+                       Episodes = g.ToList()
+                   };
         }
 
         public DelegateCommand<string> EnterSearchCommand

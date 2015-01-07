@@ -23,11 +23,15 @@ namespace Fresh.Windows.Core.Services.Interfaces
 
         Task<TraktTVShow> GetShowAsync(int showId, TraktExtendEnum extended = TraktExtendEnum.MIN);
 
+        Task<IList<TraktSeason>> GetSeasonsAsync(int showId, TraktExtendEnum extended = TraktExtendEnum.MIN);
+
         Task<IList<TraktEpisode>> GetSeasonEpisodesAsync(int showId, int seasonNumber, TraktExtendEnum extended = TraktExtendEnum.MIN);
+
+        Task<TraktEpisode> GetEpisodeAsync(int showId, int seasonNumber, int episodeNumber, TraktExtendEnum extended = TraktExtendEnum.MIN);
 
         Task<IList<TraktWatchedShow>> GetWatchedEpisodesAsync(TraktExtendEnum extended = TraktExtendEnum.MIN);
 
-        Task WatchEpisodesAsync(int showId, IList<dynamic> episodes);
+        Task WatchEpisodesAsync(IList<int> episodeIds);
 
         Task<IList<TraktTVShow>> SearchTVShowAsync(string query);
     }

@@ -29,7 +29,7 @@ namespace Fresh.Windows.Shared.Services
 
         public async Task<User> CreateOrUpdateUserAsync(User user)
         {
-            await context.CreateTablesAsync<User, TVShow, Episode>();
+            await context.CreateTablesAsync<User, Season, TVShow, Episode>();
 
             await context.InsertOrReplaceAsync(user);
 
@@ -56,7 +56,7 @@ namespace Fresh.Windows.Shared.Services
 
         public async Task<User> GetUserAsync()
         {
-            await context.CreateTablesAsync<User, TVShow, Episode>();
+            await context.CreateTablesAsync<User, Season, TVShow, Episode>();
 
             return await context.Table<User>().
                 FirstOrDefaultAsync();
@@ -69,14 +69,13 @@ namespace Fresh.Windows.Shared.Services
                 try
                 {
                     lock (_lock)
-                        return connection.GetWithChildren<TVShow>(showId);
+                        return connection.GetWithChildren<TVShow>(showId, recursive: true);
                 }
                 catch
                 {
                     return null;
                 }
             });
-
         }
 
         public Task UpdateShowAsync(TVShow dbShow)
@@ -117,7 +116,14 @@ namespace Fresh.Windows.Shared.Services
             return Task.Run<IList<Episode>>(delegate
             {
                 lock (_lock)
-                    return connection.GetAllWithChildren(predicate, recursive: true);
+                {
+                    var episodes = connection.GetAllWithChildren(predicate, recursive: true);
+
+                    foreach (var episode in episodes)
+                        connection.GetChildren(episode.Season, recursive: true);
+
+                    return episodes;
+                }
             });
 
         }

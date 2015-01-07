@@ -39,7 +39,7 @@ namespace Fresh.Windows.ViewModels
         {
             get
             {
-                return new DelegateCommand<ItemClickEventArgs>(arg => EnterSeason((int)arg.ClickedItem));
+                return new DelegateCommand<ItemClickEventArgs>(arg => EnterSeason(((Season)arg.ClickedItem).Number));
             }
         }
 
@@ -55,7 +55,9 @@ namespace Fresh.Windows.ViewModels
             Overview = fullShow.Overview;
             Rating = fullShow.Rating;
 
-            Seasons = new ObservableCollection<Season>(fullShow.Seasons);
+            Seasons = new ObservableCollection<Season>(from season in fullShow.Seasons
+                                                       orderby season.Number descending
+                                                       select season);
 
             UnwatchedEpisodes = new ObservableCollection<Episode>(from season in fullShow.Seasons
                                                                   from episode in season.Episodes

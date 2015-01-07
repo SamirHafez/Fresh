@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Net;
 using RestSharp.Portable;
 using RestSharp.Portable.Authenticators;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Fresh.Windows.Core.Services
 {
@@ -159,14 +161,6 @@ namespace Fresh.Windows.Core.Services
             RestClient.Authenticator = new OAuthAuthenticator(this.Client, oauthResponse.Access_Token);
         }
 
-        public Task<IList<TraktEpisode>> GetSeasonEpisodesAsync(int showId, int seasonNumber, TraktExtendEnum extended = TraktExtendEnum.MIN)
-        {
-            return new TraktIO<IList<TraktEpisode>>().
-                ForPath("show/season.json").
-                WithParameters(new { username = showId, season = seasonNumber }).
-                Execute();
-        }
-
         public async Task<TraktUser> GetSettingsAsync()
         {
             var request = new RestRequest("users/settings");
@@ -183,7 +177,54 @@ namespace Fresh.Windows.Core.Services
 
             FillExtended(request, extended);
 
+            Debug.WriteLine("Requesting {0}", request.Resource);
+
             var response = await RestClient.Execute<TraktTVShow>(request);
+
+            return response.Data;
+        }
+
+        public async Task<IList<TraktSeason>> GetSeasonsAsync(int showId, TraktExtendEnum extended = TraktExtendEnum.MIN)
+        {
+            var request = new RestRequest("shows/{id}/seasons").
+                AddUrlSegment("id", showId);
+
+            FillExtended(request, extended);
+
+            Debug.WriteLine("Requesting {0}", request.Resource);
+
+            var response = await RestClient.Execute<IList<TraktSeason>>(request);
+
+            return response.Data;
+        }
+
+        public async Task<IList<TraktEpisode>> GetSeasonEpisodesAsync(int showId, int seasonNumber, TraktExtendEnum extended = TraktExtendEnum.MIN)
+        {
+            var request = new RestRequest("shows/{id}/seasons/{season}").
+                AddUrlSegment("id", showId).
+                AddUrlSegment("season", seasonNumber);
+
+            FillExtended(request, extended);
+
+            Debug.WriteLine("Requesting {0}", request.Resource);
+
+            var response = await RestClient.Execute<IList<TraktEpisode>>(request);
+
+            return response.Data;
+        }
+
+        public async Task<TraktEpisode> GetEpisodeAsync(int showId, int seasonNumber, int episodeNumber, TraktExtendEnum extended = TraktExtendEnum.MIN)
+        {
+            var request = new RestRequest("shows/{id}/seasons/{season}/episodes/{episode}").
+                AddUrlSegment("id", showId).
+                AddUrlSegment("season", seasonNumber).
+                AddUrlSegment("episode", episodeNumber);
+
+            FillExtended(request, extended);
+
+            Debug.WriteLine("Requesting {0}", request.Resource);
+
+            var response = await RestClient.Execute<TraktEpisode>(request);
 
             return response.Data;
         }
@@ -193,6 +234,8 @@ namespace Fresh.Windows.Core.Services
             var request = new RestRequest("sync/watched/shows");
 
             FillExtended(request, extended);
+
+            Debug.WriteLine("Requesting {0}", request.Resource);
 
             var response = await RestClient.Execute<IList<TraktWatchedShow>>(request);
 
@@ -209,17 +252,26 @@ namespace Fresh.Windows.Core.Services
 
         }
 
-        public async Task WatchEpisodesAsync(int showId, IList<dynamic> episodes)
+        public async Task WatchEpisodesAsync(IList<int> episodeIds)
         {
-            await new TraktIO<dynamic>().
-                ForPath("show/episode/seen").
-                AsPost().
-                WithParameters(new
+            var now = DateTime.UtcNow;
+            var request = new RestRequest("sync/history", HttpMethod.Post).
+                AddJsonBody(new
             {
-                id = showId,
-                episodes
-            }).
-                Execute();
+                episodes = from episodeId in episodeIds
+                           select new
+                           {
+                               watched_at = now,
+                               ids = new
+                               {
+                                   trakt = episodeId
+                               }
+                           }
+            }); 
+
+            Debug.WriteLine("Posting {0}", request.Resource);
+
+            var response = await RestClient.Execute(request);
         }
 
         private IRestRequest FillExtended(IRestRequest request, TraktExtendEnum extended)

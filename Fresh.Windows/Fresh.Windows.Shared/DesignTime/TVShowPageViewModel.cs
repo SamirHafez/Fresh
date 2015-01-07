@@ -19,9 +19,9 @@ namespace Fresh.Windows.Shared.DesignTime
 
             Seasons = new ObservableCollection<Season>
             {
-                new Season { Number = 1 },
-                new Season { Number = 2 },
-                new Season { Number = 3 }
+                new Season { Number = 1, Poster = "http://slurm.trakt.us/images/seasons/124-5.47.jpg" },
+                new Season { Number = 2, Poster = "http://slurm.trakt.us/images/seasons/124-5.47.jpg" },
+                new Season { Number = 3, Poster = "http://slurm.trakt.us/images/seasons/124-5.47.jpg" }
             };
 
             UnwatchedEpisodes = new ObservableCollection<Episode>

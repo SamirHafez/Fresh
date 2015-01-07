@@ -80,7 +80,7 @@ namespace Fresh.Windows.ViewModels
                     catch
                     {
 
-                    } 
+                    }
                 });
             }
         }
@@ -97,8 +97,7 @@ namespace Fresh.Windows.ViewModels
         {
             Episode.Watched = Watched;
 
-            await traktService.WatchEpisodesAsync(Episode.Season.TVShowId,
-                new List<object> { new { season = Episode.Season.Number, episode = Episode.Number, last_Played = DateTime.UtcNow } });
+            await traktService.WatchEpisodesAsync(new List<int> { Episode.Id });
             await storageService.UpdateEpisodeAsync(Episode);
         }
 

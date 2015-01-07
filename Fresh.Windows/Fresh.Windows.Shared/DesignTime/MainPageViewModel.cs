@@ -35,6 +35,23 @@ namespace Fresh.Windows.Shared.DesignTime
                 },
                 new GroupedEpisodes<TVShow>
                 {
+                    Key = new TVShow { Title = "House of Lies", Year = 2012, Poster = @"http://slurm.trakt.us/images/posters/11982.11.jpg" },
+                    Episodes = new List<Episode>
+                    {
+                        new Episode
+                        {
+                            Title = "Episode Title 1", Screen = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg",
+                            AirDate = DateTime.Now,
+                        },
+                        new Episode
+                        {
+                            Title = "Episode Title 2", Screen = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg",
+                            AirDate = DateTime.Now,
+                        }
+                    }
+                },
+                new GroupedEpisodes<TVShow>
+                {
                     Key = new TVShow { Title = "House of Cards (US)", Year = 2013, Poster = @"http://slurm.trakt.us/images/posters/19657.19.jpg" },
                     Episodes = new List<Episode>
                     {

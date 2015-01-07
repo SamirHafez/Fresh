@@ -21,11 +21,41 @@
     <controls:PageBase.BottomAppBar>
         <CommandBar x:Name="commandBar" Background="Green" IsSticky="True" IsOpen="True">
         	<AppBarToggleButton IsChecked="{Binding Watched, Mode=TwoWay}" IsThreeState="False" Label="Watched" Command="{Binding ToggleWatchedCommand}" Icon="Accept"/>
-        	<AppBarButton x:Name="appBarButton1" Icon="Play" Label="Play"/>
-        	<AppBarButton x:Name="appBarButton" Icon="More" Label="More"/>
+        	<AppBarButton x:Name="playButton" Icon="Play" Label="Play"/>
+        	<AppBarButton x:Name="moreButton" Icon="More" Label="More" Visibility="Collapsed"/>
         </CommandBar>
     </controls:PageBase.BottomAppBar>
-	<Grid>
+	<Grid x:Name="grid">
+		<VisualStateManager.VisualStateGroups>
+			<VisualStateGroup x:Name="EpisodePageStates">
+				<VisualState x:Name="Idle"/>
+				<VisualState x:Name="Playing">
+					<Storyboard>
+						<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="hub">
+							<DiscreteObjectKeyFrame KeyTime="0">
+								<DiscreteObjectKeyFrame.Value>
+									<Visibility>Collapsed</Visibility>
+								</DiscreteObjectKeyFrame.Value>
+							</DiscreteObjectKeyFrame>
+						</ObjectAnimationUsingKeyFrames>
+						<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="playButton">
+							<DiscreteObjectKeyFrame KeyTime="0">
+								<DiscreteObjectKeyFrame.Value>
+									<Visibility>Collapsed</Visibility>
+								</DiscreteObjectKeyFrame.Value>
+							</DiscreteObjectKeyFrame>
+						</ObjectAnimationUsingKeyFrames>
+						<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="moreButton">
+							<DiscreteObjectKeyFrame KeyTime="0">
+								<DiscreteObjectKeyFrame.Value>
+									<Visibility>Visible</Visibility>
+								</DiscreteObjectKeyFrame.Value>
+							</DiscreteObjectKeyFrame>
+						</ObjectAnimationUsingKeyFrames>
+					</Storyboard>
+				</VisualState>
+			</VisualStateGroup>
+		</VisualStateManager.VisualStateGroups>
 		<mmppf:MediaPlayer x:Name="mediaPlayer" Source="{Binding Link}" AudioCategory="BackgroundCapableMedia" AutoLoadPlugins="False" IsAudioSelectionEnabled="False" IsCaptionSelectionEnabled="False" IsFastForwardVisible="True" IsFullScreen="True" IsGoLiveEnabled="False" IsInfoEnabled="False" IsMoreEnabled="False" IsRewindVisible="True" IsSkipAheadEnabled="False" IsSkipBackEnabled="False" IsSkipNextEnabled="False" IsSkipPreviousEnabled="False" IsSlowMotionEnabled="False" IsStopEnabled="False" IsVolumeVisible="False" IsZoomEnabled="False" AutoPlay="False"/>
 		<Hub x:Name="hub">
 			<Hub.Header>
@@ -50,13 +80,12 @@
 				<HubSection.Background>
 					<ImageBrush Stretch="UniformToFill" ImageSource="{Binding Screen}"/>
 				</HubSection.Background>
+				<DataTemplate/>
+			</HubSection>
+			<HubSection Header="info" Width="400">
 				<DataTemplate>
-					<Grid Height="500">
-						<ScrollViewer VerticalAlignment="Bottom" HorizontalAlignment="Left" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" HorizontalScrollMode="Disabled">
-							<Border Padding="5" Background="Green">
-								<TextBlock TextWrapping="Wrap" Text="{Binding Overview}" Style="{StaticResource SubtitleTextBlockStyle}" TextAlignment="Justify"/>
-							</Border>
-						</ScrollViewer>
+					<Grid>
+						<TextBlock HorizontalAlignment="Left" TextWrapping="WrapWholeWords" Text="{Binding Overview}" VerticalAlignment="Top" Style="{StaticResource BodyTextBlockStyle}" TextAlignment="Justify"/>
 					</Grid>
 				</DataTemplate>
 			</HubSection>
