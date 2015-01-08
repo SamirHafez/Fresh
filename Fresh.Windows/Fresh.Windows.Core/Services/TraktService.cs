@@ -2,10 +2,8 @@
 using System.Threading.Tasks;
 using Fresh.Windows.Core.Services.Interfaces;
 using System.Net.Http;
-using Newtonsoft.Json;
 using Fresh.Windows.Core.Models;
 using System.Collections.Generic;
-using System.Net;
 using RestSharp.Portable;
 using RestSharp.Portable.Authenticators;
 using System.Diagnostics;
@@ -13,80 +11,6 @@ using System.Linq;
 
 namespace Fresh.Windows.Core.Services
 {
-    internal class TraktIO<T>
-    {
-        private const string TRAKT_API_URL = @"https://api.trakt.tv/";
-
-        private bool asPost;
-        private bool extended;
-        private string path;
-        private Func<dynamic, dynamic> withSelect;
-
-        private dynamic parameters;
-
-        public TraktIO<T> ForPath(string path)
-        {
-            this.path = path;
-            return this;
-        }
-
-        public TraktIO<T> AsPost()
-        {
-            this.asPost = true;
-            return this;
-        }
-
-        public TraktIO<T> WithParameters(dynamic parameters)
-        {
-            this.parameters = parameters;
-            return this;
-        }
-
-        public TraktIO<T> Select(Func<dynamic, dynamic> withSelect)
-        {
-            this.withSelect = withSelect;
-            return this;
-        }
-
-        public TraktIO<T> Extended(bool extended = true)
-        {
-            this.extended = extended;
-            return this;
-        }
-
-        public async Task<T> Execute()
-        {
-            HttpResponseMessage response;
-            using (var httpClient = new HttpClient())
-                response = asPost ?
-                    await httpClient.PostAsync(GenerateQueryString(), GeneratePostBody()) :
-                    await httpClient.GetAsync(GenerateQueryString());
-
-            response.EnsureSuccessStatusCode();
-
-            string content = await response.Content.ReadAsStringAsync();
-
-            return JsonConvert.DeserializeObject<T>(withSelect != null ?
-                JsonConvert.SerializeObject(withSelect(JsonConvert.DeserializeObject(content))) :
-                content);
-        }
-
-        private string GenerateQueryString()
-        {
-            return asPost ?
-                TRAKT_API_URL + path + (extended ? "/extended" : string.Empty) :
-                parameters.GetType().GetProperty("query") != null ?
-                TRAKT_API_URL + path + "?query=" + WebUtility.UrlEncode(parameters.query) :
-                TRAKT_API_URL + path + "/" + parameters.username + (parameters.GetType().GetProperty("season") != null ? "/" + parameters.season : "") + (extended ? "/extended" : string.Empty);
-        }
-
-        private HttpContent GeneratePostBody()
-        {
-            var json = JsonConvert.SerializeObject(parameters);
-            return new StringContent(json);
-        }
-    }
-
     public class OAuthResponse
     {
         public string Access_Token { get; set; }

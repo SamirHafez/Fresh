@@ -331,7 +331,6 @@ namespace Fresh.Windows.Helpers
         public int BindText16(IDbStatement stmt, int index, string val, int n, IntPtr free)
         {
             var dbStatement = (DbStatement)stmt;
-            val = val.Replace("’", "'").Replace("–", "-");
             return NativeMethods.BindText(dbStatement.InternalStmt, index, val, n, free);
         }
 

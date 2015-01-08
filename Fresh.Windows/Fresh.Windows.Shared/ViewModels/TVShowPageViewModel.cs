@@ -10,6 +10,7 @@ using Fresh.Windows.Shared.Services.Interfaces;
 using Windows.UI.Xaml.Controls;
 using System.Linq;
 using System;
+using Fresh.Windows.Core.Services.Interfaces;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -17,22 +18,34 @@ namespace Fresh.Windows.ViewModels
     {
         public INavigationService navigationService { get; private set; }
         private readonly IStorageService storageService;
+        private readonly ITraktService traktService;
 
-        private int showId;
+        private bool isStored;
 
-        public TVShowPageViewModel(INavigationService navigationService, IStorageService storageService)
+        public TVShow Show { get; private set; }
+
+        public TVShowPageViewModel(INavigationService navigationService, IStorageService storageService, ITraktService traktService)
         {
             this.navigationService = navigationService;
             this.storageService = storageService;
+            this.traktService = traktService;
         }
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
         {
-            showId = (int)navigationParameter;
+            var showId = (int)navigationParameter;
 
-            var dbShow = await storageService.GetShowAsync(showId);
+            Show = await storageService.GetShowAsync(showId);
 
-            Update(dbShow);
+            isStored = Show != null;
+
+            if (!isStored)
+            {
+                Show = TVShow.FromTrakt(await traktService.GetShowAsync(showId, extended: TraktExtendEnum.FULL_IMAGES));
+                await Show.UpdateAsync(traktService);
+            }
+
+            Update();
         }
 
         public DelegateCommand<ItemClickEventArgs> EnterSeasonCommand
@@ -45,28 +58,29 @@ namespace Fresh.Windows.ViewModels
 
         private void EnterSeason(int season)
         {
-            navigationService.Navigate(App.Experience.Season.ToString(), new { season, showId });
+            navigationService.Navigate(App.Experience.Season.ToString(), new { season, showId = Show.Id });
         }
 
-        private void Update(TVShow fullShow)
+        private void Update()
         {
-            Title = fullShow.Title;
-            Poster = fullShow.Poster;
-            Overview = fullShow.Overview;
-            Rating = fullShow.Rating;
+            Title = Show.Title;
+            Poster = Show.Poster;
+            Overview = Show.Overview;
+            Rating = Show.Rating;
 
-            Seasons = new ObservableCollection<Season>(from season in fullShow.Seasons
+            Seasons = new ObservableCollection<Season>(from season in Show.Seasons
                                                        orderby season.Number descending
                                                        select season);
 
-            UnwatchedEpisodes = new ObservableCollection<Episode>(from season in fullShow.Seasons
-                                                                  from episode in season.Episodes
-                                                                  where episode.Watched == false &&
-                                                                    episode.AirDate.HasValue &&
-                                                                    episode.AirDate <= DateTime.UtcNow &&
-                                                                    season.Number != 0
-                                                                  orderby season.Number, episode.Number
-                                                                  select episode);
+            if (isStored)
+                UnwatchedEpisodes = new ObservableCollection<Episode>(from season in Show.Seasons
+                                                                      from episode in season.Episodes
+                                                                      where episode.Watched == false &&
+                                                                        episode.AirDate.HasValue &&
+                                                                        episode.AirDate <= DateTime.UtcNow &&
+                                                                        season.Number != 0
+                                                                      orderby season.Number, episode.Number
+                                                                      select episode);
         }
 
         public DelegateCommand<ItemClickEventArgs> EpisodeSelectedCommand

@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using Fresh.Windows.Shared.Configuration;
 using System.Linq;
 
 namespace Fresh.Windows.ViewModels
@@ -19,14 +18,16 @@ namespace Fresh.Windows.ViewModels
         private readonly IStorageService storageService;
         public INavigationService navigationService { get; private set; }
         private readonly ITraktService traktService;
-        private readonly ISession session;
 
-        public SeasonPageViewModel(IStorageService storageService, INavigationService navigationService, ITraktService traktService, ISession session)
+        public Season Season { get; private set; }
+
+        private bool isStored;
+
+        public SeasonPageViewModel(IStorageService storageService, INavigationService navigationService, ITraktService traktService)
         {
             this.storageService = storageService;
             this.navigationService = navigationService;
             this.traktService = traktService;
-            this.session = session;
         }
 
         public override async void OnNavigatedTo(object navigationParameter, NavigationMode navigationMode, Dictionary<string, object> viewModelState)
@@ -35,12 +36,24 @@ namespace Fresh.Windows.ViewModels
             var seasonNumber = (int)parameters.season;
             var showId = (int)parameters.showId;
 
-            var season = await storageService.GetSeasonAsync(showId, seasonNumber);
+            Season = await storageService.GetSeasonAsync(showId, seasonNumber);
+
+            isStored = Season != null;
+
+            if (!isStored)
+            {
+                var traktSeasons = await traktService.GetSeasonsAsync(showId, extended: TraktExtendEnum.FULL_IMAGES);
+                Season = (from traktseason in traktSeasons
+                          where traktseason.Number == seasonNumber
+                          select Season.FromTrakt(traktseason)).Single();
+                Season.TVShowId = showId;
+                await Season.UpdateAsync(traktService);
+            }
 
             Number = seasonNumber;
-            Poster = season.Poster;
-            Overview = season.Overview;
-            Episodes = new ObservableCollection<Episode>(from episode in season.Episodes
+            Poster = Season.Poster;
+            Overview = Season.Overview;
+            Episodes = new ObservableCollection<Episode>(from episode in Season.Episodes
                                                          orderby episode.Number
                                                          select episode);
         }
@@ -55,7 +68,8 @@ namespace Fresh.Windows.ViewModels
 
         private void EpisodeSelected(Episode episode)
         {
-            navigationService.Navigate(App.Experience.Episode.ToString(), episode.Id);
+            navigationService.Navigate(App.Experience.Episode.ToString(),
+                new { showId = Season.TVShowId, season = Season.Number, episode = episode.Number, episodeId = episode.Id });
         }
 
         public DelegateCommand SeasonWatchedCommand
@@ -81,7 +95,8 @@ namespace Fresh.Windows.ViewModels
             foreach (var episode in episodes)
             {
                 episode.Watched = true;
-                await storageService.UpdateEpisodeAsync(episode);
+                if (isStored)
+                    await storageService.UpdateEpisodeAsync(episode);
             }
         }
 

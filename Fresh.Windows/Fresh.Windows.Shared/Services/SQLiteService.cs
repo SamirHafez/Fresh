@@ -8,6 +8,7 @@ using SQLite.Net.Interop;
 using SQLiteNetExtensions.Extensions;
 using System;
 using System.Linq.Expressions;
+using System.Linq;
 
 namespace Fresh.Windows.Shared.Services
 {
@@ -92,7 +93,7 @@ namespace Fresh.Windows.Shared.Services
             return Task.Run<Season>(delegate
             {
                 lock (_lock)
-                    return connection.GetAllWithChildren<Season>(s => s.TVShowId == showId && s.Number == seasonNumber, recursive: true)[0];
+                    return connection.GetAllWithChildren<Season>(s => s.TVShowId == showId && s.Number == seasonNumber, recursive: true).FirstOrDefault();
             });
         }
 
@@ -107,7 +108,11 @@ namespace Fresh.Windows.Shared.Services
             {
                 lock (_lock)
                 {
-                    var episode = connection.GetWithChildren<Episode>(episodeId, recursive: true);
+                    var episode = connection.FindWithChildren<Episode>(episodeId, recursive: true);
+
+                    if (episode == null)
+                        return null;
+
                     connection.GetChildren(episode.Season, recursive: true);
 
                     return episode;
