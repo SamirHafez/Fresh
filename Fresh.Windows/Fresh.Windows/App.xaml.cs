@@ -36,7 +36,7 @@ namespace Fresh.Windows
             container.RegisterInstance<INavigationService>(NavigationService);
             container.RegisterType<ISession, FreshSession>(new ContainerControlledLifetimeManager());
             container.RegisterType<ILoginService, LoginService>(new ContainerControlledLifetimeManager());
-            container.RegisterInstance<SQLiteConnectionString>(new SQLiteConnectionString(APPLICATION_PATH + @"\fresh.db", storeDateTimeAsTicks: false));
+            container.RegisterInstance<SQLiteConnectionString>(new SQLiteConnectionString(APPLICATION_PATH + @"\fresh.db", storeDateTimeAsTicks: true));
             container.RegisterType<ISQLitePlatform, SQLitePlatformW81>();
             container.RegisterType<IStorageService, SQLiteService>();
             container.RegisterType<ICrawlerService, LetMeWatchThisCrawlerService>(new ContainerControlledLifetimeManager());

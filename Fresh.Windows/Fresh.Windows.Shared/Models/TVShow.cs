@@ -60,7 +60,7 @@ namespace Fresh.Windows.Shared.Models
         {
             var show = await traktService.GetShowAsync(Id, extended: TraktExtendEnum.FULL);
 
-            if (DateTime.Parse(show.Updated_At, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal) == LastUpdated)
+            if (DateTime.Parse(show.Updated_At, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal) == LastUpdated)
                 return;
 
             var traktSeasons = await traktService.GetSeasonsAsync(Id, extended: TraktExtendEnum.FULL_IMAGES);
@@ -82,7 +82,7 @@ namespace Fresh.Windows.Shared.Models
                     await season.UpdateAsync(traktService);
             }
 
-            LastUpdated = !string.IsNullOrWhiteSpace(show.Updated_At) ? DateTime.Parse(show.Updated_At, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal) : (DateTime?)null;
+            LastUpdated = !string.IsNullOrWhiteSpace(show.Updated_At) ? DateTime.Parse(show.Updated_At, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal) : (DateTime?)null;
         }
     }
 }

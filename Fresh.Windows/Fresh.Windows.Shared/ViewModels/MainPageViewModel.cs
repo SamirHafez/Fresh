@@ -48,8 +48,7 @@ namespace Fresh.Windows.ViewModels
             {
                 var lastActivity = await traktService.GetLastActivityAsync();
 
-                var lastActivityEpisodes = DateTime.Parse(lastActivity.Episodes.Watched_At, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal); 
-                lastActivityEpisodes = lastActivityEpisodes.AddTicks( - (lastActivityEpisodes.Ticks % TimeSpan.TicksPerSecond));
+                var lastActivityEpisodes = DateTime.Parse(lastActivity.Episodes.Watched_At, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal); 
                 if (lastActivityEpisodes > (session.User.ActivityUpdated ?? DateTime.MinValue))
                 {
                     var updateTasks = (from show in Library

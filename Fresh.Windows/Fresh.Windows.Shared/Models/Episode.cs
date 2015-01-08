@@ -51,7 +51,7 @@ namespace Fresh.Windows.Shared.Models
                 Number = trakt.Number,
                 Overview = trakt.Overview,
                 Screen = trakt.Images.Screenshot.Full,
-                AirDate = !string.IsNullOrWhiteSpace(trakt.First_Aired) ? DateTime.Parse(trakt.First_Aired, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal) : (DateTime?)null
+                AirDate = !string.IsNullOrWhiteSpace(trakt.First_Aired) ? DateTime.Parse(trakt.First_Aired, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal) : (DateTime?)null
             };
         }
 
