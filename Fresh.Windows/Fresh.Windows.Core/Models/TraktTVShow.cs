@@ -74,7 +74,7 @@ namespace Fresh.Windows.Core.Models
     public class TraktTVShow
     {
         public string Title { get; set; }
-        public int Year { get; set; }
+        public int? Year { get; set; }
         public TraktIds Ids { get; set; }
         public string Overview { get; set; }
         public string First_Aired { get; set; }
@@ -94,5 +94,11 @@ namespace Fresh.Windows.Core.Models
         public List<string> Genres { get; set; }
         public int Aired_Episodes { get; set; }
         public TraktImages Images { get; set; }
+    }
+
+    public class TraktTVShowSearch
+    {
+        public double Score { get; set; }
+        public TraktTVShow Show { get; set; }
     }
 }

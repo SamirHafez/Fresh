@@ -1,6 +1,8 @@
 ﻿using Fresh.Windows.Shared.Interfaces;
 using Fresh.Windows.Shared.Models;
+using Microsoft.Practices.Prism.Commands;
 using System.Collections.ObjectModel;
+using Windows.UI.Xaml.Controls;
 
 namespace Fresh.Windows.Shared.DesignTime
 {
@@ -8,7 +10,7 @@ namespace Fresh.Windows.Shared.DesignTime
     {
         public string SearchQuery { get; set; }
 
-        public TVShow SelectedTVShow { get; set; }
+        public DelegateCommand<ItemClickEventArgs> GotoCommand { get { return null; } }
         public ObservableCollection<TVShow> TVShows { get; set; }
 
         public SearchResultsPageViewModel()

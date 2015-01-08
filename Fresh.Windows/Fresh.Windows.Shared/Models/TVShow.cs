@@ -16,7 +16,7 @@ namespace Fresh.Windows.Shared.Models
         [PrimaryKey]
         public int Id { get; set; }
         public string Title { get; set; }
-        public int Year { get; set; }
+        public int? Year { get; set; }
         public string Overview { get; set; }
         public string Network { get; set; }
         public string Poster { get; set; }
@@ -38,7 +38,7 @@ namespace Fresh.Windows.Shared.Models
                 Network = trakt.Network,
                 Rating = trakt.Rating,
                 Poster = trakt.Images.Poster.Full,
-                AirDay = !string.IsNullOrWhiteSpace(trakt.Airs.Day) && trakt.Airs.Day != "Daily" ? (DayOfWeek)Enum.Parse(typeof(DayOfWeek), trakt.Airs.Day, ignoreCase: true) : (DayOfWeek?)null,
+                AirDay = trakt.Airs != null && !string.IsNullOrWhiteSpace(trakt.Airs.Day) && trakt.Airs.Day != "Daily" ? (DayOfWeek)Enum.Parse(typeof(DayOfWeek), trakt.Airs.Day, ignoreCase: true) : (DayOfWeek?)null,
                 Seasons = new List<Season>()
             };
         }

@@ -12,6 +12,7 @@ using Microsoft.Practices.Prism.Commands;
 using Fresh.Windows.Shared.Services.Interfaces;
 using Windows.UI.Popups;
 using Fresh.Windows.Shared.Configuration;
+using Windows.UI.Xaml.Controls;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -42,36 +43,19 @@ namespace Fresh.Windows.ViewModels
         {
             SearchQuery = (string)navigationParameter;
 
-            TVShows = new ObservableCollection<TVShow>(from traktTVShow in await traktService.SearchTVShowAsync(SearchQuery)
-                                                       select TVShow.FromTrakt(traktTVShow));
+            TVShows = new ObservableCollection<TVShow>(from traktTVShowResult in await traktService.SearchTVShowAsync(SearchQuery)
+                                                       select TVShow.FromTrakt(traktTVShowResult.Show));
 
             base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
         }
 
-        public DelegateCommand AddShowCommand
+        public DelegateCommand<ItemClickEventArgs> GotoCommand
         {
             get
             {
-                return new DelegateCommand(AddShow);
+                return new DelegateCommand<ItemClickEventArgs>(arg => 
+                    NavigationService.Navigate(App.Experience.TVShow.ToString(), ((TVShow)arg.ClickedItem).Id));
             }
-        }
-
-        private async void AddShow()
-        {
-            if (SelectedTVShow == null)
-                return;
-
-            if (await storageService.GetShowAsync(SelectedTVShow.Id) != null)
-            {
-                await new MessageDialog("the selected show already exists in your collection.", "error").ShowAsync();
-                return;
-            }
-
-            var fullShow = TVShow.FromTrakt(await traktService.GetShowAsync(SelectedTVShow.Id, extended: TraktExtendEnum.FULL_IMAGES));
-
-            await storageService.UpdateShowAsync(fullShow);
-
-            NavigationService.GoBack();
         }
     }
 }

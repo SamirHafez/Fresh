@@ -253,14 +253,17 @@ namespace Fresh.Windows.Core.Services
             return response.Data;
         }
 
-        public Task<IList<TraktTVShow>> SearchTVShowAsync(string query)
+        public async Task<IList<TraktTVShowSearch>> SearchTVShowAsync(string query)
         {
-            return new TraktIO<IList<TraktTVShow>>().
-                ForPath("search/shows").
-                WithParameters(new { query }).
-                Extended(false).
-                Execute();
+            var request = new RestRequest("search").
+                AddQueryParameter("query", query).
+                AddQueryParameter("type", "show");
 
+            Debug.WriteLine("Requesting {0}", request.Resource);
+
+            var response = await RestClient.Execute<IList<TraktTVShowSearch>>(request);
+
+            return response.Data;
         }
 
         public async Task WatchEpisodesAsync(IList<int> episodeIds)

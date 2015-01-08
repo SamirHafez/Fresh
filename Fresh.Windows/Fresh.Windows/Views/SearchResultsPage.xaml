@@ -13,17 +13,6 @@
     prism:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d"
     d:ExtensionType="Search">
-	<controls:PageBase.BottomAppBar>
-		<CommandBar x:Name="commandBar" Background="Green">
-			<AppBarButton Icon="Add" Label="Add">
-				<Interactivity:Interaction.Behaviors>
-					<Core:EventTriggerBehavior EventName="Click">
-						<Core:InvokeCommandAction Command="{Binding AddShowCommand}"/>
-					</Core:EventTriggerBehavior>
-				</Interactivity:Interaction.Behaviors>
-			</AppBarButton>
-		</CommandBar>
-	</controls:PageBase.BottomAppBar>
 
     <d:DataContext>
         <designTime:SearchResultsPageViewModel/>
@@ -50,7 +39,13 @@
 		</Hub.Header>
 		<HubSection Header="shows">
 			<DataTemplate>
-				<GridView x:Name="listView" ItemsSource="{Binding TVShows}" ItemTemplate="{StaticResource TVShowTemplate}" SelectedItem="{Binding SelectedTVShow, Mode=TwoWay}"/>
+				<GridView x:Name="listView" ItemsSource="{Binding TVShows}" ItemTemplate="{StaticResource TVShowTemplate}" SelectionMode="None" IsItemClickEnabled="True">
+					<Interactivity:Interaction.Behaviors>
+						<Core:EventTriggerBehavior EventName="ItemClick">
+							<Core:InvokeCommandAction Command="{Binding GotoCommand, Mode=OneWay}"/>
+						</Core:EventTriggerBehavior>
+					</Interactivity:Interaction.Behaviors>
+				</GridView>
 			</DataTemplate>
 		</HubSection>
 	</Hub>

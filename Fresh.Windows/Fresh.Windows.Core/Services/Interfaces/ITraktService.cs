@@ -33,7 +33,7 @@ namespace Fresh.Windows.Core.Services.Interfaces
 
         Task WatchEpisodesAsync(IList<int> episodeIds);
 
-        Task<IList<TraktTVShow>> SearchTVShowAsync(string query);
+        Task<IList<TraktTVShowSearch>> SearchTVShowAsync(string query);
 
         Task<TraktActivity> GetLastActivityAsync();
     }
