@@ -15,7 +15,7 @@
 	<controls:PageBase.Resources>
         <CollectionViewSource x:Key="thisWeekCvs" Source="{Binding ThisWeek}" d:Source="{Binding ThisWeek, Source={d:DesignInstance IsDesignTimeCreatable=True, Type=designTime:MainPageViewModel}}"  IsSourceGrouped="True" ItemsPath="Episodes"/>
 		<DataTemplate x:Key="ShowWithEpisodes">
-			<Grid Height="217">
+			<Grid Height="217" Background="#33008000">
 				<Image Source="{Binding Key.Poster}" Stretch="UniformToFill"/>
 				<Border Background="#CC008000" Padding="5" HorizontalAlignment="Right" VerticalAlignment="Top">
 					<TextBlock TextWrapping="Wrap" Text="{Binding Episodes.Count}" Style="{StaticResource BaseTextBlockStyle}"/>
@@ -139,7 +139,18 @@
 				</GridView>
 			</DataTemplate>
 		</HubSection>
-		<HubSection Header="shows">
+		<HubSection Header="{Binding Library.Count, Mode=OneWay}">
+			<HubSection.Resources>
+				<DataTemplate x:Key="ShowsHeader">
+					<TextBlock>
+								<Run Text="{Binding}" FontWeight="ExtraBold" Foreground="Green"/>
+								<Run Text="show(s)"/>
+							</TextBlock>
+				</DataTemplate>
+			</HubSection.Resources>
+			<HubSection.HeaderTemplate>
+				<StaticResource ResourceKey="ShowsHeader"/>
+			</HubSection.HeaderTemplate>
 			<DataTemplate>
 				<GridView ItemsSource="{Binding Library}" ItemTemplate="{StaticResource TVShowTemplate}" IsItemClickEnabled="True">
 					<Interactivity:Interaction.Behaviors>

@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Navigation;
 using System.Linq;
 using Windows.UI.Xaml.Controls;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -46,14 +47,15 @@ namespace Fresh.Windows.ViewModels
 
             if (navigationMode == NavigationMode.New)
             {
-                var lastActivity = await traktService.GetLastActivityAsync();
 
-                var lastActivityEpisodes = DateTime.Parse(lastActivity.Episodes.Watched_At, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal); 
+                var updateTasks = (from show in Library
+                                   select new { ShowId = show.Id, Task = show.UpdateAsync(traktService) }).ToList();
+
+                var lastActivity = await traktService.GetLastActivityAsync();
+                var lastActivityEpisodes = DateTime.Parse(lastActivity.Episodes.Watched_At, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
+
                 if (lastActivityEpisodes > (session.User.ActivityUpdated ?? DateTime.MinValue))
                 {
-                    var updateTasks = (from show in Library
-                                       select new { ShowId = show.Id, Task = show.UpdateAsync(traktService) }).ToList();
-
                     var watchedShows = await traktService.GetWatchedEpisodesAsync(extended: TraktExtendEnum.MIN);
 
                     foreach (var watchedShow in watchedShows)
@@ -80,11 +82,13 @@ namespace Fresh.Windows.ViewModels
                             Library.Add(show);
                     }
 
-                    await storageService.UpdateLibraryAsync(Library);
-
                     session.User.ActivityUpdated = lastActivityEpisodes;
                     await storageService.CreateOrUpdateUserAsync(session.User);
                 }
+                else
+                    await Task.WhenAll(updateTasks.Select(ut => ut.Task));
+
+                await storageService.UpdateLibraryAsync(Library);
             }
 
             var lastMonday = StartOfWeek(DateTime.Now, DayOfWeek.Monday);

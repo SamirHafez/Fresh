@@ -8,11 +8,14 @@ namespace Fresh.Windows.Shared.DesignTime
     {
         public int Number { get; set; }
         public string Poster { get; set; }
+        public string Overview { get; set; }
         public ObservableCollection<Episode> Episodes { get; set; }
 
         public SeasonPageViewModel()
         {
             Number = 2;
+
+            Overview = "Season 2 Overview.";
 
             Poster = "http://slurm.trakt.us/images/seasons/124-5.47.jpg";
 

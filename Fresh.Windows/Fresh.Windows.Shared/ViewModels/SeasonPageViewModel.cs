@@ -11,7 +11,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Fresh.Windows.Shared.Configuration;
 using System.Linq;
-using System;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -40,6 +39,7 @@ namespace Fresh.Windows.ViewModels
 
             Number = seasonNumber;
             Poster = season.Poster;
+            Overview = season.Overview;
             Episodes = new ObservableCollection<Episode>(from episode in season.Episodes
                                                          orderby episode.Number
                                                          select episode);
@@ -93,5 +93,8 @@ namespace Fresh.Windows.ViewModels
 
         string poster = default(string);
         public string Poster { get { return poster; } set { SetProperty(ref poster, value); } }
+
+        string overview = default(string);
+        public string Overview { get { return overview; } set { SetProperty(ref overview, value); } }
     }
 }

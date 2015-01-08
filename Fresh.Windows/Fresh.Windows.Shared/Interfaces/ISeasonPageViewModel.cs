@@ -7,6 +7,7 @@ namespace Fresh.Windows.Shared.Interfaces
     { 
         int Number { get; set; }
         string Poster { get; set; }
+        string Overview { get; set; }
         ObservableCollection<Episode> Episodes { get; set; } 
     }
 }

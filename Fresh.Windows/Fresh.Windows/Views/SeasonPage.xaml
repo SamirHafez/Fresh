@@ -58,5 +58,12 @@
 				</GridView>
 			</DataTemplate>
 		</HubSection>
+		<HubSection Header="info" Width="400">
+			<DataTemplate>
+				<Grid>
+					<TextBlock HorizontalAlignment="Left" TextWrapping="WrapWholeWords" Text="{Binding Overview}" VerticalAlignment="Top" Style="{StaticResource BodyTextBlockStyle}" TextAlignment="Justify"/>
+				</Grid>
+			</DataTemplate>
+		</HubSection>
 	</Hub>
 </controls:PageBase>
