@@ -64,6 +64,8 @@ namespace Fresh.Windows.Shared.Models
             if (traktLastUpdated == LastUpdated)
                 return;
 
+            Rating = show.Rating;
+
             var traktSeasons = await traktService.GetSeasonsAsync(Id, extended: TraktExtendEnum.FULL_IMAGES);
 
             foreach (var traktSeason in traktSeasons)
