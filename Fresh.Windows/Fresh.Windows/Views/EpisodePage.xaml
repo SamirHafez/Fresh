@@ -87,7 +87,7 @@
 				</VisualState>
 			</VisualStateGroup>
 		</VisualStateManager.VisualStateGroups>
-		<mmppf:MediaPlayer x:Name="mediaPlayer" Source="{Binding Link}" AudioCategory="BackgroundCapableMedia" AutoLoadPlugins="False" IsAudioSelectionEnabled="False" IsCaptionSelectionEnabled="False" IsFastForwardVisible="True" IsFullScreen="True" IsGoLiveEnabled="False" IsInfoEnabled="False" IsMoreEnabled="False" IsRewindVisible="True" IsSkipAheadEnabled="False" IsSkipBackEnabled="False" IsSkipNextEnabled="False" IsSkipPreviousEnabled="False" IsSlowMotionEnabled="False" IsStopEnabled="False" IsVolumeVisible="False" IsZoomEnabled="False" AutoPlay="False"/>
+		<mmppf:MediaPlayer x:Name="mediaPlayer" Source="{Binding Link}" AudioCategory="ForegroundOnlyMedia" AutoLoadPlugins="False" IsAudioSelectionEnabled="False" IsCaptionSelectionEnabled="False" IsFastForwardVisible="True" IsFullScreen="True" IsGoLiveEnabled="False" IsInfoEnabled="False" IsMoreEnabled="False" IsRewindVisible="True" IsSkipAheadEnabled="False" IsSkipBackEnabled="False" IsSkipNextEnabled="False" IsSkipPreviousEnabled="False" IsSlowMotionEnabled="False" IsStopEnabled="False" IsVolumeVisible="False" IsZoomEnabled="False" AutoPlay="False"/>
 		<Hub x:Name="hub">
 			<Hub.Header>
 				<Grid Background="Green">

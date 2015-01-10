@@ -11,6 +11,8 @@ namespace Fresh.Windows.Views
 
             this.playButton.Click += (sender, args) => VisualStateManager.GoToState(this, "Playing", useTransitions: true);
             this.moreButton.Click += (sender, args) => VisualStateManager.GoToState(this, "Idle", useTransitions: true);
+            this.mediaPlayer.MediaFailed += (sender, args) =>
+                ((Fresh.Windows.ViewModels.EpisodePageViewModel)DataContext).MediaFailedCommand.Execute();
         }
     }
 }

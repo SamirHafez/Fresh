@@ -88,7 +88,11 @@ namespace Fresh.Windows.ViewModels
             get
             {
                 return new DelegateCommand<ItemClickEventArgs>(args =>
-                    navigationService.Navigate(App.Experience.Episode.ToString(), ((Episode)args.ClickedItem).Id));
+                    {
+                        var episode = (Episode)args.ClickedItem;
+                        navigationService.Navigate(App.Experience.Episode.ToString(),
+                new { showId = Show.Id, season = episode.Season.Number, episode = episode.Number, episodeId = episode.Id });
+                    });
             }
         }
 

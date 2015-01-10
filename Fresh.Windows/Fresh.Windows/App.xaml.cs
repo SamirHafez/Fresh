@@ -39,7 +39,7 @@ namespace Fresh.Windows
             container.RegisterInstance<SQLiteConnectionString>(new SQLiteConnectionString(APPLICATION_PATH + @"\fresh.db", storeDateTimeAsTicks: true));
             container.RegisterType<ISQLitePlatform, SQLitePlatformW81>();
             container.RegisterType<IStorageService, SQLiteService>();
-            container.RegisterType<ICrawlerService, LetMeWatchThisCrawlerService>(new ContainerControlledLifetimeManager());
+            container.RegisterType<ICrawlerService, FreeTVCrawlerService>(new ContainerControlledLifetimeManager());
             container.RegisterInstance<ITraktService>(new TraktService(TRAKT_CLIENT_ID, TRAKT_CLIENT_SECRET), new ContainerControlledLifetimeManager());
 
             return Task.FromResult<object>(null);

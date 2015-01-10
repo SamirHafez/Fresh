@@ -15,7 +15,7 @@
 	<controls:PageBase.Resources>
         <CollectionViewSource x:Key="thisWeekCvs" Source="{Binding ThisWeek}" d:Source="{Binding ThisWeek, Source={d:DesignInstance IsDesignTimeCreatable=True, Type=designTime:MainPageViewModel}}"  IsSourceGrouped="True" ItemsPath="Episodes"/>
 		<DataTemplate x:Key="ShowWithEpisodes">
-			<Grid Height="217" Background="#33008000">
+			<Grid Height="217" Background="#33008000" Width="148">
 				<Image Source="{Binding Key.Poster}" Stretch="UniformToFill"/>
 				<Border Background="#CC008000" Padding="5" HorizontalAlignment="Right" VerticalAlignment="Top">
 					<TextBlock TextWrapping="Wrap" Text="{Binding Episodes.Count}" Style="{StaticResource BaseTextBlockStyle}"/>
@@ -148,6 +148,22 @@
 							</TextBlock>
 				</DataTemplate>
 			</HubSection.Resources>
+			<Interactivity:Interaction.Behaviors>
+				<Core:DataTriggerBehavior Binding="{Binding Library.Count, Mode=OneWay}" Value="0">
+					<Core:ChangePropertyAction PropertyName="Visibility">
+						<Core:ChangePropertyAction.Value>
+							<Visibility>Collapsed</Visibility>
+						</Core:ChangePropertyAction.Value>
+					</Core:ChangePropertyAction>
+				</Core:DataTriggerBehavior>
+				<Core:DataTriggerBehavior Binding="{Binding Library.Count, Mode=OneWay}" ComparisonCondition="NotEqual" Value="0">
+					<Core:ChangePropertyAction PropertyName="Visibility">
+						<Core:ChangePropertyAction.Value>
+							<Visibility>Visible</Visibility>
+						</Core:ChangePropertyAction.Value>
+					</Core:ChangePropertyAction>
+				</Core:DataTriggerBehavior>
+			</Interactivity:Interaction.Behaviors>
 			<HubSection.HeaderTemplate>
 				<StaticResource ResourceKey="ShowsHeader"/>
 			</HubSection.HeaderTemplate>

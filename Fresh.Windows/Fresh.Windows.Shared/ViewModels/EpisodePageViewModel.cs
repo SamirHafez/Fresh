@@ -8,6 +8,7 @@ using Microsoft.Practices.Prism.Commands;
 using Fresh.Windows.Shared.Models;
 using System;
 using Microsoft.Practices.Prism.Mvvm.Interfaces;
+using Windows.UI.Xaml;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -76,7 +77,7 @@ namespace Fresh.Windows.ViewModels
             Link = Episode.Link;
         }
 
-        public DelegateCommand LinkFailedCommand
+        public DelegateCommand MediaFailedCommand
         {
             get
             {

@@ -80,6 +80,7 @@ namespace Fresh.Windows.ViewModels
 
                             if (isNew)
                                 Library.Add(show);
+                            await storageService.UpdateShowAsync(show);
                         }
 
                         session.User.ActivityUpdated = lastActivityEpisodes;
@@ -87,8 +88,6 @@ namespace Fresh.Windows.ViewModels
                     }
                     else
                         await Task.WhenAll(updateTasks.Select(ut => ut.Task));
-
-                    await storageService.UpdateLibraryAsync(Library);
                 }
                 catch
                 { }
@@ -151,8 +150,13 @@ namespace Fresh.Windows.ViewModels
         {
             get
             {
-                return new DelegateCommand<ItemClickEventArgs>(args =>
-                    navigationService.Navigate(App.Experience.Episode.ToString(), ((Episode)args.ClickedItem).Id));
+
+                return new DelegateCommand<ItemClickEventArgs>(arg =>
+                    {
+                        var episode = (Episode)arg.ClickedItem;
+                        navigationService.Navigate(App.Experience.Episode.ToString(),
+                            new { showId = episode.Season.TVShowId, season = episode.Season.Number, episode = episode.Number, episodeId = episode.Id });
+                    });
             }
         }
 
@@ -167,7 +171,7 @@ namespace Fresh.Windows.ViewModels
             return dt.AddDays(-1 * diff).Date;
         }
 
-        ObservableCollection<TVShow> library = default(ObservableCollection<TVShow>);
+        ObservableCollection<TVShow> library = new ObservableCollection<TVShow>();
         public ObservableCollection<TVShow> Library { get { return library; } set { SetProperty(ref library, value); } }
 
         ObservableCollection<GroupedEpisodes<TVShow>> unwatchedEpisodeByShow = new ObservableCollection<GroupedEpisodes<TVShow>>(Enumerable.Empty<GroupedEpisodes<TVShow>>());
