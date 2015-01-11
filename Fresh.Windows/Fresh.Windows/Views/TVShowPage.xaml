@@ -53,33 +53,6 @@
 				</StackPanel>
 			</DataTemplate>
 		</HubSection>
-		<HubSection Header="unwatched episodes">
-			<Interactivity:Interaction.Behaviors>
-				<Core:DataTriggerBehavior Binding="{Binding UnwatchedEpisodes.Count, Mode=OneWay}" Value="0">
-					<Core:ChangePropertyAction PropertyName="Visibility">
-						<Core:ChangePropertyAction.Value>
-							<Visibility>Collapsed</Visibility>
-						</Core:ChangePropertyAction.Value>
-					</Core:ChangePropertyAction>
-				</Core:DataTriggerBehavior>
-				<Core:DataTriggerBehavior Binding="{Binding UnwatchedEpisodes.Count, Mode=OneWay}" ComparisonCondition="NotEqual" Value="0">
-					<Core:ChangePropertyAction PropertyName="Visibility">
-						<Core:ChangePropertyAction.Value>
-							<Visibility>Visible</Visibility>
-						</Core:ChangePropertyAction.Value>
-					</Core:ChangePropertyAction>
-				</Core:DataTriggerBehavior>
-			</Interactivity:Interaction.Behaviors>
-			<DataTemplate>
-				<ListView ItemsSource="{Binding UnwatchedEpisodes}" ItemTemplate="{StaticResource EpisodeTemplate}" IsItemClickEnabled="True">
-					<Interactivity:Interaction.Behaviors>
-						<Core:EventTriggerBehavior EventName="ItemClick">
-							<Core:InvokeCommandAction Command="{Binding EpisodeSelectedCommand}"/>
-						</Core:EventTriggerBehavior>
-					</Interactivity:Interaction.Behaviors>
-				</ListView>
-			</DataTemplate>
-		</HubSection>
 		<HubSection Header="seasons" ScrollViewer.VerticalScrollBarVisibility="Auto">
 			<DataTemplate>
 				<GridView ItemsSource="{Binding Seasons}" ItemTemplate="{StaticResource SeasonTemplate}" IsItemClickEnabled="True" SelectionMode="None">

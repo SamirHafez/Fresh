@@ -13,8 +13,9 @@ namespace Fresh.Windows.Shared.Models
         [PrimaryKey]
         public int Id { get; set; }
 
-        [ForeignKey(typeof(Season))]
-        public int SeasonId { get; set; }
+        [ForeignKey(typeof(TVShow))]
+        public int ShowId { get; set; }
+        public int SeasonNumber { get; set; }
 
         public string Title { get; set; }
         public int Number { get; set; }
@@ -38,19 +39,21 @@ namespace Fresh.Windows.Shared.Models
         public string Link { get; set; }
 
         [ManyToOne]
-        public Season Season { get; set; }
+        public TVShow TVShow { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public static Episode FromTrakt(TraktEpisode trakt)
+        public static Episode FromTrakt(TraktEpisode trakt, int showId)
         {
             return new Episode
             {
                 Id = trakt.Ids.Trakt,
+                ShowId = showId,
                 Title = trakt.Title,
                 Number = trakt.Number,
+                SeasonNumber = trakt.Season,
                 Overview = trakt.Overview,
-                Screen = trakt.Images.Screenshot.Full,
+                Screen = trakt.Images != null && trakt.Images.Screenshot != null ? trakt.Images.Screenshot.Full : null,
                 AirDate = !string.IsNullOrWhiteSpace(trakt.First_Aired) ? DateTime.Parse(trakt.First_Aired, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal) : (DateTime?)null
             };
         }
@@ -59,6 +62,7 @@ namespace Fresh.Windows.Shared.Models
         {
             Title = trakt.Title;
             Number = trakt.Number;
+            SeasonNumber = trakt.Season;
             Overview = trakt.Overview;
             Screen = trakt.Images.Screenshot.Full;
             AirDate = !string.IsNullOrWhiteSpace(trakt.First_Aired) ? DateTime.Parse(trakt.First_Aired, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal) : (DateTime?)null;

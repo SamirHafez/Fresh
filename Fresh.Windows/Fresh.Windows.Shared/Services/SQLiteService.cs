@@ -30,7 +30,7 @@ namespace Fresh.Windows.Shared.Services
 
         public async Task<User> CreateOrUpdateUserAsync(User user)
         {
-            await context.CreateTablesAsync<User, Season, TVShow, Episode>();
+            await context.CreateTablesAsync<User, TVShow, Episode>();
 
             await context.InsertOrReplaceAsync(user);
 
@@ -57,7 +57,7 @@ namespace Fresh.Windows.Shared.Services
 
         public async Task<User> GetUserAsync()
         {
-            await context.CreateTablesAsync<User, Season, TVShow, Episode>();
+            await context.CreateTablesAsync<User, TVShow, Episode>();
 
             return await context.Table<User>().
                 FirstOrDefaultAsync();
@@ -88,15 +88,6 @@ namespace Fresh.Windows.Shared.Services
             });
         }
 
-        public Task<Season> GetSeasonAsync(int showId, int seasonNumber)
-        {
-            return Task.Run<Season>(delegate
-            {
-                lock (_lock)
-                    return connection.GetAllWithChildren<Season>(s => s.TVShowId == showId && s.Number == seasonNumber, recursive: true).FirstOrDefault();
-            });
-        }
-
         public Task UpdateEpisodeAsync(Episode episode)
         {
             return context.InsertOrReplaceAsync(episode);
@@ -113,7 +104,7 @@ namespace Fresh.Windows.Shared.Services
                     if (episode == null)
                         return null;
 
-                    connection.GetChildren(episode.Season, recursive: true);
+                    connection.GetChildren(episode.TVShow, recursive: true);
 
                     return episode;
                 }
@@ -130,7 +121,7 @@ namespace Fresh.Windows.Shared.Services
                     var episodes = connection.GetAllWithChildren(predicate, recursive: true);
 
                     foreach (var episode in episodes)
-                        connection.GetChildren(episode.Season, recursive: true);
+                        connection.GetChildren(episode.TVShow, recursive: true);
 
                     return episodes;
                 }

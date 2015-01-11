@@ -71,6 +71,12 @@ namespace Fresh.Windows.Core.Models
         public TraktScreenshot Screenshot { get; set; }
     }
 
+    public class TraktTrendingTVShow
+    {
+        public int Watchers { get; set; }
+        public TraktTVShow Show { get; set; }
+    }
+
     public class TraktTVShow
     {
         public string Title { get; set; }

@@ -11,23 +11,20 @@ using Windows.UI.Xaml.Controls;
 using System.Linq;
 using System;
 using Fresh.Windows.Core.Services.Interfaces;
+using Fresh.Windows.Core.Models;
 
 namespace Fresh.Windows.ViewModels
 {
     public class TVShowPageViewModel : ViewModel, ITVShowPageViewModel
     {
         public INavigationService navigationService { get; private set; }
-        private readonly IStorageService storageService;
         private readonly ITraktService traktService;
-
-        private bool isStored;
 
         public TVShow Show { get; private set; }
 
-        public TVShowPageViewModel(INavigationService navigationService, IStorageService storageService, ITraktService traktService)
+        public TVShowPageViewModel(INavigationService navigationService, ITraktService traktService)
         {
             this.navigationService = navigationService;
-            this.storageService = storageService;
             this.traktService = traktService;
         }
 
@@ -35,52 +32,25 @@ namespace Fresh.Windows.ViewModels
         {
             var showId = (int)navigationParameter;
 
-            Show = await storageService.GetShowAsync(showId);
+            Show = TVShow.FromTrakt(await traktService.GetShowAsync(showId, extended: TraktExtendEnum.FULL_IMAGES));
 
-            isStored = Show != null;
+            Title = Show.Title;
+            Poster = Show.Poster;
+            Overview = Show.Overview;
+            Rating = Show.Rating;
 
-            if (!isStored)
-            {
-                Show = TVShow.FromTrakt(await traktService.GetShowAsync(showId, extended: TraktExtendEnum.FULL_IMAGES));
-                await Show.UpdateAsync(traktService);
-            }
-
-            Update();
+            Seasons = new ObservableCollection<TraktSeason>(from season in await traktService.GetSeasonsAsync(Show.Id, extended: TraktExtendEnum.IMAGES)
+                                                            orderby season.Number descending
+                                                            select season);
         }
 
         public DelegateCommand<ItemClickEventArgs> EnterSeasonCommand
         {
             get
             {
-                return new DelegateCommand<ItemClickEventArgs>(arg => EnterSeason(((Season)arg.ClickedItem).Number));
+                return new DelegateCommand<ItemClickEventArgs>(arg =>
+                    navigationService.Navigate(App.Experience.Season.ToString(), new { season = ((TraktSeason)arg.ClickedItem).Number, showId = Show.Id }));
             }
-        }
-
-        private void EnterSeason(int season)
-        {
-            navigationService.Navigate(App.Experience.Season.ToString(), new { season, showId = Show.Id });
-        }
-
-        private void Update()
-        {
-            Title = Show.Title;
-            Poster = Show.Poster;
-            Overview = Show.Overview;
-            Rating = Show.Rating;
-
-            Seasons = new ObservableCollection<Season>(from season in Show.Seasons
-                                                       orderby season.Number descending
-                                                       select season);
-
-            if (isStored)
-                UnwatchedEpisodes = new ObservableCollection<Episode>(from season in Show.Seasons
-                                                                      from episode in season.Episodes
-                                                                      where episode.Watched == false &&
-                                                                        episode.AirDate.HasValue &&
-                                                                        episode.AirDate <= DateTime.UtcNow &&
-                                                                        season.Number != 0
-                                                                      orderby season.Number, episode.Number
-                                                                      select episode);
         }
 
         public DelegateCommand<ItemClickEventArgs> EpisodeSelectedCommand
@@ -91,14 +61,9 @@ namespace Fresh.Windows.ViewModels
                     {
                         var episode = (Episode)args.ClickedItem;
                         navigationService.Navigate(App.Experience.Episode.ToString(),
-                new { showId = Show.Id, season = episode.Season.Number, episode = episode.Number, episodeId = episode.Id });
+                            new { showId = episode.ShowId, season = episode.SeasonNumber, episode = episode.Number });
                     });
             }
-        }
-
-        private void EpisodeSelected(Episode episode)
-        {
-            navigationService.Navigate(App.Experience.Episode.ToString(), episode.Id);
         }
 
         string title = default(string);
@@ -113,10 +78,8 @@ namespace Fresh.Windows.ViewModels
         double rating = default(double);
         public double Rating { get { return rating; } set { SetProperty(ref rating, value); } }
 
-        ObservableCollection<Season> seasons = default(ObservableCollection<Season>);
-        public ObservableCollection<Season> Seasons { get { return seasons; } set { SetProperty(ref seasons, value); } }
+        ObservableCollection<TraktSeason> seasons = default(ObservableCollection<TraktSeason>);
+        public ObservableCollection<TraktSeason> Seasons { get { return seasons; } set { SetProperty(ref seasons, value); } }
 
-        ObservableCollection<Episode> unwatchedEpisodes = new ObservableCollection<Episode>(Enumerable.Empty<Episode>());
-        public ObservableCollection<Episode> UnwatchedEpisodes { get { return unwatchedEpisodes; } set { SetProperty(ref unwatchedEpisodes, value); } }
     }
 }

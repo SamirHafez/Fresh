@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Fresh.Windows.Core.Models;
+using System;
+using System.Collections.ObjectModel;
 namespace Fresh.Windows.Shared.Interfaces
 {
     public interface IEpisodePageViewModel
@@ -15,5 +17,7 @@ namespace Fresh.Windows.Shared.Interfaces
 
         string Screen { get; set; }
         DateTime AirDate { get; set; }
+
+        ObservableCollection<TraktComment> Comments { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Fresh.Windows.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -29,7 +30,19 @@ namespace Fresh.Windows.Core.Services.Interfaces
 
         Task<TraktEpisode> GetEpisodeAsync(int showId, int seasonNumber, int episodeNumber, TraktExtendEnum extended = TraktExtendEnum.MIN);
 
+        Task<IList<TraktComment>> GetEpisodeCommentsAsync(int showId, int seasonNumber, int episodeNumber);
+
         Task<IList<TraktWatchedShow>> GetWatchedEpisodesAsync(TraktExtendEnum extended = TraktExtendEnum.MIN);
+
+        Task<TraktWatchedProgress> GetShowWatchedProgressAsync(int showId, TraktExtendEnum extended = TraktExtendEnum.MIN);
+
+        Task<Dictionary<DateTime, List<TraktCalendarItem>>> GetCalendarAsync(DateTime startDate, int days, TraktExtendEnum extended = TraktExtendEnum.MIN);
+
+        Task<IList<TraktTVShow>> GetRecommendedShowsAsync(TraktExtendEnum extended = TraktExtendEnum.MIN);
+
+        Task<IList<TraktTVShow>> GetPopularShowsAsync(TraktExtendEnum extended = TraktExtendEnum.MIN, int page = 1, int limit = 10);
+
+        Task<IList<TraktTrendingTVShow>> GetTrendingShowsAsync(TraktExtendEnum extended = TraktExtendEnum.MIN, int page = 1, int limit = 10);
 
         Task WatchEpisodesAsync(IList<int> episodeIds);
 

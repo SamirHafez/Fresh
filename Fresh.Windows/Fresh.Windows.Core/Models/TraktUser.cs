@@ -30,6 +30,18 @@ namespace Fresh.Windows.Core.Models
         public TraktUserImages Images { get; set; }
     }
 
+    public class TraktComment
+    {
+        public int Id { get; set; }
+        public int? Parent_Id { get; set; }
+        public string Created_At { get; set; }
+        public string Comment { get; set; }
+        public bool Spoiler { get; set; }
+        public bool Review { get; set; }
+        public int Replies { get; set; }
+        public TraktUserInfo User { get; set; }
+    }
+
     public class TraktAccount
     {
         public string Timezone { get; set; }

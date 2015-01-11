@@ -14,20 +14,19 @@ using System.Linq;
 using Windows.UI.Xaml.Controls;
 using System.Globalization;
 using System.Threading.Tasks;
+using Fresh.Windows.Core.Models;
 
 namespace Fresh.Windows.ViewModels
 {
     public class MainPageViewModel : ViewModel, IMainPageViewModel
     {
         private readonly ITraktService traktService;
-        private readonly IStorageService storageService;
         private readonly INavigationService navigationService;
         private readonly ISession session;
 
-        public MainPageViewModel(ITraktService traktService, IStorageService storageService, INavigationService navigationService, ISession session)
+        public MainPageViewModel(ITraktService traktService, INavigationService navigationService, ISession session)
         {
             this.traktService = traktService;
-            this.storageService = storageService;
             this.navigationService = navigationService;
             this.session = session;
         }
@@ -41,100 +40,68 @@ namespace Fresh.Windows.ViewModels
 
             Loading = true;
 
-            Library = new ObservableCollection<TVShow>(from show in await storageService.GetLibraryAsync()
-                                                       orderby show.Title
-                                                       select show);
-
-            if (navigationMode == NavigationMode.New)
-                try
-                {
-                    var updateTasks = (from show in Library
-                                       select new { ShowId = show.Id, Task = show.UpdateAsync(traktService) }).ToList();
-
-                    var lastActivity = await traktService.GetLastActivityAsync();
-                    var lastActivityEpisodes = DateTime.Parse(lastActivity.Episodes.Watched_At, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
-
-                    if (lastActivityEpisodes > (session.User.ActivityUpdated ?? DateTime.MinValue))
-                    {
-                        var watchedShows = await traktService.GetWatchedEpisodesAsync(extended: TraktExtendEnum.MIN);
-
-                        foreach (var watchedShow in watchedShows)
-                        {
-                            var show = Library.FirstOrDefault(s => s.Id == watchedShow.Show.Ids.Trakt);
-
-                            bool isNew = show == null;
-                            if (isNew)
-                            {
-                                show = TVShow.FromTrakt(await traktService.GetShowAsync(watchedShow.Show.Ids.Trakt, extended: TraktExtendEnum.FULL_IMAGES));
-                                await show.UpdateAsync(traktService);
-                            }
-                            else
-                            {
-                                var task = (from updateTask in updateTasks
-                                            where updateTask.ShowId == show.Id
-                                            select updateTask.Task).First();
-                                await task;
-                            }
-
-                            show.UpdateWatched(watchedShow);
-
-                            if (isNew)
-                                Library.Add(show);
-                            await storageService.UpdateShowAsync(show);
-                        }
-
-                        session.User.ActivityUpdated = lastActivityEpisodes;
-                        await storageService.CreateOrUpdateUserAsync(session.User);
-                    }
-                    else
-                        await Task.WhenAll(updateTasks.Select(ut => ut.Task));
-                }
-                catch
-                { }
-
-            var lastMonday = StartOfWeek(DateTime.Now, DayOfWeek.Monday);
-            var nextSunday = lastMonday.AddDays(7);
-            ThisWeek = GetSchedule(lastMonday, nextSunday).ToList();
-
-            UnwatchedEpisodesByShow = new ObservableCollection<GroupedEpisodes<TVShow>>(GetUnwatchedEpisodesByShow());
+            await Task.WhenAll(
+                FetchCalendarAsync(),
+                FetchNextEpisodesAsync(),
+                FetchRecommendedShowsAsync(),
+                FetchPopularShowsAsync(),
+                FetchTrendingShowsAsync()
+                );
 
             Loading = false;
 
             base.OnNavigatedTo(navigationParameter, navigationMode, viewModelState);
         }
 
-        private IEnumerable<GroupedEpisodes<TVShow>> GetUnwatchedEpisodesByShow()
+        private async Task FetchTrendingShowsAsync()
         {
-            return from show in Library
-                   from season in show.Seasons
-                   from episode in season.Episodes
-                   where episode.Watched == false && episode.AirDate != null && episode.AirDate <= DateTime.UtcNow && season.Number > 0
-                   group episode by episode.Season.TVShowId into g
-                   let tvShow = g.First().Season.TVShow
-                   orderby g.Count()
-                   select new GroupedEpisodes<TVShow>
-                   {
-                       Key = tvShow,
-                       Episodes = g.ToList()
-                   };
+            Trending = new ObservableCollection<TVShow>(from item in await traktService.GetTrendingShowsAsync(extended: TraktExtendEnum.IMAGES, limit: 5)
+                                                        orderby item.Watchers descending
+                                                        select TVShow.FromTrakt(item.Show));
         }
 
-        private IEnumerable<GroupedEpisodes<DayOfWeek>> GetSchedule(DateTime lastMonday, DateTime nextSunday)
+        private async Task FetchPopularShowsAsync()
         {
-            var utcLastMonday = lastMonday.ToUniversalTime();
-            var utcNextSunday = nextSunday.ToUniversalTime();
+            Popular = new ObservableCollection<TVShow>(from show in await traktService.GetPopularShowsAsync(extended: TraktExtendEnum.IMAGES, limit: 5)
+                                                       select TVShow.FromTrakt(show));
+        }
 
-            return from show in Library
-                   from season in show.Seasons
-                   from episode in season.Episodes
-                   where episode.AirDate != null && episode.AirDate >= utcLastMonday && episode.AirDate <= utcNextSunday
-                   group episode by episode.AirDate.Value.ToLocalTime().DayOfWeek into g
-                   orderby g.Key
-                   select new GroupedEpisodes<DayOfWeek>
-                   {
-                       Key = g.Key,
-                       Episodes = g.ToList()
-                   };
+        private async Task FetchRecommendedShowsAsync()
+        {
+            Recommended = new ObservableCollection<TVShow>(from show in await traktService.GetRecommendedShowsAsync(extended: TraktExtendEnum.IMAGES)
+                                                           select TVShow.FromTrakt(show));
+        }
+
+        private async Task FetchCalendarAsync()
+        {
+            var days = 7;
+            var startDate = StartOfWeek(DateTime.Today, DayOfWeek.Monday);
+            var endDate = startDate.AddDays(days);
+            ThisWeek = (from day in await traktService.GetCalendarAsync(startDate.ToUniversalTime().AddDays(-1), days + 1, extended: TraktExtendEnum.IMAGES)
+                        from item in day.Value
+                        let airDate = DateTime.Parse(item.Airs_At, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal)
+                        where airDate >= startDate && airDate <= endDate
+                        let episode = Episode.FromTrakt(item.Episode, item.Show.Ids.Trakt)
+                        group episode by airDate.DayOfWeek into groupItem
+                        orderby groupItem.Key
+                        select new GroupedEpisodes<DayOfWeek>
+                        {
+                            Key = groupItem.Key,
+                            Episodes = groupItem.ToList()
+                        }).ToList();
+        }
+
+        private async Task FetchNextEpisodesAsync()
+        {
+            var traktProgressTasks = (from show in await traktService.GetWatchedEpisodesAsync(extended: TraktExtendEnum.MIN)
+                                      select new { show.Show, Progress = traktService.GetShowWatchedProgressAsync(show.Show.Ids.Trakt, extended: TraktExtendEnum.IMAGES) }).ToList();
+
+            await Task.WhenAll(from task in traktProgressTasks
+                               select task.Progress);
+
+            NextEpisodes = new ObservableCollection<Episode>(from item in traktProgressTasks
+                                                             where item.Progress.Result.Next_Episode != null
+                                                             select Episode.FromTrakt(item.Progress.Result.Next_Episode, item.Show.Ids.Trakt));
         }
 
         public DelegateCommand<string> EnterSearchCommand
@@ -155,8 +122,20 @@ namespace Fresh.Windows.ViewModels
                     {
                         var episode = (Episode)arg.ClickedItem;
                         navigationService.Navigate(App.Experience.Episode.ToString(),
-                            new { showId = episode.Season.TVShowId, season = episode.Season.Number, episode = episode.Number, episodeId = episode.Id });
+                            new { showId = episode.ShowId, season = episode.SeasonNumber, episode = episode.Number });
                     });
+            }
+        }
+
+        public DelegateCommand<ItemClickEventArgs> EnterShowCommand
+        {
+            get
+            {
+                return new DelegateCommand<ItemClickEventArgs>(args =>
+                {
+                    var tvShow = (TVShow)args.ClickedItem;
+                    navigationService.Navigate(App.Experience.TVShow.ToString(), tvShow.Id);
+                });
             }
         }
 
@@ -171,31 +150,22 @@ namespace Fresh.Windows.ViewModels
             return dt.AddDays(-1 * diff).Date;
         }
 
-        ObservableCollection<TVShow> library = new ObservableCollection<TVShow>();
-        public ObservableCollection<TVShow> Library { get { return library; } set { SetProperty(ref library, value); } }
+        ObservableCollection<TVShow> recommended = new ObservableCollection<TVShow>();
+        public ObservableCollection<TVShow> Recommended { get { return recommended; } set { SetProperty(ref recommended, value); } }
 
-        ObservableCollection<GroupedEpisodes<TVShow>> unwatchedEpisodeByShow = new ObservableCollection<GroupedEpisodes<TVShow>>(Enumerable.Empty<GroupedEpisodes<TVShow>>());
-        public ObservableCollection<GroupedEpisodes<TVShow>> UnwatchedEpisodesByShow { get { return unwatchedEpisodeByShow; } set { SetProperty(ref unwatchedEpisodeByShow, value); } }
+        ObservableCollection<TVShow> trending = new ObservableCollection<TVShow>();
+        public ObservableCollection<TVShow> Trending { get { return trending; } set { SetProperty(ref trending, value); } }
+
+        ObservableCollection<TVShow> popular = new ObservableCollection<TVShow>();
+        public ObservableCollection<TVShow> Popular { get { return popular; } set { SetProperty(ref popular, value); } }
+
+        ObservableCollection<Episode> nextEpisodes = new ObservableCollection<Episode>(Enumerable.Empty<Episode>());
+        public ObservableCollection<Episode> NextEpisodes { get { return nextEpisodes; } set { SetProperty(ref nextEpisodes, value); } }
 
         IList<GroupedEpisodes<DayOfWeek>> thisWeek = default(IList<GroupedEpisodes<DayOfWeek>>);
         public IList<GroupedEpisodes<DayOfWeek>> ThisWeek { get { return thisWeek; } set { SetProperty(ref thisWeek, value); } }
 
         bool loading = default(bool);
         public bool Loading { get { return loading; } set { SetProperty(ref loading, value); } }
-
-        public DelegateCommand<ItemClickEventArgs> EnterShowCommand
-        {
-            get
-            {
-                return new DelegateCommand<ItemClickEventArgs>(args =>
-                {
-                    var tvShow = args.ClickedItem is TVShow ?
-                        (TVShow)args.ClickedItem :
-                        ((GroupedEpisodes<TVShow>)args.ClickedItem).Key;
-
-                    navigationService.Navigate(App.Experience.TVShow.ToString(), tvShow.Id);
-                });
-            }
-        }
     }
 }

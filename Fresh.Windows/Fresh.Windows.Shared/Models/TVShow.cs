@@ -25,7 +25,7 @@ namespace Fresh.Windows.Shared.Models
         public DateTime? LastUpdated { get; set; }
 
         [OneToMany(CascadeOperations = CascadeOperation.All)]
-        public List<Season> Seasons { get; set; }
+        public List<Episode> Episodes { get; set; }
 
         public static TVShow FromTrakt(TraktTVShow trakt)
         {
@@ -39,7 +39,7 @@ namespace Fresh.Windows.Shared.Models
                 Rating = trakt.Rating,
                 Poster = trakt.Images != null && trakt.Images.Poster != null ? trakt.Images.Poster.Full : null,
                 AirDay = trakt.Airs != null && !string.IsNullOrWhiteSpace(trakt.Airs.Day) && trakt.Airs.Day != "Daily" ? (DayOfWeek)Enum.Parse(typeof(DayOfWeek), trakt.Airs.Day, ignoreCase: true) : (DayOfWeek?)null,
-                Seasons = new List<Season>()
+                Episodes = new List<Episode>()
             };
         }
 
@@ -47,9 +47,7 @@ namespace Fresh.Windows.Shared.Models
         {
             foreach (var episode in from watchedSeason in watchedShow.Seasons
                                     from watchedEpisode in watchedSeason.Episodes
-                                    from season in Seasons
-                                    where season.Number == watchedSeason.Number
-                                    from episode in season.Episodes
+                                    from episode in Episodes
                                     where episode.Number == watchedEpisode.Number
                                     where episode.Watched == false
                                     select episode)
@@ -70,19 +68,19 @@ namespace Fresh.Windows.Shared.Models
 
             foreach (var traktSeason in traktSeasons)
             {
-                var season = (from s in Seasons
-                              where s.Number == traktSeason.Number
-                              select s).FirstOrDefault();
+                var season = (from e in Episodes
+                              where e.SeasonNumber == traktSeason.Number
+                              select e.SeasonNumber).FirstOrDefault();
 
-                if (season == null)
-                {
-                    var newSeason = Season.FromTrakt(traktSeason);
-                    newSeason.TVShowId = Id;
-                    await newSeason.UpdateAsync(traktService);
-                    Seasons.Add(newSeason);
-                }
-                else if (season.Episodes.Count < traktSeason.Episode_Count)
-                    await season.UpdateAsync(traktService);
+                //if (season == null)
+                //{
+                //    var newSeason = Season.FromTrakt(traktSeason);
+                //    newSeason.TVShowId = Id;
+                //    await newSeason.UpdateAsync(traktService);
+                //    Seasons.Add(newSeason);
+                //}
+                //else if (season.Episodes.Count < traktSeason.Episode_Count)
+                //    await season.UpdateAsync(traktService);
             }
 
             LastUpdated = traktLastUpdated;

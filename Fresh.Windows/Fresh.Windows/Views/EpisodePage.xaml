@@ -28,6 +28,13 @@
 	<Grid x:Name="grid">
 		<VisualStateManager.VisualStateGroups>
 			<VisualStateGroup x:Name="EpisodePageStates">
+				<VisualStateGroup.Transitions>
+					<VisualTransition GeneratedDuration="0:0:0.5" To="Idle">
+						<VisualTransition.GeneratedEasingFunction>
+							<CircleEase EasingMode="EaseOut"/>
+						</VisualTransition.GeneratedEasingFunction>
+					</VisualTransition>
+				</VisualStateGroup.Transitions>
 				<VisualState x:Name="Idle">
 					<Storyboard>
 						<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(MediaPlayer.IsInteractive)" Storyboard.TargetName="mediaPlayer">
@@ -37,6 +44,7 @@
 								</DiscreteObjectKeyFrame.Value>
 							</DiscreteObjectKeyFrame>
 						</ObjectAnimationUsingKeyFrames>
+						<ColorAnimation Duration="0" To="#99000000" Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)" Storyboard.TargetName="hub" d:IsOptimized="True"/>
 					</Storyboard>
 				</VisualState>
 				<VisualState x:Name="Playing">
@@ -88,7 +96,7 @@
 			</VisualStateGroup>
 		</VisualStateManager.VisualStateGroups>
 		<mmppf:MediaPlayer x:Name="mediaPlayer" Source="{Binding Link}" AudioCategory="ForegroundOnlyMedia" AutoLoadPlugins="False" IsAudioSelectionEnabled="False" IsCaptionSelectionEnabled="False" IsFastForwardVisible="True" IsFullScreen="True" IsGoLiveEnabled="False" IsInfoEnabled="False" IsMoreEnabled="False" IsRewindVisible="True" IsSkipAheadEnabled="False" IsSkipBackEnabled="False" IsSkipNextEnabled="False" IsSkipPreviousEnabled="False" IsSlowMotionEnabled="False" IsStopEnabled="False" IsVolumeVisible="False" IsZoomEnabled="False" AutoPlay="False"/>
-		<Hub x:Name="hub">
+		<Hub x:Name="hub" Background="#00000000">
 			<Hub.Header>
 				<Grid Background="Green">
 					<Grid.ColumnDefinitions>
@@ -118,6 +126,11 @@
 					<Grid>
 						<TextBlock HorizontalAlignment="Left" TextWrapping="WrapWholeWords" Text="{Binding Overview}" VerticalAlignment="Top" Style="{StaticResource BodyTextBlockStyle}" TextAlignment="Justify"/>
 					</Grid>
+				</DataTemplate>
+			</HubSection>
+			<HubSection Header="comments">
+				<DataTemplate>
+					<ListView ItemsSource="{Binding Comments}" ItemTemplate="{StaticResource CommentTemplate}"/>
 				</DataTemplate>
 			</HubSection>
 		</Hub>

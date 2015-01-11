@@ -1,5 +1,7 @@
-﻿using Fresh.Windows.Shared.Interfaces;
+﻿using Fresh.Windows.Core.Models;
+using Fresh.Windows.Shared.Interfaces;
 using System;
+using System.Collections.ObjectModel;
 
 namespace Fresh.Windows.Shared.DesignTime
 {
@@ -15,6 +17,14 @@ namespace Fresh.Windows.Shared.DesignTime
             Screen = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg";
 
             AirDate = DateTime.UtcNow;
+
+            Comments = new ObservableCollection<TraktComment>
+            {
+                new TraktComment { Comment = "Comment 1.", User = new TraktUserInfo { Username = "Sam" } },
+                new TraktComment { Comment = "Comment 2.", User = new TraktUserInfo { Username = "Sam" } },
+                new TraktComment { Comment = "Comment 3.", User = new TraktUserInfo { Username = "Sam" } },
+                new TraktComment { Comment = "Comment 4.", User = new TraktUserInfo { Username = "Sam" } }
+            };
         }
 
         public string Link { get; set; }
@@ -29,5 +39,6 @@ namespace Fresh.Windows.Shared.DesignTime
 
         public string Screen { get; set; }
         public DateTime AirDate { get; set; }
+        public ObservableCollection<TraktComment> Comments { get; set; }
     }
 }
