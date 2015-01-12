@@ -103,8 +103,7 @@ namespace Fresh.Windows.ViewModels
         public DelegateCommand<ItemClickEventArgs> EpisodeSelectedCommand
         {
             get
-            {
-
+            { 
                 return new DelegateCommand<ItemClickEventArgs>(arg =>
                     {
                         var episode = (TraktEpisode)arg.ClickedItem;

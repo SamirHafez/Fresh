@@ -93,7 +93,7 @@ namespace Fresh.Windows.ViewModels
         double rating = default(double);
         public double Rating { get { return rating; } set { SetProperty(ref rating, value); } }
 
-        TraktWatchedProgress progress = new TraktWatchedProgress();
+        TraktWatchedProgress progress = default(TraktWatchedProgress);
         public TraktWatchedProgress Progress { get { return progress; } set { SetProperty(ref progress, value); } }
 
         ObservableCollection<TraktSeason> seasons = default(ObservableCollection<TraktSeason>);

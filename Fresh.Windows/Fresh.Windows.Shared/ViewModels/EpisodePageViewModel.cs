@@ -90,7 +90,7 @@ namespace Fresh.Windows.ViewModels
         private async void ToggleWatched()
         {
             Watched = Watched;
-            await traktService.WatchEpisodesAsync(new List<int> { Episode.Ids.Tvdb ?? Episode.Ids.Trakt });
+            await traktService.WatchEpisodesAsync(new List<int> { Episode.Ids.Trakt });
         }
 
         int number = default(int);
