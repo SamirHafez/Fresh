@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using Fresh.Windows.Shared.Interfaces;
-using Fresh.Windows.Shared.Models;
+using Fresh.Windows.Core.Models;
 
 namespace Fresh.Windows.Shared.DesignTime
 {
@@ -9,7 +9,7 @@ namespace Fresh.Windows.Shared.DesignTime
         public int Number { get; set; }
         public string Poster { get; set; }
         public string Overview { get; set; }
-        public ObservableCollection<Episode> Episodes { get; set; }
+        public ObservableCollection<TraktEpisode> Episodes { get; set; }
 
         public SeasonPageViewModel()
         {
@@ -19,26 +19,25 @@ namespace Fresh.Windows.Shared.DesignTime
 
             Poster = "http://slurm.trakt.us/images/seasons/124-5.47.jpg";
 
-            Episodes = new ObservableCollection<Episode>
+            Episodes = new ObservableCollection<TraktEpisode>
                     {
-                        new Episode
+                        new TraktEpisode
                         {
                             Number = 1,
                             Title = "Episode 1",
-                            Screen = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg",
+                            Images = new TraktImages { Screenshot = new TraktScreenshot { Thumb = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg" } }
                         },
-                        new Episode
+                        new TraktEpisode
                         {
                             Number = 3,
                             Title = "Episode 2",
-                            Screen = "http://slurm.trakt.us/images/episodes/124-5-3.47.jpg",
-                            Watched = true, 
+                            Images = new TraktImages { Screenshot = new TraktScreenshot { Thumb = "http://slurm.trakt.us/images/episodes/124-5-2.47.jpg" } }
                         },
-                        new Episode
+                        new TraktEpisode
                         {
                             Number = 2,
                             Title = "Episode 3",
-                            Screen = "http://slurm.trakt.us/images/episodes/124-5-2.47.jpg",
+                            Images = new TraktImages { Screenshot = new TraktScreenshot { Thumb = "http://slurm.trakt.us/images/episodes/124-5-3.47.jpg" } }
                         }
                     };
         }

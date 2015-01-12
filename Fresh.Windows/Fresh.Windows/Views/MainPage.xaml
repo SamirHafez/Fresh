@@ -53,7 +53,7 @@
 					</SearchBox>
 				</Grid>
 		</Hub.Header>
-		<HubSection Background="Green" Width="436">
+		<HubSection Background="Green">
 			<DataTemplate>
 				<Grid>
 					<ListView IsItemClickEnabled="True" SelectionMode="None">
@@ -85,6 +85,13 @@
 								<Core:ChangePropertyAction PropertyName="Visibility">
 									<Core:ChangePropertyAction.Value>
 										<Visibility>Visible</Visibility>
+									</Core:ChangePropertyAction.Value>
+								</Core:ChangePropertyAction>
+							</Core:DataTriggerBehavior>
+							<Core:DataTriggerBehavior Binding="{Binding ThisWeek.Count, Mode=OneWay}" ComparisonCondition="NotEqual" Value="0">
+								<Core:ChangePropertyAction PropertyName="Visibility">
+									<Core:ChangePropertyAction.Value>
+										<Visibility>Collapsed</Visibility>
 									</Core:ChangePropertyAction.Value>
 								</Core:ChangePropertyAction>
 							</Core:DataTriggerBehavior>

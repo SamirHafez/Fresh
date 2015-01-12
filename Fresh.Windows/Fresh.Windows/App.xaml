@@ -8,29 +8,23 @@
     >
     <prism:MvvmAppBase.Resources>
         <DataTemplate x:Key="EpisodeTemplate">
-        	<Grid Width="330" Height="185" Background="#33008000">
-        		<Image Source="{Binding Screen}" Stretch="UniformToFill"/>
+        	<Grid Background="#33008000" Height="225" Width="400">
+        		<Image Source="{Binding Images.Screenshot.Thumb}" Stretch="UniformToFill"/>
         		<StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal">
         			<Border Background="#CC008000" Padding="5">
         				<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}">
-        					<Run Text="S"/><Run Text="{Binding SeasonNumber}"/>
-							<Run Text="E"/><Run Text="{Binding Number}"/>
+        					<Run Text="S"/><Run Text="{Binding Season}"/><Run Text="E"/><Run Text="{Binding Number}"/>
         				</TextBlock>
         			</Border>
         			<Border Background="#99090A09" MaxWidth="300" Padding="5">
         				<TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"/>
         			</Border>
         		</StackPanel>
-        		<Border Background="#CC008000" MaxWidth="300" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="5">
-        			<TextBlock Text="{Binding AirDate}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BaseTextBlockStyle}"/>
-        		</Border>
         	</Grid>
         </DataTemplate>
         <DataTemplate x:Key="TVShowTemplate">
-        	<Grid Height="200" Width="350" Background="#33008000">
-        		<Border Background="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}">
-        			<Image Source="{Binding Poster}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
-        		</Border>
+        	<Grid Background="#33008000" Height="225" Width="153">
+        		<Image Source="{Binding Images.Poster.Thumb}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
         		<Border VerticalAlignment="Bottom" Padding="5" Background="#CC008000" >
         			<StackPanel>
         				<TextBlock Text="{Binding Title}" Foreground="{ThemeResource ListViewItemOverlayForegroundThemeBrush}" Style="{StaticResource BodyTextBlockStyle}" FontWeight="SemiBold"/>
@@ -40,8 +34,8 @@
         	</Grid>
         </DataTemplate>
         <DataTemplate x:Key="SeasonTemplate">
-        	<Grid Width="172" Height="247" Background="#33008000">
-        		<Image Stretch="UniformToFill" Source="{Binding Images.Poster.Full}"/>
+        	<Grid Width="172" Height="225" Background="#33008000">
+        		<Image Stretch="UniformToFill" Source="{Binding Images.Poster.Thumb}"/>
         		<Border HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="5" Background="Green">
         			<TextBlock TextWrapping="Wrap" Style="{StaticResource BaseTextBlockStyle}">
         				<Run Text="Season"/>

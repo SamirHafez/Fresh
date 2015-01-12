@@ -1,4 +1,4 @@
-﻿using Fresh.Windows.Shared.Models;
+﻿using Fresh.Windows.Core.Models;
 using Microsoft.Practices.Prism.Commands;
 using System;
 using System.Collections.Generic;
@@ -9,10 +9,10 @@ namespace Fresh.Windows.Shared.Interfaces
 {
     public interface IMainPageViewModel
     {
-        ObservableCollection<TVShow> Recommended { get; set; }
-        ObservableCollection<TVShow> Popular { get; set; }
-        ObservableCollection<TVShow> Trending { get; set; }
-        ObservableCollection<Episode> NextEpisodes { get; set; }
+        ObservableCollection<TraktTVShow> Recommended { get; set; }
+        ObservableCollection<TraktTVShow> Popular { get; set; }
+        ObservableCollection<TraktTVShow> Trending { get; set; }
+        ObservableCollection<TraktEpisode> NextEpisodes { get; set; }
 
         IList<GroupedEpisodes<DayOfWeek>> ThisWeek { get; set; }
 
@@ -20,5 +20,11 @@ namespace Fresh.Windows.Shared.Interfaces
 
         DelegateCommand<ItemClickEventArgs> EpisodeSelectedCommand { get; }
         DelegateCommand<ItemClickEventArgs> EnterShowCommand { get; }
+    }
+
+    public class GroupedEpisodes<T>
+    {
+        public T Key { get; set; }
+        public IList<TraktEpisode> Episodes { get; set; }
     }
 }

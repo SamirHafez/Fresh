@@ -15,80 +15,89 @@
     <d:DataContext>
         <designTime:TVShowPageViewModel/>
     </d:DataContext>
-	<Hub>
-		<Hub.Header>
-			<Button
+    <Hub>
+        <Hub.Header>
+            <Button
 				VerticalAlignment="Center"
 				HorizontalAlignment="Center"
 				Style="{ThemeResource NavigationBackButtonNormalStyle}" Height="41" Width="41">
-				<Interactivity:Interaction.Behaviors>
-					<Core:EventTriggerBehavior EventName="Click">
-						<Core:CallMethodAction TargetObject="{Binding navigationService}" MethodName="GoBack"/>
-					</Core:EventTriggerBehavior>
-				</Interactivity:Interaction.Behaviors>
-			</Button>
-		</Hub.Header>
-		<HubSection Width="436">
-			<HubSection.Background>
-				<ImageBrush Stretch="UniformToFill" ImageSource="{Binding Poster}"/>
-			</HubSection.Background>
-			<DataTemplate>
-				<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
-					<Border Background="Green" Padding="10" Margin="0,0,0,10" HorizontalAlignment="Left">
-						<TextBlock TextWrapping="Wrap" Text="{Binding Rating}" Style="{StaticResource HeaderTextBlockStyle}" HorizontalAlignment="Left"/>
-					</Border>
-				</StackPanel>
-			</DataTemplate>
-		</HubSection>
-		<HubSection Header="seasons" ScrollViewer.VerticalScrollBarVisibility="Auto">
-			<DataTemplate>
-				<GridView ItemsSource="{Binding Seasons}" ItemTemplate="{StaticResource SeasonTemplate}" IsItemClickEnabled="True" SelectionMode="None">
-					<Interactivity:Interaction.Behaviors>
-						<Core:EventTriggerBehavior EventName="ItemClick">
-							<Core:InvokeCommandAction Command="{Binding EnterSeasonCommand}"/>
-						</Core:EventTriggerBehavior>
-					</Interactivity:Interaction.Behaviors>
-				</GridView>
-			</DataTemplate>
-		</HubSection>
-		<HubSection Header="info" Width="400">
-			<DataTemplate>
-				<Grid>
-					<TextBlock HorizontalAlignment="Left" TextWrapping="WrapWholeWords" Text="{Binding Overview}" VerticalAlignment="Top" Style="{StaticResource BodyTextBlockStyle}" TextAlignment="Justify"/>
-				</Grid>
-			</DataTemplate>
-		</HubSection>
-		<HubSection Header="comments" Width="500">
-			<DataTemplate>
-				<ListView ItemTemplate="{StaticResource CommentTemplate}" ItemsSource="{Binding Comments}" SelectionMode="None"/>
-			</DataTemplate>
-		</HubSection>
-		<HubSection Header="related">
-			<Interactivity:Interaction.Behaviors>
-				<Core:DataTriggerBehavior Binding="{Binding Related.Count, Mode=OneWay}" Value="0">
-					<Core:ChangePropertyAction PropertyName="Visibility">
-						<Core:ChangePropertyAction.Value>
-							<Visibility>Collapsed</Visibility>
-						</Core:ChangePropertyAction.Value>
-					</Core:ChangePropertyAction>
-				</Core:DataTriggerBehavior>
-				<Core:DataTriggerBehavior Binding="{Binding Related.Count, Mode=OneWay}" ComparisonCondition="NotEqual" Value="0">
-					<Core:ChangePropertyAction PropertyName="Visibility">
-						<Core:ChangePropertyAction.Value>
-							<Visibility>Visible</Visibility>
-						</Core:ChangePropertyAction.Value>
-					</Core:ChangePropertyAction>
-				</Core:DataTriggerBehavior>
-			</Interactivity:Interaction.Behaviors>
-			<DataTemplate>
-				<GridView ItemsSource="{Binding Related}" ItemTemplate="{StaticResource TVShowTemplate}" IsItemClickEnabled="True">
-					<Interactivity:Interaction.Behaviors>
-						<Core:EventTriggerBehavior EventName="ItemClick">
-							<Core:InvokeCommandAction Command="{Binding EnterShowCommand, Mode=OneWay}"/>
-						</Core:EventTriggerBehavior>
-					</Interactivity:Interaction.Behaviors>
-				</GridView>
-			</DataTemplate>
-		</HubSection>
-	</Hub>
+                <Interactivity:Interaction.Behaviors>
+                    <Core:EventTriggerBehavior EventName="Click">
+                        <Core:CallMethodAction TargetObject="{Binding navigationService}" MethodName="GoBack"/>
+                    </Core:EventTriggerBehavior>
+                </Interactivity:Interaction.Behaviors>
+            </Button>
+        </Hub.Header>
+        <HubSection Width="436">
+            <HubSection.Background>
+                <ImageBrush Stretch="UniformToFill" ImageSource="{Binding Poster}"/>
+            </HubSection.Background>
+            <DataTemplate>
+                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Border Background="Green" Padding="10" Margin="0,0,0,10" HorizontalAlignment="Left">
+                        <TextBlock TextWrapping="Wrap" Text="{Binding Rating}" Style="{StaticResource HeaderTextBlockStyle}" HorizontalAlignment="Left"/>
+                    </Border>
+                    <Border Background="Green" Padding="10" Margin="0,0,0,10" HorizontalAlignment="Left">
+                        <TextBlock TextWrapping="Wrap" Style="{StaticResource HeaderTextBlockStyle}" HorizontalAlignment="Left">
+							<Run Text="{Binding Progress.Completed}"/>
+                            <Run Text="of" FontSize="30"/>
+                            <Run Text="{Binding Progress.Aired}" FontSize="30"/>
+							<Run Text="episodes watched" FontSize="30"/>
+                        </TextBlock>
+                    </Border>
+                </StackPanel>
+            </DataTemplate>
+        </HubSection>
+        <HubSection Header="your next episode" ContentTemplate="{StaticResource EpisodeTemplate}"/>
+        <HubSection Header="seasons" ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <DataTemplate>
+                <GridView ItemsSource="{Binding Seasons}" ItemTemplate="{StaticResource SeasonTemplate}" IsItemClickEnabled="True" SelectionMode="None">
+                    <Interactivity:Interaction.Behaviors>
+                        <Core:EventTriggerBehavior EventName="ItemClick">
+                            <Core:InvokeCommandAction Command="{Binding EnterSeasonCommand}"/>
+                        </Core:EventTriggerBehavior>
+                    </Interactivity:Interaction.Behaviors>
+                </GridView>
+            </DataTemplate>
+        </HubSection>
+        <HubSection Header="info" Width="400">
+            <DataTemplate>
+                <Grid>
+                    <TextBlock HorizontalAlignment="Left" TextWrapping="WrapWholeWords" Text="{Binding Overview}" VerticalAlignment="Top" Style="{StaticResource BodyTextBlockStyle}" TextAlignment="Justify"/>
+                </Grid>
+            </DataTemplate>
+        </HubSection>
+        <HubSection Header="comments" Width="500">
+            <DataTemplate>
+                <ListView ItemTemplate="{StaticResource CommentTemplate}" ItemsSource="{Binding Comments}" SelectionMode="None"/>
+            </DataTemplate>
+        </HubSection>
+        <HubSection Header="related">
+            <Interactivity:Interaction.Behaviors>
+                <Core:DataTriggerBehavior Binding="{Binding Related.Count, Mode=OneWay}" Value="0">
+                    <Core:ChangePropertyAction PropertyName="Visibility">
+                        <Core:ChangePropertyAction.Value>
+                            <Visibility>Collapsed</Visibility>
+                        </Core:ChangePropertyAction.Value>
+                    </Core:ChangePropertyAction>
+                </Core:DataTriggerBehavior>
+                <Core:DataTriggerBehavior Binding="{Binding Related.Count, Mode=OneWay}" ComparisonCondition="NotEqual" Value="0">
+                    <Core:ChangePropertyAction PropertyName="Visibility">
+                        <Core:ChangePropertyAction.Value>
+                            <Visibility>Visible</Visibility>
+                        </Core:ChangePropertyAction.Value>
+                    </Core:ChangePropertyAction>
+                </Core:DataTriggerBehavior>
+            </Interactivity:Interaction.Behaviors>
+            <DataTemplate>
+                <GridView ItemsSource="{Binding Related}" ItemTemplate="{StaticResource TVShowTemplate}" IsItemClickEnabled="True">
+                    <Interactivity:Interaction.Behaviors>
+                        <Core:EventTriggerBehavior EventName="ItemClick">
+                            <Core:InvokeCommandAction Command="{Binding EnterShowCommand, Mode=OneWay}"/>
+                        </Core:EventTriggerBehavior>
+                    </Interactivity:Interaction.Behaviors>
+                </GridView>
+            </DataTemplate>
+        </HubSection>
+    </Hub>
 </controls:PageBase>

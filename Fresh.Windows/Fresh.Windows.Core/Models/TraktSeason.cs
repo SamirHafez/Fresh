@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Fresh.Windows.Core.Models
+﻿namespace Fresh.Windows.Core.Models
 {
     public class TraktSeason
     {

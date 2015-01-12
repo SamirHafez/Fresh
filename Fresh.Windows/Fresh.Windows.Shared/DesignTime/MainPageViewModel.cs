@@ -1,5 +1,5 @@
-﻿using Fresh.Windows.Shared.Interfaces;
-using Fresh.Windows.Shared.Models;
+﻿using Fresh.Windows.Core.Models;
+using Fresh.Windows.Shared.Interfaces;
 using Microsoft.Practices.Prism.Commands;
 using System;
 using System.Collections.Generic;
@@ -12,43 +12,46 @@ namespace Fresh.Windows.Shared.DesignTime
     {
         public MainPageViewModel()
         {
-            Recommended = new ObservableCollection<TVShow>
+            Recommended = new ObservableCollection<TraktTVShow>
             {
-                new TVShow { Title = "Community", Year = 2009, Poster = @"http://slurm.trakt.us/images/posters/5.19.jpg" },
-                new TVShow { Title = "House of Cards (US)", Year = 2013, Poster = @"http://slurm.trakt.us/images/posters/19657.19.jpg" },
-                new TVShow { Title = "House of Lies", Year = 2012, Poster = @"http://slurm.trakt.us/images/posters/11982.11.jpg" }
+                new TraktTVShow { Title = "Community", Year = 2009, Images = new TraktImages { Poster = new TraktPoster { Thumb = @"http://slurm.trakt.us/images/posters/5.19.jpg" } } },
+                new TraktTVShow { Title = "House of Cards (US)", Year = 2013, Images = new TraktImages { Poster = new TraktPoster { Thumb = @"http://slurm.trakt.us/images/posters/19657.19.jpg" } } },
+                new TraktTVShow { Title = "House of Lies", Year = 2012, Images = new TraktImages { Poster = new TraktPoster { Thumb = @"http://slurm.trakt.us/images/posters/11982.11.jpg" } } }
             };
 
-            Trending = new ObservableCollection<TVShow>
+            Trending = new ObservableCollection<TraktTVShow>
             {
-                new TVShow { Title = "Community", Year = 2009, Poster = @"http://slurm.trakt.us/images/posters/5.19.jpg" },
-                new TVShow { Title = "House of Cards (US)", Year = 2013, Poster = @"http://slurm.trakt.us/images/posters/19657.19.jpg" },
-                new TVShow { Title = "House of Lies", Year = 2012, Poster = @"http://slurm.trakt.us/images/posters/11982.11.jpg" }
+                new TraktTVShow { Title = "Community", Year = 2009, Images = new TraktImages { Poster = new TraktPoster { Thumb = @"http://slurm.trakt.us/images/posters/5.19.jpg" } } },
+                new TraktTVShow { Title = "House of Cards (US)", Year = 2013, Images = new TraktImages { Poster = new TraktPoster { Thumb = @"http://slurm.trakt.us/images/posters/19657.19.jpg" } } },
+                new TraktTVShow { Title = "House of Lies", Year = 2012, Images = new TraktImages { Poster = new TraktPoster { Thumb = @"http://slurm.trakt.us/images/posters/11982.11.jpg" } } }
             };
 
-            Popular = new ObservableCollection<TVShow>
+            Popular = new ObservableCollection<TraktTVShow>
             {
-                new TVShow { Title = "Community", Year = 2009, Poster = @"http://slurm.trakt.us/images/posters/5.19.jpg" },
-                new TVShow { Title = "House of Cards (US)", Year = 2013, Poster = @"http://slurm.trakt.us/images/posters/19657.19.jpg" },
-                new TVShow { Title = "House of Lies", Year = 2012, Poster = @"http://slurm.trakt.us/images/posters/11982.11.jpg" }
+                new TraktTVShow { Title = "Community", Year = 2009, Images = new TraktImages { Poster = new TraktPoster { Thumb = @"http://slurm.trakt.us/images/posters/5.19.jpg" } } },
+                new TraktTVShow { Title = "House of Cards (US)", Year = 2013, Images = new TraktImages { Poster = new TraktPoster { Thumb = @"http://slurm.trakt.us/images/posters/19657.19.jpg" } } },
+                new TraktTVShow { Title = "House of Lies", Year = 2012, Images = new TraktImages { Poster = new TraktPoster { Thumb = @"http://slurm.trakt.us/images/posters/11982.11.jpg" } } }
             };
 
-            NextEpisodes = new ObservableCollection<Episode>
+            NextEpisodes = new ObservableCollection<TraktEpisode>
             {
-                        new Episode
+                        new TraktEpisode
                         {
-                            Title = "Episode Title 1", Screen = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg",
-                            AirDate = DateTime.Now,
+                            Title = "Episode Title 1",
+                            Images = new TraktImages { Screenshot = new TraktScreenshot { Thumb = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg" } },
+                            First_Aired = DateTime.Now.ToString()
                         },
-                        new Episode
+                        new TraktEpisode
                         {
-                            Title = "Episode Title 1", Screen = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg",
-                            AirDate = DateTime.Now,
+                            Title = "Episode Title 2",
+                            Images = new TraktImages { Screenshot = new TraktScreenshot { Thumb = "http://slurm.trakt.us/images/episodes/124-5-2.47.jpg" } }, 
+                            First_Aired = DateTime.Now.ToString()
                         },
-                        new Episode
+                        new TraktEpisode
                         {
-                            Title = "Episode Title 2", Screen = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg",
-                            AirDate = DateTime.Now,
+                            Title = "Episode Title 3",
+                            Images = new TraktImages { Screenshot = new TraktScreenshot { Thumb = "http://slurm.trakt.us/images/episodes/124-5-3.47.jpg" } },
+                            First_Aired = DateTime.Now.ToString()
                         }
             };
 
@@ -57,39 +60,42 @@ namespace Fresh.Windows.Shared.DesignTime
                 new GroupedEpisodes<DayOfWeek>
                 {
                     Key = DayOfWeek.Monday,
-                    Episodes = new List<Episode>
+                    Episodes = new List<TraktEpisode>
                     {
-                        new Episode
+                        new TraktEpisode
                         {
-                            Title = "Episode Title 1", Screen = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg",
-                            AirDate = DateTime.Now,
+                            Title = "Episode Title 1",
+                            Images = new TraktImages { Screenshot = new TraktScreenshot { Thumb = "http://slurm.trakt.us/images/episodes/124-5-1.47.jpg" } },
+                            First_Aired = DateTime.Now.ToString()
                         }
                     }
                 },
                 new GroupedEpisodes<DayOfWeek>
                 {
                     Key = DayOfWeek.Thursday,
-                    Episodes = new List<Episode>
+                    Episodes = new List<TraktEpisode>
                     {
-                        new Episode
+                        new TraktEpisode
                         {
-                            Title = "Episode Title 2", Screen = "http://slurm.trakt.us/images/episodes/124-5-2.47.jpg", Watched = true,
-                            AirDate = DateTime.Now,
+                            Title = "Episode Title 2",
+                            Images = new TraktImages { Screenshot = new TraktScreenshot { Thumb = "http://slurm.trakt.us/images/episodes/124-5-2.47.jpg" } },
+                            First_Aired = DateTime.Now.ToString()
                         },
-                        new Episode
+                        new TraktEpisode
                         {
-                            Title = "Episode Title 3", Screen = "http://slurm.trakt.us/images/episodes/124-5-3.47.jpg",
-                            AirDate = DateTime.Now,
+                            Title = "Episode Title 3",
+                            Images = new TraktImages { Screenshot = new TraktScreenshot { Thumb = "http://slurm.trakt.us/images/episodes/124-5-3.47.jpg" } },
+                            First_Aired = DateTime.Now.ToString()
                         }
                     }
                 }
             };
         }
 
-        public ObservableCollection<TVShow> Recommended { get; set; }
-        public ObservableCollection<TVShow> Popular { get; set; }
-        public ObservableCollection<TVShow> Trending { get; set; }
-        public ObservableCollection<Episode> NextEpisodes { get; set; }
+        public ObservableCollection<TraktTVShow> Recommended { get; set; }
+        public ObservableCollection<TraktTVShow> Popular { get; set; }
+        public ObservableCollection<TraktTVShow> Trending { get; set; }
+        public ObservableCollection<TraktEpisode> NextEpisodes { get; set; }
         public IList<GroupedEpisodes<DayOfWeek>> ThisWeek { get; set; }
         public bool Loading { get; set; }
 

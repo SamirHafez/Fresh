@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Fresh.Windows.Core.Services.Interfaces;
 using Fresh.Windows.Shared.Services.Interfaces;
-using Fresh.Windows.Shared.Configuration;
 using Fresh.Windows.Core.Services;
 using Fresh.Windows.Shared.Models;
 
@@ -12,13 +11,11 @@ namespace Fresh.Windows.Shared.Services
     {
         private readonly IStorageService storageService;
         private readonly ITraktService traktService;
-        private readonly ISession session;
 
-        public LoginService(IStorageService storageService, ITraktService traktService, ISession session)
+        public LoginService(IStorageService storageService, ITraktService traktService)
         {
             this.storageService = storageService;
             this.traktService = traktService;
-            this.session = session;
         }
 
         public async Task LoginAsync(OAuthRequest oauthRequest)
@@ -35,8 +32,6 @@ namespace Fresh.Windows.Shared.Services
             };
 
             await storageService.CreateOrUpdateUserAsync(user);
-
-            session.User = user;
         }
 
         public Task LogoutAsync()
@@ -50,7 +45,6 @@ namespace Fresh.Windows.Shared.Services
 
             if (user != null)
             {
-                session.User = user;
                 traktService.SetAuthenticator(new OAuthResponse
                 {
                     Access_Token = user.AccessToken

@@ -4,11 +4,11 @@ using Fresh.Windows.Shared.Interfaces;
 using Microsoft.Practices.Prism.Mvvm;
 using Windows.UI.Xaml.Navigation;
 using Microsoft.Practices.Prism.Commands;
-using Fresh.Windows.Shared.Models;
 using System;
 using Microsoft.Practices.Prism.Mvvm.Interfaces;
 using Fresh.Windows.Core.Models;
 using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace Fresh.Windows.ViewModels
 {
@@ -18,7 +18,8 @@ namespace Fresh.Windows.ViewModels
         private readonly ICrawlerService crawlerService;
         private readonly ITraktService traktService;
 
-        public Episode Episode { get; private set; }
+        public TraktEpisode Episode { get; private set; }
+        public TraktTVShow Show { get; set; }
 
         private List<string> excludedLinks;
 
@@ -38,29 +39,25 @@ namespace Fresh.Windows.ViewModels
             var showId = (int)parameters.showId;
             var episodeNumber = (int)parameters.episode;
 
-            Episode = Episode.FromTrakt(await traktService.GetEpisodeAsync(showId, seasonNumber, episodeNumber, extended: TraktExtendEnum.FULL_IMAGES), showId);
-            Episode.TVShow = TVShow.FromTrakt(await traktService.GetShowAsync(showId, extended: TraktExtendEnum.MIN));
+            Episode = await traktService.GetEpisodeAsync(showId, seasonNumber, episodeNumber, extended: TraktExtendEnum.FULL_IMAGES);
+            Show = await traktService.GetShowAsync(showId, extended: TraktExtendEnum.MIN);
 
             Number = Episode.Number;
             Title = Episode.Title;
             Overview = Episode.Overview;
-            Screen = Episode.Screen;
-            Watched = Episode.Watched;
-            AirDate = Episode.AirDate.GetValueOrDefault();
+            Screen = Episode.Images.Screenshot.Full;
+            AirDate = DateTime.Parse(Episode.First_Aired, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
 
             Comments = new ObservableCollection<TraktComment>(await traktService.GetEpisodeCommentsAsync(showId, seasonNumber, episodeNumber));
 
-            if (Episode.Link == null && Episode.AirDate < DateTime.UtcNow)
-                try
-                {
-                    Episode.Link = await crawlerService.GetLink(Episode.TVShow.Title, Episode.SeasonNumber, Episode.Number);
-                }
-                catch
-                {
+            try
+            {
+                Link = await crawlerService.GetLink(Show.Title, Episode.Season, Episode.Number);
+            }
+            catch
+            {
 
-                }
-
-            Link = Episode.Link;
+            }
         }
 
         public DelegateCommand MediaFailedCommand
@@ -69,11 +66,10 @@ namespace Fresh.Windows.ViewModels
             {
                 return new DelegateCommand(async () =>
                 {
-                    excludedLinks.Add(Episode.Link);
+                    excludedLinks.Add(Link);
                     try
                     {
-                        Episode.Link = await crawlerService.GetLink(Episode.TVShow.Title, Episode.SeasonNumber, Episode.Number, excludedLinks.ToArray());
-                        Link = Episode.Link;
+                        Link = await crawlerService.GetLink(Show.Title, Episode.Season, Episode.Number, excludedLinks.ToArray());
                     }
                     catch
                     {
@@ -93,8 +89,8 @@ namespace Fresh.Windows.ViewModels
 
         private async void ToggleWatched()
         {
-            Episode.Watched = Watched;
-            await traktService.WatchEpisodesAsync(new List<int> { Episode.Id });
+            Watched = Watched;
+            await traktService.WatchEpisodesAsync(new List<int> { Episode.Ids.Tvdb ?? Episode.Ids.Trakt });
         }
 
         int number = default(int);

@@ -5,7 +5,6 @@ using Windows.UI.Xaml.Navigation;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm.Interfaces;
 using Fresh.Windows.Shared.Interfaces;
-using Fresh.Windows.Shared.Models;
 using Windows.UI.Xaml.Controls;
 using System.Linq;
 using Fresh.Windows.Core.Services.Interfaces;
@@ -18,7 +17,7 @@ namespace Fresh.Windows.ViewModels
         public INavigationService navigationService { get; private set; }
         private readonly ITraktService traktService;
 
-        public TVShow Show { get; private set; }
+        public TraktTVShow Show { get; private set; }
 
         public TVShowPageViewModel(INavigationService navigationService, ITraktService traktService)
         {
@@ -30,21 +29,22 @@ namespace Fresh.Windows.ViewModels
         {
             var showId = (int)navigationParameter;
 
-            Show = TVShow.FromTrakt(await traktService.GetShowAsync(showId, extended: TraktExtendEnum.FULL_IMAGES));
+            Show = await traktService.GetShowAsync(showId, extended: TraktExtendEnum.FULL_IMAGES);
 
             Title = Show.Title;
-            Poster = Show.Poster;
+            Poster = Show.Images.Poster.Full;
             Overview = Show.Overview;
             Rating = Show.Rating;
 
-            Seasons = new ObservableCollection<TraktSeason>(from season in await traktService.GetSeasonsAsync(Show.Id, extended: TraktExtendEnum.IMAGES)
+            Progress = await traktService.GetShowWatchedProgressAsync(Show.Ids.Trakt, extended: TraktExtendEnum.IMAGES);
+
+            Seasons = new ObservableCollection<TraktSeason>(from season in await traktService.GetSeasonsAsync(Show.Ids.Trakt, extended: TraktExtendEnum.IMAGES)
                                                             orderby season.Number descending
                                                             select season);
 
-            Comments = new ObservableCollection<TraktComment>(await traktService.GetShowCommentsAsync(Show.Id));
+            Comments = new ObservableCollection<TraktComment>(await traktService.GetShowCommentsAsync(Show.Ids.Trakt));
 
-            Related = new ObservableCollection<TVShow>(from traktShow in await traktService.GetRelatedShowsAsync(Show.Id, extended: TraktExtendEnum.IMAGES)
-                                                       select TVShow.FromTrakt(traktShow));
+            Related = new ObservableCollection<TraktTVShow>(await traktService.GetRelatedShowsAsync(Show.Ids.Trakt, extended: TraktExtendEnum.IMAGES));
         }
 
         public DelegateCommand<ItemClickEventArgs> EnterShowCommand
@@ -53,8 +53,8 @@ namespace Fresh.Windows.ViewModels
             {
                 return new DelegateCommand<ItemClickEventArgs>(args =>
                 {
-                    var tvShow = (TVShow)args.ClickedItem;
-                    navigationService.Navigate(App.Experience.TVShow.ToString(), tvShow.Id);
+                    var tvShow = (TraktTVShow)args.ClickedItem;
+                    navigationService.Navigate(App.Experience.TVShow.ToString(), tvShow.Ids.Trakt);
                 });
             }
         }
@@ -64,7 +64,7 @@ namespace Fresh.Windows.ViewModels
             get
             {
                 return new DelegateCommand<ItemClickEventArgs>(arg =>
-                    navigationService.Navigate(App.Experience.Season.ToString(), new { season = ((TraktSeason)arg.ClickedItem).Number, showId = Show.Id }));
+                    navigationService.Navigate(App.Experience.Season.ToString(), new { season = ((TraktSeason)arg.ClickedItem).Number, showId = Show.Ids.Trakt }));
             }
         }
 
@@ -74,9 +74,9 @@ namespace Fresh.Windows.ViewModels
             {
                 return new DelegateCommand<ItemClickEventArgs>(args =>
                     {
-                        var episode = (Episode)args.ClickedItem;
+                        var episode = (TraktEpisode)args.ClickedItem;
                         navigationService.Navigate(App.Experience.Episode.ToString(),
-                            new { showId = episode.ShowId, season = episode.SeasonNumber, episode = episode.Number });
+                            new { showId = Show.Ids.Trakt, season = episode.Season, episode = episode.Number });
                     });
             }
         }
@@ -93,13 +93,16 @@ namespace Fresh.Windows.ViewModels
         double rating = default(double);
         public double Rating { get { return rating; } set { SetProperty(ref rating, value); } }
 
+        TraktWatchedProgress progress = new TraktWatchedProgress();
+        public TraktWatchedProgress Progress { get { return progress; } set { SetProperty(ref progress, value); } }
+
         ObservableCollection<TraktSeason> seasons = default(ObservableCollection<TraktSeason>);
         public ObservableCollection<TraktSeason> Seasons { get { return seasons; } set { SetProperty(ref seasons, value); } }
 
         ObservableCollection<TraktComment> comments = default(ObservableCollection<TraktComment>);
         public ObservableCollection<TraktComment> Comments { get { return comments; } set { SetProperty(ref comments, value); } }
 
-        ObservableCollection<TVShow> related = default(ObservableCollection<TVShow>);
-        public ObservableCollection<TVShow> Related { get { return related; } set { SetProperty(ref related, value); } }
+        ObservableCollection<TraktTVShow> related = default(ObservableCollection<TraktTVShow>);
+        public ObservableCollection<TraktTVShow> Related { get { return related; } set { SetProperty(ref related, value); } }
     }
 }

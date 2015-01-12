@@ -1,7 +1,6 @@
 ﻿using Fresh.Windows.Core.Services;
 using Fresh.Windows.Core.Services.Interfaces;
 using Fresh.Windows.Helpers;
-using Fresh.Windows.Shared.Configuration;
 using Fresh.Windows.Shared.Services;
 using Fresh.Windows.Shared.Services.Interfaces;
 using Microsoft.Practices.Prism.Mvvm;
@@ -34,7 +33,6 @@ namespace Fresh.Windows
         protected override Task OnInitializeAsync(IActivatedEventArgs args)
         {
             container.RegisterInstance<INavigationService>(NavigationService);
-            container.RegisterType<ISession, FreshSession>(new ContainerControlledLifetimeManager());
             container.RegisterType<ILoginService, LoginService>();
             container.RegisterInstance<SQLiteConnectionString>(new SQLiteConnectionString(APPLICATION_PATH + @"\fresh.db", storeDateTimeAsTicks: false), new ContainerControlledLifetimeManager());
             container.RegisterType<ISQLitePlatform, SQLitePlatformWP81>(new ContainerControlledLifetimeManager());
