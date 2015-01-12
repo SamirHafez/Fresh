@@ -6,10 +6,8 @@ using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm.Interfaces;
 using Fresh.Windows.Shared.Interfaces;
 using Fresh.Windows.Shared.Models;
-using Fresh.Windows.Shared.Services.Interfaces;
 using Windows.UI.Xaml.Controls;
 using System.Linq;
-using System;
 using Fresh.Windows.Core.Services.Interfaces;
 using Fresh.Windows.Core.Models;
 
@@ -42,6 +40,8 @@ namespace Fresh.Windows.ViewModels
             Seasons = new ObservableCollection<TraktSeason>(from season in await traktService.GetSeasonsAsync(Show.Id, extended: TraktExtendEnum.IMAGES)
                                                             orderby season.Number descending
                                                             select season);
+
+            Comments = new ObservableCollection<TraktComment>(await traktService.GetShowCommentsAsync(Show.Id));
         }
 
         public DelegateCommand<ItemClickEventArgs> EnterSeasonCommand
@@ -81,5 +81,7 @@ namespace Fresh.Windows.ViewModels
         ObservableCollection<TraktSeason> seasons = default(ObservableCollection<TraktSeason>);
         public ObservableCollection<TraktSeason> Seasons { get { return seasons; } set { SetProperty(ref seasons, value); } }
 
+        ObservableCollection<TraktComment> comments = default(ObservableCollection<TraktComment>);
+        public ObservableCollection<TraktComment> Comments { get { return comments; } set { SetProperty(ref comments, value); } }
     }
 }

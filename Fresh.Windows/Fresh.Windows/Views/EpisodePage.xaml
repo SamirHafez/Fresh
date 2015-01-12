@@ -129,6 +129,22 @@
 				</DataTemplate>
 			</HubSection>
 			<HubSection Header="comments">
+				<Interactivity:Interaction.Behaviors>
+					<Core:DataTriggerBehavior Binding="{Binding Comments.Count, Mode=OneWay}" Value="0">
+						<Core:ChangePropertyAction PropertyName="Visibility">
+							<Core:ChangePropertyAction.Value>
+								<Visibility>Collapsed</Visibility>
+							</Core:ChangePropertyAction.Value>
+						</Core:ChangePropertyAction>
+					</Core:DataTriggerBehavior>
+					<Core:DataTriggerBehavior Binding="{Binding Comments.Count, Mode=OneWay}" ComparisonCondition="NotEqual" Value="0">
+						<Core:ChangePropertyAction PropertyName="Visibility">
+							<Core:ChangePropertyAction.Value>
+								<Visibility>Visible</Visibility>
+							</Core:ChangePropertyAction.Value>
+						</Core:ChangePropertyAction>
+					</Core:DataTriggerBehavior>
+				</Interactivity:Interaction.Behaviors>
 				<DataTemplate>
 					<ListView ItemsSource="{Binding Comments}" ItemTemplate="{StaticResource CommentTemplate}"/>
 				</DataTemplate>

@@ -11,19 +11,6 @@
     x:Class="Fresh.Windows.Views.TVShowPage"
     prism:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d">
-	<controls:PageBase.Resources>
-<!-- TODO: Delete this line if the key AppName is declared in App.xaml -->
-		<x:String x:Key="AppName">My Application</x:String>
-		<DataTemplate x:Key="ShowWithEpisodes">
-			<Grid Height="300" Width="204">
-				<Image Source="{Binding Key.Poster}"/>
-				<Border Background="#CC008000" Padding="5" HorizontalAlignment="Right" VerticalAlignment="Top">
-					<TextBlock TextWrapping="Wrap" Text="{Binding Episodes.Count}" Style="{StaticResource BaseTextBlockStyle}"/>
-				</Border>
-			</Grid>
-		</DataTemplate>
-
-	</controls:PageBase.Resources>
 
     <d:DataContext>
         <designTime:TVShowPageViewModel/>
@@ -69,6 +56,11 @@
 				<Grid>
 					<TextBlock HorizontalAlignment="Left" TextWrapping="WrapWholeWords" Text="{Binding Overview}" VerticalAlignment="Top" Style="{StaticResource BodyTextBlockStyle}" TextAlignment="Justify"/>
 				</Grid>
+			</DataTemplate>
+		</HubSection>
+		<HubSection Header="comments" Width="500">
+			<DataTemplate>
+				<ListView ItemTemplate="{StaticResource CommentTemplate}" ItemsSource="{Binding Comments}" SelectionMode="None"/>
 			</DataTemplate>
 		</HubSection>
 	</Hub>

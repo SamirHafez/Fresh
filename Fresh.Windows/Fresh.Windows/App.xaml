@@ -51,13 +51,47 @@
         	</Grid>
         </DataTemplate>
         <DataTemplate x:Key="CommentTemplate">
-        	<Grid>
-        		<Grid.ColumnDefinitions>
-        			<ColumnDefinition/>
-        			<ColumnDefinition/>
-        		</Grid.ColumnDefinitions>
-        		<TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding User.Username}" VerticalAlignment="Top"/>
-        		<TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding Comment}" VerticalAlignment="Top" Grid.Column="1"/>
+        	<Grid Width="394">
+        		<Grid.RowDefinitions>
+        			<RowDefinition/>
+        			<RowDefinition/>
+        		</Grid.RowDefinitions>
+        		<Border Padding="5" Background="Green">
+        			<TextBlock TextWrapping="Wrap" Text="{Binding User.Username}" Style="{StaticResource SubheaderTextBlockStyle}"/>
+        		</Border>
+        		<Border Grid.Row="1" Padding="5" >
+        			<Grid>
+        				<TextBlock x:Name="textBlock" TextWrapping="Wrap" Text="{Binding Comment}" Style="{StaticResource BodyTextBlockStyle}" TextAlignment="Justify" MaxLines="6">
+        					<Interactivity:Interaction.Behaviors>
+        						<Core:DataTriggerBehavior Binding="{Binding Spoiler}" Value="True">
+        							<Core:ChangePropertyAction PropertyName="Visibility">
+        								<Core:ChangePropertyAction.Value>
+        									<Visibility>Collapsed</Visibility>
+        								</Core:ChangePropertyAction.Value>
+        							</Core:ChangePropertyAction>
+        						</Core:DataTriggerBehavior>
+        					</Interactivity:Interaction.Behaviors>
+        				</TextBlock>
+        				<Button Content="Contains spoilers. Tap to view" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" Background="#33008000" Visibility="Collapsed">
+        					<Interactivity:Interaction.Behaviors>
+        						<Core:EventTriggerBehavior EventName="Click">
+        							<Core:ChangePropertyAction TargetObject="{Binding ElementName=textBlock}" PropertyName="Visibility">
+        								<Core:ChangePropertyAction.Value>
+        									<Visibility>Visible</Visibility>
+        								</Core:ChangePropertyAction.Value>
+        							</Core:ChangePropertyAction>
+        						</Core:EventTriggerBehavior>
+        						<Core:DataTriggerBehavior Binding="{Binding Spoiler}" Value="True">
+        							<Core:ChangePropertyAction PropertyName="Visibility">
+        								<Core:ChangePropertyAction.Value>
+        									<Visibility>Visible</Visibility>
+        								</Core:ChangePropertyAction.Value>
+        							</Core:ChangePropertyAction>
+        						</Core:DataTriggerBehavior>
+        					</Interactivity:Interaction.Behaviors>
+        				</Button>
+        			</Grid>
+        		</Border>
         	</Grid>
         </DataTemplate>
     </prism:MvvmAppBase.Resources>

@@ -109,6 +109,18 @@ namespace Fresh.Windows.Core.Services
             return response.Data;
         }
 
+        public async Task<IList<TraktComment>> GetShowCommentsAsync(int showId)
+        {
+            var request = new RestRequest("shows/{id}/comments").
+                AddUrlSegment("id", showId);
+
+            Debug.WriteLine("Requesting {0}", request.Resource);
+
+            var response = await RestClient.Execute<IList<TraktComment>>(request);
+
+            return response.Data;
+        }
+
         public async Task<IList<TraktSeason>> GetSeasonsAsync(int showId, TraktExtendEnum extended = TraktExtendEnum.MIN)
         {
             var request = new RestRequest("shows/{id}/seasons").
@@ -304,24 +316,24 @@ namespace Fresh.Windows.Core.Services
             string extendedText;
             switch (extended)
             {
-            case TraktExtendEnum.MIN:
-                extendedText = "min";
-                break;
-            case TraktExtendEnum.IMAGES:
-                extendedText = "images";
-                break;
-            case TraktExtendEnum.FULL:
-                extendedText = "full";
-                break;
-            case TraktExtendEnum.FULL_IMAGES:
-                extendedText = "full,images";
-                break;
-            case TraktExtendEnum.METADATA:
-                extendedText = "metadata";
-                break;
-            default:
-                extendedText = "min";
-                break;
+                case TraktExtendEnum.MIN:
+                    extendedText = "min";
+                    break;
+                case TraktExtendEnum.IMAGES:
+                    extendedText = "images";
+                    break;
+                case TraktExtendEnum.FULL:
+                    extendedText = "full";
+                    break;
+                case TraktExtendEnum.FULL_IMAGES:
+                    extendedText = "full,images";
+                    break;
+                case TraktExtendEnum.METADATA:
+                    extendedText = "metadata";
+                    break;
+                default:
+                    extendedText = "min";
+                    break;
             }
 
             return request.AddQueryParameter("extended", extendedText);

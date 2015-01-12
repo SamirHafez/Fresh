@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
 using Fresh.Windows.Core.Services.Interfaces;
 using Fresh.Windows.Shared.Interfaces;
-using Fresh.Windows.Shared.Services.Interfaces;
 using Microsoft.Practices.Prism.Mvvm;
 using Windows.UI.Xaml.Navigation;
 using Microsoft.Practices.Prism.Commands;
 using Fresh.Windows.Shared.Models;
 using System;
 using Microsoft.Practices.Prism.Mvvm.Interfaces;
-using Windows.UI.Xaml;
 using Fresh.Windows.Core.Models;
 using System.Collections.ObjectModel;
 

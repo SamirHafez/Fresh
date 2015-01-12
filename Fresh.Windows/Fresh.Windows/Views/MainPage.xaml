@@ -93,7 +93,7 @@
 				</Grid>
 			</DataTemplate>
 		</HubSection>
-		<HubSection Header="next episodes">
+		<HubSection Header="catch up">
 			<Interactivity:Interaction.Behaviors>
 				<Core:DataTriggerBehavior Binding="{Binding NextEpisodes.Count, Mode=OneWay}" Value="0">
 					<Core:ChangePropertyAction PropertyName="Visibility">
@@ -120,7 +120,7 @@
 				</GridView>
 			</DataTemplate>
 		</HubSection>
-		<HubSection Header="recommended">
+		<HubSection Header="recommendations">
 			<Interactivity:Interaction.Behaviors>
 				<Core:DataTriggerBehavior Binding="{Binding Recommended.Count, Mode=OneWay}" Value="0">
 					<Core:ChangePropertyAction PropertyName="Visibility">
@@ -147,7 +147,7 @@
 				</GridView>
 			</DataTemplate>
 		</HubSection>
-		<HubSection Header="popular">
+		<HubSection Header="most popular">
 			<DataTemplate>
 				<GridView ItemsSource="{Binding Popular}" ItemTemplate="{StaticResource TVShowTemplate}" IsItemClickEnabled="True">
 					<Interactivity:Interaction.Behaviors>
