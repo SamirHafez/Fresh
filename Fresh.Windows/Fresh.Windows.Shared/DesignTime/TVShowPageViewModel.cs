@@ -1,5 +1,6 @@
 ﻿using Fresh.Windows.Core.Models;
 using Fresh.Windows.Shared.Interfaces;
+using Fresh.Windows.Shared.Models;
 using Microsoft.Practices.Prism.Commands;
 using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Controls;
@@ -41,6 +42,13 @@ namespace Fresh.Windows.Shared.DesignTime
                                 Etiam nec luctus sem.", Review = true, Spoiler = true, User = new TraktUserInfo { Username = "US" } }
             };
 
+            Related = new ObservableCollection<TVShow>
+            {
+                new TVShow { Title = "Community", Year = 2009, Poster = @"http://slurm.trakt.us/images/posters/5.19.jpg" },
+                new TVShow { Title = "House of Cards (US)", Year = 2013, Poster = @"http://slurm.trakt.us/images/posters/19657.19.jpg" },
+                new TVShow { Title = "House of Lies", Year = 2012, Poster = @"http://slurm.trakt.us/images/posters/11982.11.jpg" }
+            };
+
             Overview = "TVShow Overview Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras suscipit sem ante, sed volutpat sapien ultrices nec. Cras leo nunc, placerat ut est et, aliquam auctor nisi. Suspendisse elit sapien, finibus vitae venenatis et, gravida vitae justo. Aenean nec commodo ligula. Sed egestas sit amet dolor ut molestie. Etiam sed congue enim. Curabitur vitae finibus purus.";
         }
 
@@ -48,6 +56,7 @@ namespace Fresh.Windows.Shared.DesignTime
         public string Poster { get; set; }
         public ObservableCollection<TraktSeason> Seasons { get; set; }
         public ObservableCollection<TraktComment> Comments { get; set; }
+        public ObservableCollection<TVShow> Related { get; set; }
 
         public string Overview { get; set; }
 

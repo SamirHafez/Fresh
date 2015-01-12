@@ -26,6 +26,8 @@ namespace Fresh.Windows.Core.Services.Interfaces
 
         Task<IList<TraktComment>> GetShowCommentsAsync(int showId);
 
+        Task<IList<TraktTVShow>> GetRelatedShowsAsync(int showId, TraktExtendEnum extended = TraktExtendEnum.MIN);
+
         Task<IList<TraktSeason>> GetSeasonsAsync(int showId, TraktExtendEnum extended = TraktExtendEnum.MIN);
 
         Task<IList<TraktEpisode>> GetSeasonEpisodesAsync(int showId, int seasonNumber, TraktExtendEnum extended = TraktExtendEnum.MIN);

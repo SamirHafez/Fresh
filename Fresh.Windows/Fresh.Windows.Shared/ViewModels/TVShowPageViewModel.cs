@@ -42,6 +42,21 @@ namespace Fresh.Windows.ViewModels
                                                             select season);
 
             Comments = new ObservableCollection<TraktComment>(await traktService.GetShowCommentsAsync(Show.Id));
+
+            Related = new ObservableCollection<TVShow>(from traktShow in await traktService.GetRelatedShowsAsync(Show.Id, extended: TraktExtendEnum.IMAGES)
+                                                       select TVShow.FromTrakt(traktShow));
+        }
+
+        public DelegateCommand<ItemClickEventArgs> EnterShowCommand
+        {
+            get
+            {
+                return new DelegateCommand<ItemClickEventArgs>(args =>
+                {
+                    var tvShow = (TVShow)args.ClickedItem;
+                    navigationService.Navigate(App.Experience.TVShow.ToString(), tvShow.Id);
+                });
+            }
         }
 
         public DelegateCommand<ItemClickEventArgs> EnterSeasonCommand
@@ -83,5 +98,8 @@ namespace Fresh.Windows.ViewModels
 
         ObservableCollection<TraktComment> comments = default(ObservableCollection<TraktComment>);
         public ObservableCollection<TraktComment> Comments { get { return comments; } set { SetProperty(ref comments, value); } }
+
+        ObservableCollection<TVShow> related = default(ObservableCollection<TVShow>);
+        public ObservableCollection<TVShow> Related { get { return related; } set { SetProperty(ref related, value); } }
     }
 }

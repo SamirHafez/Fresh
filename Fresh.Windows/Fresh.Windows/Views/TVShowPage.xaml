@@ -63,5 +63,32 @@
 				<ListView ItemTemplate="{StaticResource CommentTemplate}" ItemsSource="{Binding Comments}" SelectionMode="None"/>
 			</DataTemplate>
 		</HubSection>
+		<HubSection Header="related">
+			<Interactivity:Interaction.Behaviors>
+				<Core:DataTriggerBehavior Binding="{Binding Related.Count, Mode=OneWay}" Value="0">
+					<Core:ChangePropertyAction PropertyName="Visibility">
+						<Core:ChangePropertyAction.Value>
+							<Visibility>Collapsed</Visibility>
+						</Core:ChangePropertyAction.Value>
+					</Core:ChangePropertyAction>
+				</Core:DataTriggerBehavior>
+				<Core:DataTriggerBehavior Binding="{Binding Related.Count, Mode=OneWay}" ComparisonCondition="NotEqual" Value="0">
+					<Core:ChangePropertyAction PropertyName="Visibility">
+						<Core:ChangePropertyAction.Value>
+							<Visibility>Visible</Visibility>
+						</Core:ChangePropertyAction.Value>
+					</Core:ChangePropertyAction>
+				</Core:DataTriggerBehavior>
+			</Interactivity:Interaction.Behaviors>
+			<DataTemplate>
+				<GridView ItemsSource="{Binding Related}" ItemTemplate="{StaticResource TVShowTemplate}" IsItemClickEnabled="True">
+					<Interactivity:Interaction.Behaviors>
+						<Core:EventTriggerBehavior EventName="ItemClick">
+							<Core:InvokeCommandAction Command="{Binding EnterShowCommand, Mode=OneWay}"/>
+						</Core:EventTriggerBehavior>
+					</Interactivity:Interaction.Behaviors>
+				</GridView>
+			</DataTemplate>
+		</HubSection>
 	</Hub>
 </controls:PageBase>

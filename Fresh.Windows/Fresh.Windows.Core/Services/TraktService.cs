@@ -121,6 +121,20 @@ namespace Fresh.Windows.Core.Services
             return response.Data;
         }
 
+        public async Task<IList<TraktTVShow>> GetRelatedShowsAsync(int showId, TraktExtendEnum extended = TraktExtendEnum.MIN)
+        {
+            var request = new RestRequest("shows/{id}/related").
+                AddUrlSegment("id", showId);
+
+            FillExtended(request, extended);
+
+            Debug.WriteLine("Requesting {0}", request.Resource);
+
+            var response = await RestClient.Execute<IList<TraktTVShow>>(request);
+
+            return response.Data;
+        }
+
         public async Task<IList<TraktSeason>> GetSeasonsAsync(int showId, TraktExtendEnum extended = TraktExtendEnum.MIN)
         {
             var request = new RestRequest("shows/{id}/seasons").
