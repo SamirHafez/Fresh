@@ -81,13 +81,14 @@ namespace Fresh.Windows.ViewModels
         private async Task FetchNextEpisodesAsync()
         {
             var traktProgressTasks = (from show in await traktService.GetWatchedEpisodesAsync(extended: TraktExtendEnum.MIN)
-                                      select new { show.Show, Progress = traktService.GetShowWatchedProgressAsync(show.Show.Ids.Trakt, extended: TraktExtendEnum.IMAGES) }).ToList();
+                                      select new { show.Show, Progress = traktService.GetShowWatchedProgressAsync(show.Show.Ids.Trakt, extended: TraktExtendEnum.FULL_IMAGES) }).ToList();
 
             await Task.WhenAll(from task in traktProgressTasks
                                select task.Progress);
 
             NextEpisodes = new ObservableCollection<TraktEpisode>(from item in traktProgressTasks
                                                                   where item.Progress.Result.Next_Episode != null
+                                                                     && DateTime.Parse(item.Progress.Result.Next_Episode.First_Aired, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal) <= DateTime.UtcNow
                                                                   select item.Progress.Result.Next_Episode);
         }
 
