@@ -1,7 +1,10 @@
 using Android.Content;
+using Cirrious.CrossCore;
 using Cirrious.CrossCore.Platform;
 using Cirrious.MvvmCross.Droid.Platform;
 using Cirrious.MvvmCross.ViewModels;
+using Fresh.Android.Services;
+using Fresh.Core.Services.Interfaces;
 
 namespace Fresh.Android
 {
@@ -20,5 +23,11 @@ namespace Fresh.Android
         {
             return new DebugTrace();
         }
-    }
+
+		protected override void InitializeFirstChance()
+		{
+			Mvx.RegisterSingleton<IOAuthBrokerService>(new XamarinAuthBrokerService());
+			base.InitializeFirstChance();
+		}
+	}
 }
