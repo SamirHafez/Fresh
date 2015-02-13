@@ -5,6 +5,6 @@ namespace Fresh.Core.Services.Interfaces
 {
 	public interface IOAuthBrokerService
 	{
-		Task<string> GetAccessTokenAsync(string clientId, string clientSecret, Uri authorizeUri, Uri redirectUri, Uri accessUri);
+		Task LaunchBrokerAsync(string clientId, string clientSecret, Uri authorizeUri, Uri redirectUri, Uri accessUri);
 	}
 }
