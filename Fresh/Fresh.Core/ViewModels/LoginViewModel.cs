@@ -32,7 +32,7 @@ namespace Fresh.Core.ViewModels
 		{
 			base.InitFromBundle(parameters);
 
-			await loginService.LauchLoginAsync(oauthService);
+            //await loginService.LauchLoginAsync(oauthService);
 		}
 
 		private async Task CodeObtainedAsync()

@@ -3,6 +3,7 @@ using Cirrious.CrossCore.IoC;
 using Cirrious.CrossCore;
 using Fresh.Core.Services;
 using Fresh.Core.Services.Interfaces;
+using Cirrious.MvvmCross.Plugins.File;
 
 namespace Fresh.Core
 {
@@ -21,18 +22,19 @@ namespace Fresh.Core
 			//    .AsInterfaces()
 			//    .RegisterAsLazySingleton();
 
-			var loginService = new LoginService("perm.token", ClientId, ClientSecret, AuthorizeUri, RedirectUri, AccessUri);
+            var fileStore = Mvx.Resolve<IMvxFileStore>(); 
+			var loginService = new LoginService("perm.token", ClientId, ClientSecret, AuthorizeUri, RedirectUri, AccessUri, fileStore);
 			Mvx.RegisterSingleton<ILoginService>(loginService);
 
-			var hasLogin = await loginService.SilentLoginAsync();
+			var hasLogin = loginService.SilentLoginAsync().Result;
 
 			var traktService = new TraktService(ClientId, ClientSecret, RedirectUri, loginService.Token);
 			Mvx.RegisterSingleton<ITraktService>(traktService);
 
-			if (hasLogin)
-				RegisterAppStart<ViewModels.MainViewModel>();
-			else
-				RegisterAppStart<ViewModels.LoginViewModel>();
+            if (hasLogin)
+                RegisterAppStart<ViewModels.MainViewModel>();
+            else
+                RegisterAppStart<ViewModels.LoginViewModel>();
 
         }
 	}
