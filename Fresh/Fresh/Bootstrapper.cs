@@ -1,5 +1,5 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
+using Xamarin.Forms;
 
 namespace Fresh
 {
@@ -21,6 +21,7 @@ namespace Fresh
 		protected override void RegisterViews(IViewFactory viewFactory)
 		{
 			viewFactory.Register<LoginViewModel, LoginView>();
+			viewFactory.Register<MainViewModel, MainView>();
 		}
 
 		protected override void ConfigureApplication(IContainer container)
@@ -29,9 +30,7 @@ namespace Fresh
 			var viewFactory = container.Resolve<IViewFactory>();
 			var loginPage = viewFactory.Resolve<LoginViewModel>();
 
-			_application.MainPage = loginPage;
+			_application.MainPage = new NavigationPage(loginPage);
 		}
-
 	}
 }
-

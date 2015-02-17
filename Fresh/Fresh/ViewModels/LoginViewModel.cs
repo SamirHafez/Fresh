@@ -1,20 +1,58 @@
 ﻿using System;
+using Xamarin.Forms;
+using System.Windows.Input;
+using System.Threading.Tasks;
 
 namespace Fresh
 {
 	public class LoginViewModel : ViewModelBase
 	{
-		const string ClientId = "ad18e7e5ba53d5cd88652204a774d1e5c3bd69a20ca04899102d616df58f71f";
-		readonly Uri RedirectUri = new Uri("urn:ietf:wg:oauth:2.0:oob");
-
 		public Uri AuthorizeUri
 		{
 			get
 			{
-				return new Uri(
-					string.Format("https://trakt.tv/oauth/authorize?response_type=code&client_id={0}&redirect_uri={1}",
-						ClientId, 
-						RedirectUri.AbsolutePath));
+				return traktService.AuthorizeUri;
+			}
+		}
+
+		string code;
+
+		public string Code
+		{
+			get { return code; }
+			set { SetProperty(ref code, value); }
+		}
+
+		public ICommand DoneCommand
+		{
+			get
+			{
+				return new Command<string>(
+					async code => await HandleAuthCodeAsync(code), 
+					code => !string.IsNullOrWhiteSpace(code)); 
+			}
+		}
+
+		readonly ITraktService traktService;
+		readonly INavigator navigator;
+
+		public LoginViewModel(ITraktService traktService, INavigator navigator)
+		{
+			this.navigator = navigator;
+			this.traktService = traktService;
+		}
+
+		async Task HandleAuthCodeAsync(string authCode)
+		{
+			try
+			{
+				await traktService.LoginAsync(authCode);
+
+				await navigator.PushAsync<MainViewModel>();
+			}
+			catch (Exception e)
+			{
+				//TODO - Handle error (maybe display to the user?)
 			}
 		}
 	}
